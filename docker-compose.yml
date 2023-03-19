@@ -13,6 +13,7 @@ services:
       - .env
     depends_on:
       - db
+      - chrome
     environment:
       WEBPACKER_DEV_SERVER_HOST: webpacker
     tty: true
@@ -31,7 +32,6 @@ services:
     ports:
       - "3035:3035"
 
-
   db:
     image: mysql:8.0.27
     container_name: db
@@ -42,6 +42,12 @@ services:
       - "3306:3306"
     volumes:
       - db:/var/lib/mysql
+
+  chrome:
+    image: selenium/standalone-chrome:latest
+    ports:
+      # capybara.rbのURLと合わせる
+      - 4444:4444
 
 volumes:
   db:
