@@ -3,7 +3,7 @@ services:
   rails:
     build: .
     container_name: rails_production
-    command: bundle exec puma -C config/puma_production.rb
+    command: bundle exec puma -C config/puma_production.rb -e production
     volumes:
       - .:/myapp
       - public-data:/myapp/public
@@ -14,23 +14,6 @@ services:
       - .env
     depends_on:
       - db
-    environment:
-      WEBPACKER_DEV_SERVER_HOST: webpacker
-    tty: true
-    stdin_open: true
-
-  webpacker:
-    build: .
-    container_name: webpacker_production
-    volumes:
-      - .:/myapp
-      - /myapp/node_modules
-      - public-data:/myapp/public
-    command: ./bin/webpack-dev-server
-    environment:
-      WEBPACKER_DEV_SERVER_HOST: 0.0.0.0
-    ports:
-      - "3035:3035"
     user: root
 
   db:
@@ -58,8 +41,6 @@ services:
 
 volumes:
   db:
-    driver: local
-  bundle:
     driver: local
   public-data:
   tmp-data:
