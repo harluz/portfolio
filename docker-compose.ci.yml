@@ -22,7 +22,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.ci
-    container_name: circleCI_rails
     ports:
       - '4000:4000'
     environment:
