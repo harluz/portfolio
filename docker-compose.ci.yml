@@ -15,6 +15,7 @@ services:
     image: redis:alpine
     networks:
       - default
+    container_name: circleCI_redis
     ports:
       - '36379:6379'
   rails:
