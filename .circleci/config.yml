@@ -33,12 +33,11 @@ jobs:
           command: |
             docker-compose ps
             docker-compose exec rails bash -c 'yes n | bundle exec rails db:create RAILS_ENV=test'
-            docker-compose logs
       - run:
           name: Run migration
           command: |
-            docker-compose exec rails bash -c 'yes n | bundle exec rails db:migrate RAILS_ENV=test'
             docker-compose logs
+            docker-compose exec rails bash -c 'yes n | bundle exec rails db:migrate RAILS_ENV=test'
       - run:
           name: Run rspec
           command: docker-compose exec rails rspec
