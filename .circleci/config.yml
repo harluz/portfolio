@@ -25,11 +25,15 @@ jobs:
             docker-compose up -d
             # docker exec portfolio_rails_1 curl -4 --retry 10 --retry-delay 3 --retry-connrefused http://localhost:3000
       - run:
+          name: Wait for the container to start
+          command: |
+            sleep 1m
+      - run:
           name: Setup database
           command: |
             docker-compose ps
             docker-compose logs
-            docker-compose exec rails bash -c 'yes n | bundle exec rails db:create'
+            docker-compose exec rails bash -c 'yes n | bundle exec rails db:create RAILS_ENV=test'
             docker-compose exec rails bash -c 'yes n | bundle exec rails db:migrate'
       - run:
           name: Run rspec
