@@ -29,6 +29,7 @@ jobs:
           command: |
             docker-compose ps
             docker-compose logs
+            docker-compose exec rails bash -c 'yes n | bundle exec rails db:create'
             docker-compose exec rails bash -c 'yes n | bundle exec rails db:migrate'
       - run:
           name: Run rspec
