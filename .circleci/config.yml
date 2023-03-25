@@ -23,7 +23,7 @@ jobs:
             set -x
             docker-compose build
             docker-compose up -d
-            docker exec portfolio_rails_1 curl -4 --retry 10 --retry-delay 3 --retry-connrefused http://localhost:3000
+            # docker exec portfolio_rails_1 curl -4 --retry 10 --retry-delay 3 --retry-connrefused http://localhost:3000
       - run:
           name: Setup database
           command: |

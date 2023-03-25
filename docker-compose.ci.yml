@@ -9,7 +9,7 @@ services:
     networks:
       - default
     ports:
-      - '33306:3306'
+      - '3306:3306'
     command: --default-authentication-plugin=mysql_native_password
   redis:
     image: redis:alpine
@@ -28,6 +28,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       # MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
       MYSQL_HOST: db
+      MYSQL_DATABASE: myapp_test
       REDIS_URL: "redis://redis:6379"
     depends_on:
       - db
