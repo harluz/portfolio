@@ -23,11 +23,13 @@ jobs:
             set -x
             docker-compose build
             docker-compose up -d
-            docker-compose ps
             docker exec portfolio_rails_1 curl -4 --retry 10 --retry-delay 3 --retry-connrefused http://localhost:3000
       - run:
           name: Setup database
           command: |
+            docker-compose ps
+            docker-compose logs
+            docker-compose exec db bash -c 'yes n | SELECT Host, User FROM mysql.user;'
             docker-compose exec rails bash -c 'yes n | bundle exec rails db:migrate'
       - run:
           name: Run rspec
