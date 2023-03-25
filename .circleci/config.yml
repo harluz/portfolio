@@ -33,9 +33,8 @@ jobs:
           command: |
             docker-compose ps
             docker-compose logs
-            # bundle install
-            # bundle exec rails db:create
-            docker-compose exec rails bash -c 'yes n | bundle exec rails db:create'
+            bundle install
+            bundle exec rails db:create
             bundle exec rails db:migrate
             bundle exec rails webpacker:install
             # docker-compose exec rails bash -c 'yes n | bundle exec rails db:create RAILS_ENV=test'
