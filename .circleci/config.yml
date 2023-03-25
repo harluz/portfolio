@@ -29,7 +29,6 @@ jobs:
           command: |
             docker-compose ps
             docker-compose logs
-            docker-compose exec db bash -c 'yes n | SELECT Host, User FROM mysql.user;'
             docker-compose exec rails bash -c 'yes n | bundle exec rails db:migrate'
       - run:
           name: Run rspec
