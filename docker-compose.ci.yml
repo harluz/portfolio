@@ -27,7 +27,8 @@ services:
       MYSQL_USERNAME: root
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       # MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-      MYSQL_HOST: db
+      # MYSQL_HOST: db
+      MYSQL_ROOT_HOST: '%'
       MYSQL_DATABASE: myapp_test
       REDIS_URL: "redis://redis:6379"
     depends_on:
