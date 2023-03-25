@@ -32,18 +32,21 @@ jobs:
           name: Setup database
           command: |
             docker-compose ps
-            # docker-compose exec rails bash -c 'yes n | bundle exec rails db:create RAILS_ENV=test'
-            docker-compose exec rails bash
+            docker-compose logs
             bundle exec rails db:create RAILS_ENV=test
-            exit
+            bundle exec rails db:migrate RAILS_ENV=test
+            # docker-compose exec rails bash -c 'yes n | bundle exec rails db:create RAILS_ENV=test'
+            # docker-compose exec rails bash
+            # bundle exec rails db:create RAILS_ENV=test
+            # exit
       - run:
           name: Run migration
           command: |
             docker-compose logs
             # docker-compose exec rails bash -c 'yes n | bundle exec rails db:migrate RAILS_ENV=test'
-            docker-compose exec rails bash
-            bundle exec rails db:migrate RAILS_ENV=test
-            exit
+            # docker-compose exec rails bash
+            # bundle exec rails db:migrate RAILS_ENV=test
+            # exit
       - run:
           name: Run rspec
           command: docker-compose exec rails rspec
