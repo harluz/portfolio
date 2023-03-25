@@ -28,10 +28,10 @@ jobs:
       - run:
           name: Setup database
           command: |
-            docker-compose exec portfolio_rails_1 bash -c 'yes n | bundle exec rails db:migrate'
+            docker-compose exec rails bash -c 'yes n | bundle exec rails db:migrate'
       - run:
           name: Run rspec
-          command: docker-compose exec portfolio_rails_1 rspec
+          command: docker-compose exec rails rspec
 
   rubocop:
     working_directory: ~/portfolio
