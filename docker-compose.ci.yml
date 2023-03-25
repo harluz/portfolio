@@ -4,7 +4,7 @@ services:
   db:
     image: mysql:8.0.27
     environment:
-      MYSQL_ROOT_PASSWORD: $DB_PASSWORD
+      MYSQL_ROOT_PASSWORD: ''
     networks:
       - default
     ports:
@@ -24,7 +24,7 @@ services:
       - '3000:3000'
     environment:
       MYSQL_USERNAME: root
-      MYSQL_ROOT_PASSWORD: $DB_PASSWORD
+      MYSQL_ROOT_PASSWORD: ''
       MYSQL_HOST: db
       REDIS_URL: "redis://redis:6379"
     depends_on:
