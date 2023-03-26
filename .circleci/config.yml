@@ -23,21 +23,16 @@ jobs:
             set -x
             docker-compose build
             docker-compose up -d
-            # docker exec portfolio_rails_1 curl -4 --retry 10 --retry-delay 3 --retry-connrefused http://localhost:3000
       - run:
           name: Wait for the container to start
           command: |
             sleep 30s
-      # - run:
-      #     name: Setup webpacker
-      #     command: docker-compose exec rails bundle exec rails webpacker:install
       - run:
           name: Setup database
           command: |
             docker-compose ps
             docker-compose logs
             docker-compose exec rails bundle exec rails db:create
-            # docker-compose exec rails bash -c 'yes n | bundle exec rails db:create'
       - run:
           name: Run migration
           command: |
