@@ -34,9 +34,9 @@ jobs:
             docker-compose ps
             docker-compose logs
             # bundle install  circleCI上のdockerコンテナでコマンドを実行しないといけないのでは？
-            docker-compose rails bundle exec db:create
+            docker-compose exec rails bundle exec db:create
             docker-compose logs
-            docker-compose rails bundle exec db:migrate
+            docker-compose exec rails bundle exec db:migrate
             # bundle exec rails db:create
             # bundle exec rails db:migrate
             # bundle exec rails webpacker:install
