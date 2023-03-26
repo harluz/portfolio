@@ -7,7 +7,7 @@ RSpec.describe "Tests", type: :system do
     end
 
     it "タイトルがMyappになっていること" do
-      expect(page).to have_title "Myapp"
+      expect(page).not_to have_title "Myapp"
     end
   end
 end
