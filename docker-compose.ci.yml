@@ -3,7 +3,7 @@ services:
   rails:
     build:
       context: .
-      dockerfile: Dockerfile2.ci
+      dockerfile: Dockerfile.ci
     ports:
       - '3000:3000'
     environment:

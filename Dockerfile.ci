@@ -1,32 +1,21 @@
-# -*- mode: dockerfile -*-
-FROM ruby:3.0.3-buster
+FROM ruby:alpine3.13
 
-RUN apt-get update                                                                                                                      \
-  && apt-get install                                                                                                                    \
-  openssl                                                                                                                             \
-  && curl -sL https://deb.nodesource.com/setup_14.x | bash -                                                                            \
-  && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -                                                                  \
-  && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list                                      \
-  && wget https://dev.mysql.com/get/mysql-apt-config_0.8.22-1_all.deb                                                                   \
-  && DEBIAN_FRONTEND=noninteractive dpkg -i mysql-apt-config_0.8.22-1_all.deb                                                           \
-  && apt-get update                                                                                                                     \
-  && apt-get remove -y                                                                                                                  \
-  libmariadbclient18                                                                                                                  \
-  libmariadbclient-dev-compat                                                                                                         \
-  libmariadbclient-dev                                                                                                                \
-  && apt-get install -y --allow-unauthenticated                                                                                         \
-  libmysqlclient-dev                                                                                                                  \
-  mysql-client                                                                                                                        \
-  libxml2-dev                                                                                                                         \
-  libxslt-dev                                                                                                                         \
-  libc6-dev                                                                                                                           \
-  nodejs                                                                                                                              \
-  yarn                                                                                                                                \
-  zip                                                                                                                                 \
-  && gem install foreman                                                                                                                \
-  && apt-get clean
+ARG UID
 
-RUN mkdir /portfolio
+RUN adduser -D app -u ${UID:-1000} && \
+  apk update \
+  && apk add --no-cache gcc make libc-dev g++ mariadb-dev tzdata nodejs~=14 yarn
+
 WORKDIR /portfolio
-COPY . /portfolio
+COPY Gemfile .
+COPY Gemfile.lock .
 RUN bundle install
+COPY --chown=app:app . /portfolio
+RUN yarn install
+COPY entrypoint.sh /usr/bin/
+RUN chmod +x /usr/bin/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]
+
+USER app
+RUN mkdir -p tmp/sockets
+RUN mkdir -p tmp/pids
