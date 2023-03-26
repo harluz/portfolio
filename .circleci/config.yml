@@ -30,7 +30,7 @@ jobs:
             sleep 30s
       - run:
           name: Setup webpacker
-          comamnd: docker-compose exec rails bundle exec rails webpacker:install
+          command: docker-compose exec rails bundle exec rails webpacker:install
       - run:
           name: Setup database
           command: |
