@@ -1,25 +1,5 @@
 version: "3.9"
-
 services:
-  db:
-    image: mysql:8.0.27
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-      # MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      # MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-    networks:
-      - default
-    ports:
-      - '3306:3306'
-    # volumes:
-    #   - db:/var/lib/mysql
-    command: --default-authentication-plugin=mysql_native_password
-  redis:
-    image: redis:alpine
-    networks:
-      - default
-    ports:
-      - '36379:6379'
   rails:
     build:
       context: .
@@ -36,9 +16,50 @@ services:
       # MYSQL_ROOT_HOST: db
       # MYSQL_DATABASE: myapp_test
       REDIS_URL: "redis://redis:6379"
+      WEBPACKER_DEV_SERVER_HOST: webpacker
     depends_on:
       - db
+      - chrome
       - redis
     networks:
       - default
     command: bundle exec rails server -b 0.0.0.0
+
+  webpacker:
+    build: .
+    container_name: webpacker
+    # volumes:
+    #   - .:/myapp
+    #   - /myapp/node_modules
+    #   - public-data:/myapp/public
+    command: ./bin/webpack-dev-server
+    environment:
+      WEBPACKER_DEV_SERVER_HOST: 0.0.0.0
+    ports:
+      - "3035:3035"
+
+  db:
+    image: mysql:8.0.27
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      # MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      # MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    networks:
+      - default
+    ports:
+      - '3306:3306'
+    # volumes:
+    #   - db:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+
+  chrome:
+    image: selenium/standalone-chrome:latest
+    ports:
+      - 4444:4444
+
+  redis:
+    image: redis:alpine
+    networks:
+      - default
+    ports:
+      - '36379:6379'

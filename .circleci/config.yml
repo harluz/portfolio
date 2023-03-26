@@ -33,28 +33,18 @@ jobs:
           command: |
             docker-compose ps
             docker-compose logs
-            # bundle install  circleCI上のdockerコンテナでコマンドを実行しないといけないのでは？
             docker-compose exec rails bundle exec rails db:create
-            docker-compose logs
-            docker-compose exec rails bundle exec rails db:migrate
-            # bundle exec rails db:create
-            # bundle exec rails db:migrate
             # bundle exec rails webpacker:install
             # docker-compose exec rails bash -c 'yes n | bundle exec rails db:create'
-            # docker-compose exec rails bash
-            # bundle exec rails db:create RAILS_ENV=test
-            # exit
       - run:
           name: Run migration
           command: |
-            docker-compose logs
-            # docker-compose exec rails bash -c 'yes n | bundle exec rails db:migrate RAILS_ENV=test'
-            # docker-compose exec rails bash
-            # bundle exec rails db:migrate RAILS_ENV=test
-            # exit
+            docker-compose exec rails bundle exec rails db:migrate
       - run:
           name: Run rspec
-          command: docker-compose exec rails rspec
+          command: |
+            docker-compose ps
+            docker-compose exec rails rspec
 
   rubocop:
     working_directory: ~/portfolio
