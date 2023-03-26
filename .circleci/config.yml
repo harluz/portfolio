@@ -33,10 +33,13 @@ jobs:
           command: |
             docker-compose ps
             docker-compose logs
-            bundle install
-            bundle exec rails db:create
-            bundle exec rails db:migrate
-            bundle exec rails webpacker:install
+            # bundle install  circleCI上のdockerコンテナでコマンドを実行しないといけないのでは？
+            docker-compose rails bundle exec db:create
+            docker-compose logs
+            docker-compose rails bundle exec db:migrate
+            # bundle exec rails db:create
+            # bundle exec rails db:migrate
+            # bundle exec rails webpacker:install
             # docker-compose exec rails bash -c 'yes n | bundle exec rails db:create RAILS_ENV=test'
             # docker-compose exec rails bash
             # bundle exec rails db:create RAILS_ENV=test
