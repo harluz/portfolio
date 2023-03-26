@@ -30,14 +30,11 @@ jobs:
       - run:
           name: Setup database
           command: |
-            docker-compose ps
-            docker-compose logs
             docker-compose exec rails bundle exec rails db:create
             docker-compose exec rails bundle exec rails db:migrate
       - run:
           name: Run rspec
           command: |
-            docker-compose ps
             docker-compose exec rails rspec
 
   rubocop:
