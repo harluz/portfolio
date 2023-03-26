@@ -28,9 +28,9 @@ jobs:
           name: Wait for the container to start
           command: |
             sleep 30s
-      - run:
-          name: Setup webpacker
-          command: docker-compose exec rails bundle exec rails webpacker:install
+      # - run:
+      #     name: Setup webpacker
+      #     command: docker-compose exec rails bundle exec rails webpacker:install
       - run:
           name: Setup database
           command: |

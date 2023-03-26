@@ -3,7 +3,7 @@ services:
   rails:
     build:
       context: .
-      dockerfile: Dockerfile.ci
+      dockerfile: Dockerfile2.ci
     ports:
       - '3000:3000'
     environment:
@@ -28,10 +28,10 @@ services:
   webpacker:
     build: .
     container_name: webpacker
-    # volumes:
-    #   - .:/myapp
-    #   - /myapp/node_modules
-    #   - public-data:/myapp/public
+    volumes:
+      - .:/portfolio
+      - /portfolio/node_modules
+      - public-data:/portfolio/public
     command: ./bin/webpack-dev-server
     environment:
       WEBPACKER_DEV_SERVER_HOST: 0.0.0.0
