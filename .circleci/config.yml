@@ -33,10 +33,10 @@ jobs:
             docker-compose ps
             docker-compose logs
             docker-compose exec rails bundle exec rails db:create
-      - run:
-          name: Run migration
-          command: |
             docker-compose exec rails bundle exec rails db:migrate
+      # - run:
+      #     name: Run migration
+      #     command: |
       - run:
           name: Run rspec
           command: |
