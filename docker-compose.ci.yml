@@ -28,10 +28,10 @@ services:
   webpacker:
     build: .
     container_name: webpacker
-    volumes:
-      - .:/portfolio
-      - /portfolio/node_modules
-      - public-data:/portfolio/public
+    # volumes:
+    #   - .:/portfolio
+    #   - /portfolio/node_modules
+    #   - public-data:/portfolio/public
     command: ./bin/webpack-dev-server
     environment:
       WEBPACKER_DEV_SERVER_HOST: 0.0.0.0
