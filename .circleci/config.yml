@@ -29,12 +29,14 @@ jobs:
           command: |
             sleep 30s
       - run:
+          name: Setup webpacker
+          comamnd: docker-compose exec rails bundle exec rails webpacker:install
+      - run:
           name: Setup database
           command: |
             docker-compose ps
             docker-compose logs
             docker-compose exec rails bundle exec rails db:create
-            # bundle exec rails webpacker:install
             # docker-compose exec rails bash -c 'yes n | bundle exec rails db:create'
       - run:
           name: Run migration
