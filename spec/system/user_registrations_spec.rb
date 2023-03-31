@@ -7,7 +7,7 @@ RSpec.describe "UserRegistrations", type: :system do
     end
 
     it "サインアップのフォームが表示されていること" do
-      expect(page).to have_content "Name"
+      expect(page).to have_content "ユーザー名"
     end
   end
 end
