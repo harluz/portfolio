@@ -8,5 +8,5 @@ RSpec.describe "Test", type: :request do
     # it 'アクセスできること' do
     #   expect(result).to eq 200
     # end
-  end
+  # end
 end
