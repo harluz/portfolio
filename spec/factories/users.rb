@@ -5,6 +5,12 @@ FactoryBot.define do
     password { "samplepassword" }
   end
 
+  factory :correct_user, :class => "User" do
+    name { "correct user" }
+    email { "correct@mail.com" }
+    password { "correctpassword" }
+  end
+
   factory :non_correct_user, :class => "User" do
     name { "" }
     email { "samplemailcom" }
@@ -13,7 +19,7 @@ FactoryBot.define do
 
   factory :duplicate_user, :class => "User" do
     name { "sample user2" }
-    email { "sample@mail.com" }
+    email { "duplicate@mail.com" }
     password { "samplepassword2" }
   end
 end
