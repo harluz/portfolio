@@ -28,6 +28,16 @@ RSpec.describe "UserSessions", type: :request do
       get pages_main_path
       expect(response).to have_http_status(200)
     end
+
+    it "ログアウトに成功しルートページにリダイレクトされていること" do
+      delete destroy_user_session_path
+      expect(response).to redirect_to root_path
+    end
+
+    it "ログアウトに成功しステータスコード303（リダイレクト）がレスポンスされていること" do
+      delete destroy_user_session_path
+      expect(response).to have_http_status(303)
+    end
   end
 
   describe "ログイン失敗もしくは未ログインの場合" do
