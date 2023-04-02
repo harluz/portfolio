@@ -1,0 +1,37 @@
+%h2 Sign up
+= form_with model: @user, url: user_registration_path do |f|
+  -# = render "devise/shared/error_messages", resource: @user
+  .field
+    = f.label :name
+    %br/
+    = f.text_field :name, autofocus: true, autocomplete: "name"
+    - if @user.errors.include?(:name)
+      %p.text-danger
+        = @user.errors.full_messages_for(:name).first
+  .field
+    = f.label :email
+    %br/
+    = f.email_field :email, autofocus: true, autocomplete: "email"
+    - if @user.errors.include?(:email)
+      %p.text-danger
+        = @user.errors.full_messages_for(:email).first
+  .field
+    = f.label :password
+    - if @minimum_password_length
+      %em
+        (#{@minimum_password_length} characters minimum)
+    %br/
+    = f.password_field :password, autocomplete: "new-password"
+    - if @user.errors.include?(:password)
+      %p.text-danger
+        = @user.errors.full_messages_for(:password).first
+  .field
+    = f.label :password_confirmation
+    %br/
+    = f.password_field :password_confirmation, autocomplete: "new-password"
+    - if @user.errors.include?(:password_confirmation)
+      %p.text-danger
+        = @user.errors.full_messages_for(:password_confirmation).first
+  .actions
+    = f.submit "Sign up"
+= render "devise/shared/links"
