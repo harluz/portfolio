@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe "UserSessions", type: :system do
   describe "テスト疎通確認" do
     let!(:user) { create(:user) }
+
     before do
       visit new_user_session_path
     end
@@ -85,5 +86,6 @@ RSpec.describe "UserSessions", type: :system do
 
     # ロゴを押下することでホーム画面に遷移すること
     # ログイン後、アプリのヘッダーにユーザー名が表示されていること
+    # ログアウトのテストを実装すること
   end
 end

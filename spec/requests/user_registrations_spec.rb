@@ -34,7 +34,6 @@ RSpec.describe "UserRegistrations", type: :request do
 
     # 許可されたページにアクセスした際、ステータスコード200（）がレスポンスされていること
     # サインアップした場合に表示されるヘッダーのレスポンスが含まれていること
-    
   end
 
   describe "登録内容が正しくない場合" do

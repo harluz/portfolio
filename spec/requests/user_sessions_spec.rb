@@ -9,11 +9,11 @@ RSpec.describe "UserSessions", type: :request do
   end
 
   describe "ログインに成功する場合" do
-    let!(:user) { create(:user) }
-    
+    let(:user) { create(:user) }
+
     before do
       valid_params = { email: user.email, password: user.password }
-      post user_session_path, params: { user: valid_params } 
+      post user_session_path, params: { user: valid_params }
     end
 
     it "〇〇ページにリダイレクトされていること" do
@@ -31,10 +31,10 @@ RSpec.describe "UserSessions", type: :request do
   end
 
   describe "ログイン失敗もしくは未ログインの場合" do
-    let(:non_correct_user) { build(:non_correct_user)}
+    let(:non_correct_user) { build(:non_correct_user) }
     before do
       invalid_params = { email: non_correct_user.email, password: non_correct_user.password }
-      post user_session_path, params: { user: invalid_params } 
+      post user_session_path, params: { user: invalid_params }
     end
 
     it "ステータスコード422(バリデーションエラー)がレスポンスされていること" do
