@@ -1,15 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe "UserRegistrations", type: :request do
-  describe "#new" do
+  describe "GET #new" do
+    subject { response }
+
     it "ユーザー登録ページのgetリクエストが成功していること" do
       get new_user_registration_path
-      expect(response).to have_http_status(200)
+      expect(subject).to have_http_status(200)
     end
   end
 
-  describe "#create" do
-    describe "サインアップに成功する場合" do
+  describe "POST #create" do
+    subject { response }
+
+    context "サインアップに成功する場合" do
       it "ユーザー数が増加していること" do
         expect do
           post user_registration_path, params: { user: attributes_for(:user) }
@@ -20,16 +24,16 @@ RSpec.describe "UserRegistrations", type: :request do
         before { post user_registration_path, params: { user: attributes_for(:user) } }
 
         it "〇〇ページにリダイレクトされていること" do
-          expect(response).to redirect_to pages_main_path
+          expect(subject).to redirect_to pages_main_path
         end
 
         it "ステータスコード303（リダイレクト）がレスポンスされていること" do
-          expect(response).to have_http_status(303)
+          expect(subject).to have_http_status(303)
         end
 
         it "許可されているページにアクセスした際、ステータスコード200がレスポンスされていること" do
           get pages_main_path
-          expect(response).to have_http_status(200)
+          expect(subject).to have_http_status(200)
         end
       end
 
@@ -37,7 +41,7 @@ RSpec.describe "UserRegistrations", type: :request do
       # サインアップした場合に表示されるヘッダーのレスポンスが含まれていること
     end
 
-    describe "サインアップに失敗する場合" do
+    context "サインアップに失敗する場合" do
       it "ユーザー数が変化していないこと" do
         expect do
           post user_registration_path, params: { user: attributes_for(:non_correct_user) }
@@ -48,33 +52,37 @@ RSpec.describe "UserRegistrations", type: :request do
         before { post user_registration_path, params: { user: attributes_for(:non_correct_user) } }
 
         it "ステータスコード422(バリデーションエラー)がレスポンスされていること" do
-          expect(response).to have_http_status(422)
+          expect(subject).to have_http_status(422)
         end
 
         it "許可されていないページにアクセスした際、ステータスコード302（リダイレクト）がレスポンスされていること" do
           get pages_main_path
-          expect(response).to have_http_status(302)
+          expect(subject).to have_http_status(302)
         end
       end
     end
   end
 
-  describe "#destroy" do
+  describe "DELETE #destroy" do
+    subject { response }
+    before { post user_registration_path, params: { user: attributes_for(:user) } }
+
     it "ユーザー削除に成功した際にユーザー数が減少していること" do
       expect do
         delete user_registration_path
       end.to change(User, :count).by(-1)
     end
 
-    before { post user_registration_path, params: { user: attributes_for(:user) } }
-    it "登録削除に成功しルートページにリダイレクトされていること" do
-      delete user_registration_path
-      expect(response).to redirect_to root_path
-    end
+    describe "レスポンス確認" do
+      before { delete user_registration_path }
 
-    it "登録削除に成功しステータスコード303（リダイレクト）がレスポンスされていること" do
-      delete user_registration_path
-      expect(response).to have_http_status(303)
+      it "登録削除に成功しルートページにリダイレクトされていること" do
+        expect(subject).to redirect_to root_path
+      end
+
+      it "登録削除に成功しステータスコード303（リダイレクト）がレスポンスされていること" do
+        expect(subject).to have_http_status(303)
+      end
     end
   end
 end

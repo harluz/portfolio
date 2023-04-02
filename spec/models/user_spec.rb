@@ -6,7 +6,7 @@ RSpec.describe User, type: :model do
   let(:non_correct_user) { build(:non_correct_user) }
   let(:duplicate_user2) { build(:duplicate_user) }
 
-  describe "バリデーションのテスト" do
+  describe "バリデーション確認" do
     it "ユーザーの情報が有効であること" do
       expect(correct_user).to be_valid
     end
@@ -19,6 +19,6 @@ RSpec.describe User, type: :model do
       expect(duplicate_user2).not_to be_valid
     end
   end
-  # describe "アソシエーションのテスト" do
-  # end
+  describe "アソシエーション確認" do
+  end
 end
