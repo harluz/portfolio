@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'quests/index'
   root 'pages#top'
   get 'pages/top'
   get 'pages/main'
