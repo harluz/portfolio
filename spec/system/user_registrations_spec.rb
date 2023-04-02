@@ -102,7 +102,7 @@ RSpec.describe "UserRegistrations", type: :system do
     end
 
     describe "登録情報のemailが重複している場合" do
-      let!(:user) { create(:user, email: "duplicate@mail.com") }
+      let!(:duplicate_user) { create(:duplicate_user) }
       before do
         fill_in 'メールアドレス', with: 'duplicate@mail.com'
         click_on 'Sign up'
