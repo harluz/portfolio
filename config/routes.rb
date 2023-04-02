@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  get 'quests/index'
+  # get 'quests/index'
   root 'pages#top'
   get 'pages/top'
   get 'pages/main'
@@ -12,5 +12,6 @@ Rails.application.routes.draw do
     get '/users', to: 'devise/registrations#new'
   end
   
+  resources :quests
   get 'test', to: 'test#index'
 end
