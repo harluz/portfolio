@@ -5,7 +5,7 @@ class QuestsController < ApplicationController
   end
 
   def new
-    @quest = Quest.new(session[:quest] || {} )
+    @quest = Quest.new(session[:quest] || {})
   end
 
   def create
@@ -25,6 +25,7 @@ class QuestsController < ApplicationController
   end
 
   def show
+    @quest = Quest.find(params[:id])
   end
 
   def edit
