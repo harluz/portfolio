@@ -5,22 +5,22 @@ class QuestsController < ApplicationController
   end
 
   def new
-    @quest = Quest.new
+    @quest = Quest.new(session[:quest] || {} )
   end
 
   def create
     @quest = Quest.new(quest_params)
     @quest.user_id = current_user.id
     @quest.xp = @quest.set_xp
-    
-    binding.pry
-    
+
     if @quest.save
+      session[:quest] = nil
       flash[:notice] = "BranChannelに新たなクエストが作成されました。"
       redirect_to quest_path(@quest)
     else
+      session[:quest] = @quest.attributes.slice(*quest_params.keys)
       flash[:alert] = "クエストの作成に失敗しました。"
-      render "new"
+      redirect_to new_quest_path, flash: { error_title: @quest.errors.full_messages_for(:title) }
     end
   end
 
