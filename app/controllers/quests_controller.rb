@@ -29,9 +29,19 @@ class QuestsController < ApplicationController
   end
 
   def edit
+    @quest = Quest.find(params[:id])
   end
 
   def update
+    @quest = Quest.find(params[:id])
+    if @quest.update(quest_params)
+      flash[:notice] = "クエストを更新しました。"
+      redirect_to quest_path(@quest)
+    else
+      flash[:alert] = "クエストの更新に失敗しました。"
+      # redirect_to new_quest_path, flash: { error_title: @quest.errors.full_messages_for(:title) }
+      render :edit
+    end
   end
 
   def destroy
