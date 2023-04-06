@@ -25,21 +25,22 @@ class QuestsController < ApplicationController
   end
 
   def show
-    @quest = Quest.find(params[:id])
+    @quest = Quest.find_by(params[:id])
   end
 
   def edit
-    @quest = Quest.find(params[:id])
+    @quest = Quest.find_by(params[:id])
   end
 
   def update
-    @quest = Quest.find(params[:id])
+    @quest = Quest.find_by(params[:id])
+    params[:quest][:xp] = params[:quest][:difficulty].to_i * 2
+    
     if @quest.update(quest_params)
       flash[:notice] = "クエストを更新しました。"
       redirect_to quest_path(@quest)
     else
       flash[:alert] = "クエストの更新に失敗しました。"
-      # redirect_to new_quest_path, flash: { error_title: @quest.errors.full_messages_for(:title) }
       render :edit
     end
   end
@@ -50,6 +51,6 @@ class QuestsController < ApplicationController
   private
 
   def quest_params
-    params.require(:quest).permit(:title, :describe, :difficulty, :public)
+    params.require(:quest).permit(:title, :describe, :difficulty, :xp, :public)
   end
 end
