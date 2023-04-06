@@ -35,7 +35,7 @@ class QuestsController < ApplicationController
   end
 
   def update
-    @quest = Quest.find_by(params[:id])
+    @quest = Quest.find(params[:id])
     params[:quest][:xp] = params[:quest][:difficulty].to_i * 2
     
     if @quest.update(quest_params)
