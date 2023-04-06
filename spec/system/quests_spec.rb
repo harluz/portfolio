@@ -190,6 +190,19 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_unchecked_field "quest_public"
       end
     end
+    context "他のユーザーが作成したクエストを編集しようとした場合" do
+      let!(:other_user) { create(:correct_user) }
+      let!(:other_quest) { create(:quest, user: other_user) }
+
+      before do
+        visit edit_quest_path(other_quest)
+      end
+
+      it "indexページにリダレクトし、エラーのフラッシュメッセージが表示されていること" do
+        expect(current_path).to eq quests_path
+        expect(page).to have_content "他のユーザーのクエストを操作することはできません。"
+      end
+    end
   end
 
   describe "クエスト削除" do
