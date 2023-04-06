@@ -1,7 +1,9 @@
 class QuestsController < ApplicationController
   before_action :authenticate_user!, except: [:index]
+  before_action :ensure_user, only: [:edit, :update, :destroy]
 
   def index
+    @quests = Quest.all
   end
 
   def new
@@ -25,11 +27,11 @@ class QuestsController < ApplicationController
   end
 
   def show
-    @quest = Quest.find_by(params[:id])
+    @quest = Quest.find(params[:id])
   end
 
   def edit
-    @quest = Quest.find_by(params[:id])
+    @quest = Quest.find(params[:id])
   end
 
   def update
@@ -52,5 +54,14 @@ class QuestsController < ApplicationController
 
   def quest_params
     params.require(:quest).permit(:title, :describe, :difficulty, :xp, :public)
+  end
+
+  def ensure_user
+    @quests = current_user.quests
+    @quest = @quests.find_by(id: params[:id])
+    unless @quest
+      flash[:alert] = "他のユーザーのクエストを操作することはできません。"
+      redirect_to quests_path
+    end
   end
 end
