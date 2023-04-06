@@ -136,6 +136,60 @@ RSpec.describe "Quests", type: :system do
   end
 
   describe "クエスト編集" do
+    let!(:quest) { create(:quest, user: user) }
+    before do
+      visit edit_quest_path(quest)
+    end
+    context "更新に成功する場合" do
+      before do
+        fill_in 'タイトル', with: "updated quest"
+        fill_in 'クエスト詳細', with: "Update quest achievement conditions."
+        choose('quest_difficulty_2')
+        uncheck "quest_public"
+        click_on "更新"
+      end
+
+      it "showページに遷移していること" do
+        expect(current_path).to eq quest_path(quest)
+      end
+
+      it "成功したフラッシュメッセージが表示されていること" do
+        expect(page).to have_content 'クエストを更新しました。'
+      end
+
+      it "showページでquestの情報が表示されていること" do
+        expect(page).to have_content "updated quest"
+        expect(page).to have_content "Update quest achievement conditions."
+        expect(page).to have_content "2"
+        expect(page).to have_content "4 ポイント"
+        expect(page).to have_content "このクエストは公開されていません。"
+      end
+    end
+    context "更新に失敗する場合" do
+      before do
+        fill_in 'タイトル', with: ""
+        fill_in 'クエスト詳細', with: "Update quest achievement conditions."
+        choose('quest_difficulty_2')
+        uncheck "quest_public"
+        click_on "更新"
+      end
+
+      it "showページに遷移していること" do
+        expect(current_path).to eq quest_path(quest)
+      end
+
+      it "失敗したフラッシュメッセージが表示されていること" do
+        expect(page).to have_content 'クエストの更新に失敗しました。'
+      end
+
+      
+      it "showページでquestの情報が表示されていること" do
+        expect(page).to have_content ""
+        expect(page).to have_content "Update quest achievement conditions."
+        expect(page).to have_checked_field with: "2"
+        expect(page).to have_unchecked_field "quest_public"
+      end
+    end
   end
 
   describe "クエスト削除" do
