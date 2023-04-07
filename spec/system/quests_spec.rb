@@ -206,5 +206,27 @@ RSpec.describe "Quests", type: :system do
   end
 
   describe "クエスト削除" do
+    let!(:quest) { create(:quest, user: user) }
+    before do
+      visit quests_path
+    end
+    context "削除に成功する場合" do
+      before do
+        click_on "削除する"
+      end
+
+      it "indexページに遷移していること" do
+        expect(current_path).to eq quests_path
+      end
+
+      it "成功したフラッシュメッセージが表示されていること" do
+        expect(page).to have_content "クエストが削除されました。"
+      end
+
+      it "削除したクエストが表示されていないこと" do
+        expect(page).not_to have_content "Create a quest you want to complete."
+      end
+    end
+    # 削除に失敗する場合
   end
 end
