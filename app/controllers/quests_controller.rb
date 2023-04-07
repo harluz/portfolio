@@ -1,5 +1,6 @@
 class QuestsController < ApplicationController
   before_action :authenticate_user!, except: [:index]
+  before_action :load_quest, only: [:show, :edit, :update, :destroy]
   before_action :ensure_user, only: [:edit, :update, :destroy]
 
   def index
@@ -27,15 +28,12 @@ class QuestsController < ApplicationController
   end
 
   def show
-    @quest = Quest.find(params[:id])
   end
 
   def edit
-    @quest = Quest.find(params[:id])
   end
 
   def update
-    @quest = Quest.find(params[:id])
     params[:quest][:xp] = params[:quest][:difficulty].to_i * 2
     
     if @quest.update(quest_params)
@@ -48,6 +46,13 @@ class QuestsController < ApplicationController
   end
 
   def destroy
+    if @quest.public == false && @quest.destroy
+      flash[:notice] = "クエストが削除されました。"
+      redirect_to quests_path
+    else
+      flash[:alert] = "公開中のクエストは削除することができません。"
+      redirect_to edit_quest_path(@quest)
+    end
   end
 
   private
@@ -56,10 +61,12 @@ class QuestsController < ApplicationController
     params.require(:quest).permit(:title, :describe, :difficulty, :xp, :public)
   end
 
+  def load_quest
+    @quest = Quest.find(params[:id])
+  end
+
   def ensure_user
-    @quests = current_user.quests
-    @quest = @quests.find_by(id: params[:id])
-    unless @quest
+    unless @quest.user == current_user
       flash[:alert] = "他のユーザーのクエストを操作することはできません。"
       redirect_to quests_path
     end
