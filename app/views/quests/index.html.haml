@@ -1,2 +1,9 @@
 %h1 Quests#index
 %p Find me in app/views/quests/index.html.haml
+- @quests.each do |quest|
+  %p
+  = quest.title
+  - if quest && quest.user == current_user
+    = link_to "編集する", edit_quest_path(quest)
+    - if quest.public == false
+      = link_to "削除する", quest_path(quest), method: :delete
