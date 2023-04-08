@@ -1,10 +1,39 @@
 require 'rails_helper'
 
 RSpec.describe "Quests", type: :system do
-  let(:user) { create(:user) }
+  let!(:user) { create(:user) }
   before { sign_in user }
 
   describe "表示確認" do
+    context "/quests/index" do
+      context "ユーザー自身が作成したクエストの場合" do
+        let!(:quest) { create(:quest, user: user) }
+        it "リンクが正しく表示・非表示となっていること" do
+          visit quests_path
+          expect(page).to have_content "編集する"
+          expect(page).to have_content "削除する"
+          quest.public = true
+          quest.save
+          visit quests_path
+          expect(page).not_to have_content "削除する"
+        end
+      end
+
+      context "他ユーザーが作成したクエストの場合" do
+        let!(:other_user) { create(:correct_user) }
+        let!(:other_quest) { create(:other_quest, user: other_user) }
+        it "編集及び削除リンクが表示されていないこと" do
+          visit quests_path
+          expect(page).not_to have_content "編集する"
+          expect(page).not_to have_content "削除する"
+          other_quest.public = true
+          other_quest.save
+          visit quests_path
+          expect(page).not_to have_content "削除する"
+        end
+      end
+    end
+
     context "/quests/new" do
       before do
         visit new_quest_path
@@ -50,16 +79,57 @@ RSpec.describe "Quests", type: :system do
         visit quest_path(quest)
       end
 
-      it "作成したquestの情報が表示されていること" do
-        expect(page).to have_content "Create a quest you want to complete."
-        expect(page).to have_content "Create quest achievement conditions."
-        expect(page).to have_content "3"
-        expect(page).to have_content "6 ポイント"
+      context "存在するデータを表示する場合" do
+        it "作成したquestの情報が表示されていること" do
+          expect(page).to have_content "Create a quest you want to complete."
+          expect(page).to have_content "Create quest achievement conditions."
+          expect(page).to have_content "3"
+          expect(page).to have_content "6 ポイント"
+        end
+        # 　タイトルが〇〇となっていること
       end
-      # 　タイトルが〇〇となっていること
+      context "存在しないデータにアクセスする場合" do
+        it "indexページにリダイレクトし、エラーメッセージが表示されていること" do
+          visit quest_path(10000)
+          expect(current_path).to eq quests_path
+          expect(page).to have_content "クエストが存在していません。"
+        end
+      end
     end
 
     context "/quests/edit" do
+      let!(:quest) { create(:quest, user: user) }
+      before do
+        visit edit_quest_path(quest)
+      end
+      it "クエスト更新のフォームが表示されていること" do
+        expect(page).to have_content "タイトル"
+        expect(page).to have_content "クエスト詳細"
+        expect(page).to have_content "難易度"
+        expect(page).to have_content "クエストを公開する"
+        expect(page).to have_content "キャンセル"
+        expect(page).to have_field "タイトル"
+        expect(page).to have_field "クエスト詳細"
+        expect(page).to have_unchecked_field "quest_public"
+        expect(page).to have_link "キャンセル"
+        expect(page).to have_button "更新"
+      end
+      it "フォームにquestの値が表示されていること" do
+        expect(page).to have_xpath("//input[@value='Create a quest you want to complete.']")
+        expect(page).to have_content "Create quest achievement conditions."
+        expect(page).to have_checked_field with: "3"
+        expect(page).to have_unchecked_field "quest_public"
+      end
+      context "存在しないデータにアクセスする場合" do
+        it "indexページにリダイレクトし、エラーメッセージが表示されていること" do
+          visit edit_quest_path(10000)
+          expect(current_path).to eq quests_path
+          expect(page).to have_content "クエストが存在していません。"
+        end
+      end
+    end
+
+    context "/quests/destroy" do
     end
   end
 
@@ -118,6 +188,7 @@ RSpec.describe "Quests", type: :system do
 
       it "失敗したエラー・フラッシュメッセージ、入力中のクエスト詳細が表示されていること" do
         expect(page).to have_content "クエストの作成に失敗しました。"
+        expect(page).to have_xpath("//input[@value='']")
         expect(page).to have_content "タイトルを入力してください"
         expect(page).to have_content "string being input"
         expect(page).to have_checked_field with: "4"
@@ -127,6 +198,7 @@ RSpec.describe "Quests", type: :system do
       it "リロードした際にエラー・フラッシュメッセージは消え、フォームの値は保持されていること" do
         visit new_quest_path
         expect(page).not_to have_content "クエストの作成に失敗しました。"
+        expect(page).to have_xpath("//input[@value='']")
         expect(page).not_to have_content "タイトルを入力してください"
         expect(page).to have_content "string being input"
         expect(page).to have_checked_field with: "4"
@@ -182,17 +254,25 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_content 'クエストの更新に失敗しました。'
       end
 
-      
       it "showページでquestの情報が表示されていること" do
-        expect(page).to have_content ""
+        expect(page).to have_xpath("//input[@value='']")
         expect(page).to have_content "Update quest achievement conditions."
         expect(page).to have_checked_field with: "2"
         expect(page).to have_unchecked_field "quest_public"
       end
+
+      it "render後にリロードすることで更新前のquestが表示されていること" do
+        visit quest_path(quest)
+        expect(page).to have_content "Create a quest you want to complete."
+        expect(page).to have_content "Create quest achievement conditions."
+        expect(page).to have_content "3"
+        expect(page).to have_content "6 ポイント"
+        expect(page).to have_content "このクエストは公開されていません。"
+      end
     end
     context "他のユーザーが作成したクエストを編集しようとした場合" do
       let!(:other_user) { create(:correct_user) }
-      let!(:other_quest) { create(:quest, user: other_user) }
+      let!(:other_quest) { create(:other_quest, user: other_user) }
 
       before do
         visit edit_quest_path(other_quest)
