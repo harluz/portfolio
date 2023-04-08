@@ -1,5 +1,6 @@
 class Quest < ApplicationRecord
   belongs_to :user
+  has_many :challenges
 
   validates :title, presence: true
   validate :describe
