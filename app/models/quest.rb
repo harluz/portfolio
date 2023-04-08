@@ -10,6 +10,6 @@ class Quest < ApplicationRecord
   validate :user_id
 
   def set_xp
-    self.difficulty * 2
+    difficulty * 2
   end
 end
