@@ -35,7 +35,7 @@ class QuestsController < ApplicationController
 
   def update
     params[:quest][:xp] = params[:quest][:difficulty].to_i * 2
-    
+
     if @quest.update(quest_params)
       flash[:notice] = "クエストを更新しました。"
       redirect_to quest_path(@quest)
@@ -63,6 +63,9 @@ class QuestsController < ApplicationController
 
   def load_quest
     @quest = Quest.find(params[:id])
+  rescue
+    flash[:alert] = "クエストが存在していません。"
+    redirect_to quests_path
   end
 
   def ensure_user
