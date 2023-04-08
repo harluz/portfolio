@@ -17,9 +17,9 @@ FactoryBot.define do
 
   factory :non_correct_quest, :class => "Quest" do
     title { "" }
-    describe { "Create quest achievement conditions." }
+    describe { "Non correct sample describe" }
     difficulty { 5 }
     xp { 10 }
-    public { false }
+    public { true }
   end
 end
