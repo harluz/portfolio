@@ -1,0 +1,23 @@
+= form_with model: @quest do |f|
+  .container
+    .center-block
+      .field
+        = f.label :title, class: "form-label"
+        = f.text_field :title, autofocus: true, autocomplete: "title", placeholder: "（必須）クエストタイトルを入力してください", class: "form-control"
+      - if flash[:error_title].present?
+        %p.text-danger
+          = flash[:error_title].first
+      .field
+        = f.label :describe, class: "form-label"
+        = f.text_area :describe, autofocus: true, autocomplete: "describe", placeholder: "クエストの詳細を入力", class: "form-control"
+      .field
+        = f.label :difficulty, class: "form-label"
+        - 5.times do |num|
+          = f.radio_button :difficulty, num + 1
+          #{num + 1}
+      .field
+        = f.check_box :public
+        = f.label "クエストを公開する", class: "form-check-label", for: "flexCheckChecked"
+      .actions
+        = f.submit "クエスト作成！", class: "btn btn-primary"
+      = link_to "キャンセル", :back
