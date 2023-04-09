@@ -17,6 +17,7 @@ class QuestsController < ApplicationController
     @quest.xp = @quest.set_xp
 
     if @quest.save
+      @challenge = Challenge.create(user_id: current_user.id, quest_id: @quest.id)
       session[:quest] = nil
       flash[:notice] = "BranChannelに新たなクエストが作成されました。"
       redirect_to quest_path(@quest)
@@ -28,6 +29,21 @@ class QuestsController < ApplicationController
   end
 
   def show
+    # 他人の公開されていないクエストの詳細が見れないようにする
+    if @quest.user != current_user && @quest.public == false
+      flash[:alert] = "公開されていないクエストの詳細を見ることはできません。"
+      redirect_to quests_path
+    end
+
+    # 他人のクエストを挑戦中にクエストが非公開になった場合、詳細は見れないがchallenge一覧から「達成」or「諦める」を選択できるようにする
+    # challengeを特定して、challenge.idを取得した上で↓
+    # if @quest.user != current_user && Challenge.exist?(user_id: current_user.id, quest_id: @quest.id)
+    # && @quest.public == flase && @challenge.close == false
+
+    # 自分のクエストでなければ、空のchallengeを生成する
+    if @quest.user != current_user
+      @challenge = Challenge.new
+    end
   end
 
   def edit
