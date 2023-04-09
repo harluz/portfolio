@@ -16,3 +16,9 @@
       %p このクエストは公開されていません。
     - if @quest && @quest.user == current_user
       = link_to "編集する", edit_quest_path(@quest)
+    - if @quest.public && @quest.user != current_user && !(Challenge.exists?(user_id: current_user.id, quest_id: @quest.id))
+      = form_with(model: @challenge, url: challenges_path(@challenge)) do |f|
+        = f.hidden_field :quest_id, value: @quest.id
+        .actions
+        = f.submit "挑戦する", class: "btn btn-primary"
+    = link_to "挑戦リストに戻る", challenges_path
