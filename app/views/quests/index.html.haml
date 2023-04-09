@@ -1,9 +1,14 @@
 %h1 Quests#index
 %p Find me in app/views/quests/index.html.haml
+%p public trueになっているもののみを表示するページ
+%p 自身が作成したクエスト及び挑戦中のクエストはchallenge indexに表示する？
+
 - @quests.each do |quest|
   %p
-  = quest.title
-  - if quest && quest.user == current_user
-    = link_to "編集する", edit_quest_path(quest)
-    - if quest.public == false
-      = link_to "削除する", quest_path(quest), method: :delete
+  - if quest.public == true
+    = quest.title
+    = link_to "詳細", quest_path(quest)
+    - if quest && quest.user == current_user
+      = link_to "編集する", edit_quest_path(quest)
+      - if quest.public == false
+        = link_to "削除する", quest_path(quest), method: :delete
