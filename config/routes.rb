@@ -13,5 +13,6 @@ Rails.application.routes.draw do
   end
   
   resources :quests
+  resources :challenges
   get 'test', to: 'test#index'
 end
