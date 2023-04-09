@@ -1,2 +1,13 @@
 %h1 Challenges#index
 %p Find me in app/views/challenges/index.html.haml
+%p 自分が作成したクエストは自動で挑戦中になる。
+%p 他のユーザーが作成したクエストに挑戦したものも表示される
+- @challenges.each do |challenge|
+  %p
+  = challenge.quest.title
+  = link_to "詳細", quest_path(challenge.quest)
+  = form_with(model: challenge, url: challenge_path(challenge)) do |f|
+    = f.hidden_field :quest_id, value: challenge.quest.id
+    = f.hidden_field :close, value: true
+    .actions
+    = f.submit "達成", class: "btn btn-primary"
