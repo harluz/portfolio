@@ -1,0 +1,12 @@
+%h1 Challenges#index
+%p Find me in app/views/challenges/closed.html.haml
+%p ユーザー自身が達成したクエストを表示するもの
+- @challenges.each do |challenge|
+  %p
+  = challenge.quest.title
+  = link_to "詳細", quest_path(challenge.quest)
+  = form_with(model: challenge, url: challenge_path(challenge)) do |f|
+    = f.hidden_field :quest_id, value: challenge.quest.id
+    = f.hidden_field :close, value: false
+    .actions
+    = f.submit "再挑戦", class: "btn btn-primary"

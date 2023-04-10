@@ -13,6 +13,10 @@ Rails.application.routes.draw do
   end
   
   resources :quests
-  resources :challenges
+  resources :challenges do
+    collection do
+      get 'closed'
+    end
+  end
   get 'test', to: 'test#index'
 end

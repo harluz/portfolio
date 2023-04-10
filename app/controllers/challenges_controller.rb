@@ -3,6 +3,10 @@ class ChallengesController < ApplicationController
     @challenges = Challenge.where(user_id: current_user.id, close: false)
   end
 
+  def closed
+    @challenges = Challenge.where(user_id: current_user.id, close: true)
+  end
+
   def new
   end
 
