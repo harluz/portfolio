@@ -12,7 +12,12 @@ Rails.application.routes.draw do
     get '/users', to: 'devise/registrations#new'
   end
   
-  resources :quests
+  resources :quests do
+    collection do
+      get 'my_quest'
+    end
+  end
+
   resources :challenges do
     collection do
       get 'closed'
