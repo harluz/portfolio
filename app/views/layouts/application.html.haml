@@ -9,8 +9,16 @@
     = javascript_pack_tag 'application'
     = stylesheet_pack_tag 'application'
   %body
-    = link_to "サインイン", new_user_session_path
-    = link_to "ログアウト", destroy_user_session_path, method: :delete
+    .container
+      .center-block
+      = link_to "新規登録", new_user_registration_path
+      = link_to "サインイン", new_user_session_path
+      = link_to "ログアウト", destroy_user_session_path, method: :delete
+      = link_to "作成したクエスト", my_quest_quests_path
+      = link_to "Quest一覧", quests_path
+      = link_to "挑戦中のクエスト", challenges_path
+      = link_to "達成したクエスト", closed_challenges_path
+
     %p.notice
       = notice
     %p.alert
