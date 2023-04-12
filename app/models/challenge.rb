@@ -2,7 +2,7 @@ class Challenge < ApplicationRecord
   belongs_to :user
   belongs_to :quest
 
-  validate :user_id
-  validate :quest_id
-  validate :close
+  validates :user_id, presence: true
+  validates :quest_id, presence: true
+  validates :close, inclusion: { in: [true, false] }
 end
