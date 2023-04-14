@@ -1,8 +1,10 @@
-%h1 Challenges#index
+%h1 Challenges#closed
 %p Find me in app/views/challenges/closed.html.haml
 %p ユーザー自身が達成したクエストを表示するもの
+- if @challenges.empty?
+  %p 達成したクエストがありません
 - @challenges.each do |challenge|
-  %p
+  %div{class: "closed_challenge_#{challenge.id}"}
   = challenge.quest.title
   = link_to "詳細", quest_path(challenge.quest)
   = form_with(model: challenge, url: challenge_path(challenge)) do |f|

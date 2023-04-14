@@ -1,8 +1,10 @@
 %h1 My quest list
 %p Find me in app/views/quests/my_quest.html.haml
 
+- if @quests.empty?
+  %p 作成したクエストがありません
 - @quests.each do |quest|
-  %p
+  %div{class: "my_quest_#{quest.id}"}
   = quest.title
   = link_to "詳細", quest_path(quest)
   - if quest && quest.user == current_user

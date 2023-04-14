@@ -1,10 +1,10 @@
-%h1 Quests#index
+%h1 Quest repository
 %p Find me in app/views/quests/index.html.haml
 %p public trueになっているもののみを表示するページ
 %p 自身が作成したクエスト及び挑戦中のクエストはchallenge indexに表示する？
 
 - @quests.each do |quest|
-  %p
+  %div{class: "quest_#{quest.id}"}
   - if quest.public == true
     = quest.title
     = link_to "詳細", quest_path(quest)
