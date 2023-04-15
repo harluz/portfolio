@@ -5,10 +5,10 @@ RSpec.describe "Quests", type: :request do
   let!(:other_user) { create(:correct_user) }
 
   describe "GET #index" do
-    let!(:quest) { create(:quest, public: true, user: user) }
-    let!(:non_public_quest) { create(:quest, user: user) }
-    let!(:other_quest) { create(:quest, public: true, user: other_user) }
-    let!(:non_public_other_quest) { create(:quest, user: other_user) }
+    let!(:quest) { create(:public_quest, user: user) }
+    let!(:non_public_quest) { create(:non_public_quest, user: user) }
+    let!(:other_quest) { create(:public_other_quest, user: other_user) }
+    let!(:non_public_other_quest) { create(:other_quest, user: other_user) }
     subject { response.body }
 
     context "ユーザーがログインしている場合" do
@@ -55,6 +55,43 @@ RSpec.describe "Quests", type: :request do
       it "quest一覧ページのgetリクエストが成功していること" do
         get quests_path
         expect(response).to have_http_status(200)
+      end
+    end
+  end
+
+  describe "GET my_quest" do
+    let!(:quest) { create(:public_quest, user: user) }
+    let!(:non_public_quest) { create(:non_public_quest, user: user) }
+    let!(:other_quest) { create(:public_other_quest, user: other_user) }
+    let!(:non_public_other_quest) { create(:other_quest, user: other_user) }
+    subject { response.body }
+
+    context "ユーザーがログインしている場合" do
+      before do
+        sign_in user
+        get my_quest_quests_path
+      end
+
+      it "my_questページのgetリクエストが成功していること" do
+        expect(response).to have_http_status(200)
+      end
+
+      it "ユーザー自身が作成したquestが表示されていること" do
+        expect(subject).to include quest.title
+        expect(subject).to include non_public_quest.title
+        expect(subject).not_to include other_quest.title
+        expect(subject).not_to include non_public_other_quest.title
+      end
+    end
+    context "ユーザーがログインしていない場合" do
+      before { get my_quest_quests_path }
+
+      it "ステータスコード302（リダイレクト）がレスポンスされていること" do
+        expect(response).to have_http_status(302)
+      end
+
+      it "sign_inページにリダイレクトするレスポンスが含まれていること" do
+        expect(subject).to redirect_to new_user_session_path
       end
     end
   end
@@ -147,8 +184,8 @@ RSpec.describe "Quests", type: :request do
   end
 
   describe "GET #show" do
-    let!(:quest) { create(:quest, public: true, user: user) }
-    let!(:other_quest) { create(:quest, user: other_user) }
+    let!(:quest) { create(:public_quest, user: user) }
+    let!(:other_quest) { create(:other_quest, user: other_user) }
     subject { response }
 
     context "ユーザーがログインしている場合" do
@@ -204,7 +241,7 @@ RSpec.describe "Quests", type: :request do
   end
 
   describe "GET #edit" do
-    let!(:quest) { create(:quest, public: true, user: user) }
+    let!(:quest) { create(:public_quest, user: user) }
     subject { response }
 
     context "ユーザーがログインしている場合" do
@@ -219,14 +256,14 @@ RSpec.describe "Quests", type: :request do
 
       it "フォームがレスポンスに含まれていること" do
         expect(response.body).to include "タイトル"
-        expect(response.body).to include "Create a quest you want to complete."
+        expect(response.body).to include "Public quest"
         expect(response.body).to include "クエスト詳細"
-        expect(response.body).to include "Create quest achievement conditions."
+        expect(response.body).to include "Public quest description"
         expect(response.body).to include "難易度"
         5.times do |num|
           expect(response.body).to include "id=\"quest_difficulty_#{num + 1}\""
         end
-        expect(response.body).to include "value=\"3\" checked=\"checked\""
+        expect(response.body).to include "value=\"#{quest.difficulty}\" checked=\"checked\""
         expect(response.body).to include "input type=\"checkbox\" value=\"1\" checked=\"checked\""
         expect(response.body).to include "クエストを公開する"
         expect(response.body).to include "type=\"submit\""
@@ -257,14 +294,15 @@ RSpec.describe "Quests", type: :request do
         expect(subject).to redirect_to new_user_session_path
       end
     end
+    # 公開中のクエストを編集できること？
   end
 
   describe "PATCH #update" do
-    let!(:quest) { create(:quest, public: true, user: user) }
+    let!(:quest) { create(:public_quest, user: user) }
     subject { response }
     before { sign_in user }
 
-    context "questの作成に成功する場合" do
+    context "questの更新に成功する場合" do
       describe "レスポンス確認" do
         before do
           patch quest_path(quest), params: { quest: attributes_for(:other_quest) }
@@ -280,7 +318,7 @@ RSpec.describe "Quests", type: :request do
       end
     end
 
-    context "questの作成に失敗する場合" do
+    context "questの更新に失敗する場合" do
       before do
         patch quest_path(quest), params: { quest: attributes_for(:non_correct_quest) }
       end
@@ -313,9 +351,9 @@ RSpec.describe "Quests", type: :request do
   end
 
   describe "DELETE #destroy" do
-    let!(:quest) { create(:quest, user: user) }
-    let!(:public_quest) { create(:quest, public: true, user: user) }
-    let!(:other_quest) { create(:quest, user: other_user) }
+    let!(:quest) { create(:non_public_quest, user: user) }
+    let!(:public_quest) { create(:public_quest, user: user) }
+    let!(:other_quest) { create(:public_other_quest, user: other_user) }
 
     subject { response }
     before { sign_in user }

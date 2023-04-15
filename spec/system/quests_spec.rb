@@ -32,6 +32,36 @@ RSpec.describe "Quests", type: :system do
           expect(page).not_to have_content "削除する"
         end
       end
+      # public:falseとなっているものだけを表示
+    end
+
+    context "/quests/my_quest" do
+      context "作成したクエストがある場合" do
+        let(:other_user) { create(:correct_user) }
+        let!(:quest) { create(:quest, user: user) }
+        let!(:other_public_quest) { create(:public_other_quest, user: other_user) }
+        it "クエストが表示されていること" do
+          visit my_quest_quests_path
+          expect(page).to have_content quest.title
+          expect(page).not_to have_content other_public_quest.title
+        end
+        it "リンクが正しく表示・非表示となっていること" do
+          visit my_quest_quests_path
+          expect(page).to have_content "詳細"
+          expect(page).to have_content "編集する"
+          expect(page).to have_content "削除する"
+          quest.public = true
+          quest.save
+          visit my_quest_quests_path
+          expect(page).not_to have_content "削除する"
+        end
+      end
+      context "作成したクエストがない場合" do
+        it "クエストがないメッセージが表示されること" do
+          visit my_quest_quests_path
+          expect(page).to have_content "作成したクエストがありません"
+        end
+      end
     end
 
     context "/quests/new" do
@@ -95,6 +125,7 @@ RSpec.describe "Quests", type: :system do
           expect(page).to have_content "クエストが存在していません。"
         end
       end
+      # questのshowページにクエストが公開されている、かつ自分のクエストでなく、かつ既に挑戦中でないクエストに「挑戦する」リンクが表示されていること
     end
 
     context "/quests/edit" do
@@ -127,9 +158,6 @@ RSpec.describe "Quests", type: :system do
           expect(page).to have_content "クエストが存在していません。"
         end
       end
-    end
-
-    context "/quests/destroy" do
     end
   end
 
