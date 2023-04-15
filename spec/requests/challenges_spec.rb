@@ -154,7 +154,7 @@ RSpec.describe "Challenges", type: :request do
     end
 
     context "challengeの作成に失敗する場合" do
-      it "challengeの数が増加していないこと" do
+      it "他ユーザーの非公開クエストに挑戦しようとした場合、challengeの数が増加していないこと" do
         expect do
           params_challenge = {
             quest_id: other_non_public_quest.id,
@@ -162,6 +162,39 @@ RSpec.describe "Challenges", type: :request do
           }
           post challenges_path, params: { challenge: params_challenge }
         end.to change(Challenge, :count).by(0)
+      end
+
+      it "存在しないクエストに挑戦しようとした場合、challengeの数が増加していないこと" do
+        expect do
+          params_challenge = {
+            quest_id: 0,
+            close: false,
+          }
+          post challenges_path, params: { challenge: params_challenge }
+        end.to change(Challenge, :count).by(0)
+      end
+
+      context "既に挑戦中のクエストに、さらに挑戦しようとした場合" do
+        let(:duplicate_challenger) { create(:user, id: 1,email: "challenger@mail.com")}
+        before do
+          params_challenge = {
+            user_id: duplicate_challenger.id,
+            quest_id: public_quest.id,
+            close: false,
+          }
+          post challenges_path, params: { challenge: params_challenge }
+        end
+  
+        it "challengeの数が増加していないこと" do
+          expect do
+            duplicate_params_challenge = {
+              user_id: duplicate_challenger.id,
+              quest_id: public_quest.id,
+              close: false,
+            }
+            post challenges_path, params: { challenge: duplicate_params_challenge }
+          end.to change(Challenge, :count).by(0)
+        end
       end
 
       describe "レスポンス確認" do
