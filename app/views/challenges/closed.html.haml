@@ -11,4 +11,4 @@
     = f.hidden_field :quest_id, value: challenge.quest.id
     = f.hidden_field :close, value: false
     .actions
-    = f.submit "再挑戦", class: "btn btn-primary"
+    = f.submit "再挑戦", class: "btn btn-primary", id: "retry_#{challenge.id}"

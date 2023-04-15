@@ -12,5 +12,5 @@
       = f.hidden_field :quest_id, value: challenge.quest.id
       = f.hidden_field :close, value: true
       .actions
-      = f.submit "達成", class: "btn btn-primary"
+      = f.submit "達成", class: "btn btn-primary", id: "close_challenge_#{challenge.id}"
     = link_to "諦める", challenge_path(challenge), method: :delete
