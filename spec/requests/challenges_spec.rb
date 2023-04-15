@@ -14,7 +14,7 @@ RSpec.describe "Challenges", type: :request do
     context "ユーザーがログインしている場合" do
       before { sign_in user }
       
-      it "挑戦中クエスト一覧ページのgetリクエストが成功していること" do
+      it "挑戦リストページのgetリクエストが成功していること" do
         get challenges_path
         expect(response).to have_http_status(200)
       end
@@ -120,20 +120,67 @@ RSpec.describe "Challenges", type: :request do
   end
 
   describe "POST #create " do
+    subject { response }
+    before { sign_in user }
+
     context "challengeの作成に成功する場合" do
+      it "challengeの数が増加していること" do
+        expect do
+          params_challenge = {
+            quest_id: public_quest.id,
+            close: false,
+          }
+          post challenges_path, params: { challenge: params_challenge }
+        end.to change(Challenge, :count).by(1)
+      end
 
       describe "レスポンス確認" do
+        before do
+          params_challenge = {
+            quest_id: public_quest.id,
+            close: false,
+          }
+          post challenges_path, params: { challenge: params_challenge }
+        end
 
+        it "ステータスコード302（リダイレクト）がレスポンスされていること" do
+          expect(subject).to have_http_status(302)
+        end
+
+        it "挑戦リストにリダイレクトするレスポンスが含まれていること" do
+          expect(subject).to redirect_to challenges_path
+        end
       end
     end
+
     context "challengeの作成に失敗する場合" do
-      describe "レスポンス確認" do
-        # 他ユーザーの非公開クエストに挑戦しようとした場合失敗すること
+      it "challengeの数が増加していないこと" do
+        expect do
+          params_challenge = {
+            quest_id: other_non_public_quest.id,
+            close: false,
+          }
+          post challenges_path, params: { challenge: params_challenge }
+        end.to change(Challenge, :count).by(0)
       end
-    end
-    context "存在しないデータでchallengeを作成しようとした場合" do
-      # 存在しないユーザーIDで挑戦できないこと
-      # 存在しないクエストIDで挑戦できないこと
+
+      describe "レスポンス確認" do
+        before do
+          params_challenge = {
+            quest_id: other_non_public_quest.id,
+            close: false,
+          }
+          post challenges_path, params: { challenge: params_challenge }
+        end
+        
+        it "ステータスコード302（リダイレクト）がレスポンスされていること" do
+          expect(subject).to have_http_status(302)
+        end
+
+        it "挑戦リストにリダイレクトするレスポンスが含まれていること" do
+          expect(subject).to redirect_to challenges_path
+        end
+      end
     end
   end
 
