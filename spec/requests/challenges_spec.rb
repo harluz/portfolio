@@ -185,11 +185,11 @@ RSpec.describe "Challenges", type: :request do
   end
 
   describe "PATCH #update" do
-    subject { response }
-    before { sign_in user }
-
     let!(:public_quest_challenge) { create(:challenge, user_id: user.id, quest_id: public_quest.id) }
     let!(:non_public_quest_challenge) { create(:challenge, user_id: user.id, quest_id: non_public_quest.id, close: true) }
+
+    subject { response }
+    before { sign_in user }
 
     context "challengeのcloseをtrueに変更する場合" do
       before do
@@ -259,21 +259,66 @@ RSpec.describe "Challenges", type: :request do
   end
 
   describe "DELETE #destroy" do
+    let!(:public_quest_challenge) { create(:challenge, user_id: user.id, quest_id: public_quest.id) }
+    let!(:public_other_quest_challenge) { create(:closed_challenge, user_id: other_user.id, quest_id: other_public_quest.id) }
+
+    subject { response }
+    before { sign_in user }
+
     context "ユーザー自身のchallengeを削除する場合" do
+      it "削除が成功した場合、challenge数が減少していること" do
+        expect do
+          delete challenge_path(public_quest_challenge)
+        end.to change(Challenge, :count).by(-1)
+      end
+
       describe "レスポンス確認" do
-        
+        before { delete challenge_path(public_quest_challenge) }
+        it "ステータスコード302（リダイレクト）がレスポンスされていること" do
+          expect(subject).to have_http_status(302)
+        end
+  
+        it "挑戦リストにリダイレクトするレスポンスが含まれていること" do
+          expect(subject).to redirect_to challenges_path
+        end
       end
     end
 
     context "他ユーザーのchallengeを削除しようとした場合" do
+      it "削除が失敗した際に、challenge数が変化していないこと" do
+        expect do
+          delete challenge_path(public_other_quest_challenge)
+        end.to change(Challenge, :count).by(0)
+      end
+
       describe "レスポンス確認" do
-        
+        before { delete challenge_path(public_quest_challenge) }
+        it "ステータスコード302（リダイレクト）がレスポンスされていること" do
+          expect(subject).to have_http_status(302)
+        end
+  
+        it "挑戦リストにリダイレクトするレスポンスが含まれていること" do
+          expect(subject).to redirect_to challenges_path
+        end
       end
     end
 
     context "存在しないchallengeを削除しようとした場合" do
-      describe "レスポンス確認" do
+      it "削除が失敗した際に、challenge数が変化していないこと" do
+        expect do
+          delete challenge_path(0)
+        end.to change(Challenge, :count).by(0)
+      end
 
+      describe "レスポンス確認" do
+        before { delete challenge_path(public_quest_challenge) }
+        it "ステータスコード302（リダイレクト）がレスポンスされていること" do
+          expect(subject).to have_http_status(302)
+        end
+  
+        it "挑戦リストにリダイレクトするレスポンスが含まれていること" do
+          expect(subject).to redirect_to challenges_path
+        end
       end
     end
   end
