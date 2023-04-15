@@ -7,29 +7,29 @@ RSpec.describe "Quests", type: :system do
   describe "表示確認" do
     context "/quests/index" do
       context "ユーザー自身が作成したクエストの場合" do
-        let!(:quest) { create(:quest, user: user) }
+        let!(:public_quest) { create(:public_quest, user: user) }
         it "リンクが正しく表示・非表示となっていること" do
           visit quests_path
+          expect(page).to have_content "詳細"
           expect(page).to have_content "編集する"
-          expect(page).to have_content "削除する"
-          quest.public = true
-          quest.save
+          public_quest.public = false
+          public_quest.save
           visit quests_path
-          expect(page).not_to have_content "削除する"
+          expect(page).not_to have_content "編集する"
         end
       end
 
       context "他ユーザーが作成したクエストの場合" do
-        let!(:other_user) { create(:correct_user) }
-        let!(:other_quest) { create(:other_quest, user: other_user) }
-        it "編集及び削除リンクが表示されていないこと" do
+        let(:other_user) { create(:correct_user) }
+        let!(:public_other_quest) { create(:public_other_quest, user: other_user) }
+        it "詳細及び編集リンクが表示されていないこと" do
+          visit quests_path
+          expect(page).to have_content "詳細"
+          expect(page).not_to have_content "編集する"
+          public_other_quest.public = false
+          public_other_quest.save
           visit quests_path
           expect(page).not_to have_content "編集する"
-          expect(page).not_to have_content "削除する"
-          other_quest.public = true
-          other_quest.save
-          visit quests_path
-          expect(page).not_to have_content "削除する"
         end
       end
       # public:falseとなっているものだけを表示
@@ -40,11 +40,13 @@ RSpec.describe "Quests", type: :system do
         let(:other_user) { create(:correct_user) }
         let!(:quest) { create(:quest, user: user) }
         let!(:other_public_quest) { create(:public_other_quest, user: other_user) }
+
         it "クエストが表示されていること" do
           visit my_quest_quests_path
           expect(page).to have_content quest.title
           expect(page).not_to have_content other_public_quest.title
         end
+
         it "リンクが正しく表示・非表示となっていること" do
           visit my_quest_quests_path
           expect(page).to have_content "詳細"
@@ -56,6 +58,7 @@ RSpec.describe "Quests", type: :system do
           expect(page).not_to have_content "削除する"
         end
       end
+
       context "作成したクエストがない場合" do
         it "クエストがないメッセージが表示されること" do
           visit my_quest_quests_path
@@ -118,6 +121,7 @@ RSpec.describe "Quests", type: :system do
         end
         # 　タイトルが〇〇となっていること
       end
+
       context "存在しないデータにアクセスする場合" do
         it "indexページにリダイレクトし、エラーメッセージが表示されていること" do
           visit quest_path(10000)
@@ -133,6 +137,7 @@ RSpec.describe "Quests", type: :system do
       before do
         visit edit_quest_path(quest)
       end
+
       it "クエスト更新のフォームが表示されていること" do
         expect(page).to have_content "タイトル"
         expect(page).to have_content "クエスト詳細"
@@ -145,12 +150,14 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_link "キャンセル"
         expect(page).to have_button "更新"
       end
+
       it "フォームにquestの値が表示されていること" do
         expect(page).to have_xpath("//input[@value='Create a quest you want to complete.']")
         expect(page).to have_content "Create quest achievement conditions."
         expect(page).to have_checked_field with: "3"
         expect(page).to have_unchecked_field "quest_public"
       end
+
       context "存在しないデータにアクセスする場合" do
         it "indexページにリダイレクトし、エラーメッセージが表示されていること" do
           visit edit_quest_path(10000)
@@ -240,6 +247,7 @@ RSpec.describe "Quests", type: :system do
     before do
       visit edit_quest_path(quest)
     end
+
     context "更新に成功する場合" do
       before do
         fill_in 'タイトル', with: "updated quest"
@@ -265,6 +273,7 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_content "このクエストは公開されていません。"
       end
     end
+
     context "更新に失敗する場合" do
       before do
         fill_in 'タイトル', with: ""
@@ -298,6 +307,7 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_content "このクエストは公開されていません。"
       end
     end
+
     context "他のユーザーが作成したクエストを編集しようとした場合" do
       let!(:other_user) { create(:correct_user) }
       let!(:other_quest) { create(:other_quest, user: other_user) }
@@ -316,8 +326,9 @@ RSpec.describe "Quests", type: :system do
   describe "クエスト削除" do
     let!(:quest) { create(:quest, user: user) }
     before do
-      visit quests_path
+      visit my_quest_quests_path
     end
+
     context "削除に成功する場合" do
       before do
         click_on "削除する"

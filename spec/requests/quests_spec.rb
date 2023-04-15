@@ -185,7 +185,8 @@ RSpec.describe "Quests", type: :request do
 
   describe "GET #show" do
     let!(:quest) { create(:public_quest, user: user) }
-    let!(:other_quest) { create(:other_quest, user: other_user) }
+    let!(:other_quest) { create(:public_other_quest, user: other_user) }
+    let!(:non_public_other_quest) { create(:other_quest, user: other_user) }
     subject { response }
 
     context "ユーザーがログインしている場合" do
@@ -196,9 +197,14 @@ RSpec.describe "Quests", type: :request do
         expect(subject).to have_http_status(200)
       end
 
-      it "他ユーザーのquestのshowページのgetリクエストが成功していること" do
+      it "他ユーザーの公開クエストのshowページのgetリクエストが成功していること" do
         get quest_path(other_quest)
         expect(subject).to have_http_status(200)
+      end
+
+      it "他ユーザーの非公開クエストのshowページはステータスコード302（リダイレクト）がレスポンスされていること" do
+        get quest_path(non_public_other_quest)
+        expect(subject).to have_http_status(302)
       end
 
       it "questの情報がレスポンスに含まれていること" do
@@ -215,7 +221,7 @@ RSpec.describe "Quests", type: :request do
       end
 
       context "存在しないquestにアクセスした場合" do
-        before { get quest_path(10000) }
+        before { get quest_path(0) }
 
         it "ステータスコード302（リダイレクト）がレスポンスされていること" do
           expect(subject).to have_http_status(302)
@@ -271,7 +277,7 @@ RSpec.describe "Quests", type: :request do
       end
 
       context "存在しないquestにアクセスした場合" do
-        before { get quest_path(1000) }
+        before { get quest_path(0) }
 
         it "ステータスコード302（リダイレクト）がレスポンスされていること" do
           expect(subject).to have_http_status(302)
@@ -337,7 +343,7 @@ RSpec.describe "Quests", type: :request do
     end
     context "存在しないquestを更新しようとした場合" do
       before do
-        patch quest_path(10000), params: { quest: attributes_for(:quest) }
+        patch quest_path(0), params: { quest: attributes_for(:quest) }
       end
 
       it "ステータスコード302（リダイレクト）がレスポンスされていること" do
@@ -411,12 +417,12 @@ RSpec.describe "Quests", type: :request do
     context "存在しないquestを削除しようとした場合" do
       it "削除が失敗した際に、quest数が変化していないこと" do
         expect do
-          delete quest_path(10000)
+          delete quest_path(0)
         end.to change(Quest, :count).by(0)
       end
 
       describe "レスポンス確認" do
-        before { delete quest_path(10000) }
+        before { delete quest_path(0) }
 
         it "ステータスコード302（リダイレクト）がレスポンスされていること" do
           expect(subject).to have_http_status(302)
