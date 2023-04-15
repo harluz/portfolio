@@ -185,17 +185,79 @@ RSpec.describe "Challenges", type: :request do
   end
 
   describe "PATCH #update" do
-    context "challengeの更新に成功する場合" do
-      
+    subject { response }
+    before { sign_in user }
+
+    let!(:public_quest_challenge) { create(:challenge, user_id: user.id, quest_id: public_quest.id) }
+    let!(:non_public_quest_challenge) { create(:challenge, user_id: user.id, quest_id: non_public_quest.id, close: true) }
+
+    context "challengeのcloseをtrueに変更する場合" do
+      before do
+        params_challenge = {
+          quest_id: public_quest.id,
+          close: true,
+        }
+        patch challenge_path(public_quest_challenge), params: { challenge: params_challenge }
+      end
+
+      it "ステータスコード302（リダイレクト）がレスポンスされていること" do
+        expect(subject).to have_http_status(302)
+      end
+
+      it "挑戦リストにリダイレクトするレスポンスが含まれていること" do
+        expect(subject).to redirect_to challenges_path
+      end
+
+      it "closeがtrueとなっていること" do
+        expect(user.challenges.first.close).to eq true
+      end
     end
-    context "challengeの更新に失敗する場合" do
-      # 他ユーザーの非公開クエストに挑戦しようとした場合失敗すること
+
+    context "challengeのcloseをfalseに変更する場合" do
+      before do
+        params_challenge = {
+          quest_id: non_public_quest.id,
+          close: false,
+        }
+        patch challenge_path(non_public_quest_challenge), params: { challenge: params_challenge }
+      end
+
+      it "ステータスコード302（リダイレクト）がレスポンスされていること" do
+        expect(subject).to have_http_status(302)
+      end
+
+      it "挑戦リストにリダイレクトするレスポンスが含まれていること" do
+        expect(subject).to redirect_to challenges_path
+      end
+
+      it "closeがfalseとなっていること" do
+        expect(user.challenges.last.close).to eq false
+      end
     end
-    context "存在しないデータでchallengeを更新しようとした場合" do
-      # 存在しないユーザーIDでchallengeを更新できないこと
-      # 存在しないクエストIDでchallengeを更新できないこと
+
+    context "存在しないクエストIDでchallengeを更新できないこと" do
+      before do
+        params_challenge = {
+          quest_id: 0,
+          close: true,
+        }
+        patch challenge_path(public_quest_challenge), params: { challenge: params_challenge }
+      end
+
+      it "ステータスコード302（リダイレクト）がレスポンスされていること" do
+        expect(subject).to have_http_status(302)
+      end
+
+      it "挑戦リストにリダイレクトするレスポンスが含まれていること" do
+        expect(subject).to redirect_to challenges_path
+      end
+
+      it "closeがfalseとなっていること" do
+        expect(user.challenges.first.close).to eq false
+      end
     end
   end
+
   describe "DELETE #destroy" do
     context "ユーザー自身のchallengeを削除する場合" do
       describe "レスポンス確認" do
