@@ -78,94 +78,86 @@ RSpec.describe "Challenges", type: :system do
   end
 
   describe "challenge新規作成" do
-    context "作成に成功する場合" do
-      context "自身のクエストの場合" do
-        before do
-          visit new_quest_path
-          fill_in 'タイトル', with: "Create a quest you want to complete."
-          fill_in 'クエスト詳細', with: "Create quest achievement conditions."
-          choose('quest_difficulty_3')
-        end
-
-        it "公開クエスト作成と同時にchallengeも作成されていること" do
-          check "quest_public"
-          click_on "クエスト作成！"
-          visit challenges_path
-          expect(page).to have_content "Create a quest you want to complete."
-        end
-  
-        it "非公開クエスト作成と同時にchallengeも作成されていること" do
-          uncheck "quest_public"
-          click_on "クエスト作成！"
-          visit challenges_path
-          expect(page).to have_content "Create a quest you want to complete."
-        end
-
-        it "自身のクエストを諦めても再挑戦することができること" do
-          check "quest_public"
-          click_on "クエスト作成！"
-          visit challenges_path
-          click_on "諦める"
-          visit quest_path(user.quests.last)
-          click_on "挑戦する"
-          expect(current_path).to eq challenges_path
-          expect(page).to have_content "挑戦リストに追加されました。"
-          expect(page).to have_content "Create a quest you want to complete."
-        end
-
-        it "自身の一度達成したクエストにclosed_challenges_pathから再挑戦することができる" do
-          uncheck "quest_public"
-          click_on "クエスト作成！"
-          visit challenges_path
-          click_on "達成"
-          visit closed_challenges_path
-          click_on "再挑戦"
-          expect(current_path).to eq challenges_path
-          expect(page).to have_content "挑戦リストに追加されました。"
-          expect(page).to have_content "Create a quest you want to complete."
-        end
-        # 自身の一度達成したクエストにquests_pathから再挑戦することができる
+    context "自身のクエストの場合" do
+      before do
+        visit new_quest_path
+        fill_in 'タイトル', with: "Create a quest you want to complete."
+        fill_in 'クエスト詳細', with: "Create quest achievement conditions."
+        choose('quest_difficulty_3')
       end
 
-      context "他ユーザーの公開クエストの場合" do
-        let!(:other_quest) { create(:other_quest, public: true, user: other_user) }
-
-        before do
-          visit quest_path(other_quest)
-          click_on "挑戦する"
-        end
-
-        it "クエストに挑戦できること" do
-          expect(current_path).to eq challenges_path
-          expect(page).to have_content "挑戦リストに追加されました。"
-          expect(page).to have_content other_quest.title
-        end
-
-        it "他ユーザーの公開クエストを諦めても再挑戦することができること" do
-          click_on "諦める"
-          visit quest_path(other_quest)
-          click_on "挑戦する"
-          expect(current_path).to eq challenges_path
-          expect(page).to have_content "挑戦リストに追加されました。"
-          expect(page).to have_content other_quest.title
-        end
-
-        it "他ユーザーの一度達成した公開クエストにclosed_challenges_pathから再挑戦することができる" do
-          click_on "達成"
-          visit closed_challenges_path
-          click_on "再挑戦"
-          expect(current_path).to eq challenges_path
-          expect(page).to have_content "挑戦リストに追加されました。"
-          expect(page).to have_content other_quest.title
-        end
-        # 他ユーザーの一度達成した公開クエストにquests_pathから再挑戦することができる
+      it "公開クエスト作成と同時にchallengeも作成されていること" do
+        check "quest_public"
+        click_on "クエスト作成！"
+        visit challenges_path
+        expect(page).to have_content "Create a quest you want to complete."
       end
+
+      it "非公開クエスト作成と同時にchallengeも作成されていること" do
+        uncheck "quest_public"
+        click_on "クエスト作成！"
+        visit challenges_path
+        expect(page).to have_content "Create a quest you want to complete."
+      end
+
+      it "自身のクエストを諦めても再挑戦することができること" do
+        check "quest_public"
+        click_on "クエスト作成！"
+        visit challenges_path
+        click_on "諦める"
+        visit quest_path(user.quests.last)
+        click_on "挑戦する"
+        expect(current_path).to eq challenges_path
+        expect(page).to have_content "挑戦リストに追加されました。"
+        expect(page).to have_content "Create a quest you want to complete."
+      end
+
+      it "自身の一度達成したクエストにclosed_challenges_pathから再挑戦することができる" do
+        uncheck "quest_public"
+        click_on "クエスト作成！"
+        visit challenges_path
+        click_on "達成"
+        visit closed_challenges_path
+        click_on "再挑戦"
+        expect(current_path).to eq challenges_path
+        expect(page).to have_content "挑戦リストに追加されました。"
+        expect(page).to have_content "Create a quest you want to complete."
+      end
+      # 自身の一度達成したクエストにquests_pathから再挑戦することができる
     end
-  
-    context "作成に失敗する場合" do
-      # 他ユーザーの非公開クエストに挑戦できないこと
-      # 自身のクエストで挑戦中のクエストに重ねて挑戦できないこと
-      # 他ユーザーの公開クエストで挑戦中のクエストに重ねて挑戦できないこと
+
+    context "他ユーザーの公開クエストの場合" do
+      let!(:other_quest) { create(:other_quest, public: true, user: other_user) }
+
+      before do
+        visit quest_path(other_quest)
+        click_on "挑戦する"
+      end
+
+      it "クエストに挑戦できること" do
+        expect(current_path).to eq challenges_path
+        expect(page).to have_content "挑戦リストに追加されました。"
+        expect(page).to have_content other_quest.title
+      end
+
+      it "他ユーザーの公開クエストを諦めても再挑戦することができること" do
+        click_on "諦める"
+        visit quest_path(other_quest)
+        click_on "挑戦する"
+        expect(current_path).to eq challenges_path
+        expect(page).to have_content "挑戦リストに追加されました。"
+        expect(page).to have_content other_quest.title
+      end
+
+      it "他ユーザーの一度達成した公開クエストにclosed_challenges_pathから再挑戦することができる" do
+        click_on "達成"
+        visit closed_challenges_path
+        click_on "再挑戦"
+        expect(current_path).to eq challenges_path
+        expect(page).to have_content "挑戦リストに追加されました。"
+        expect(page).to have_content other_quest.title
+      end
+      # 他ユーザーの一度達成した公開クエストにquests_pathから再挑戦することができる
     end
   end
 
