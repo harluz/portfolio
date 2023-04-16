@@ -1,7 +1,6 @@
 module ApplicationHelper
-
-  def is_not_own_challenge?
-    !(Challenge.exists?(user_id: current_user.id, quest_id: @quest.id))
+  def is_not_own_challenge?(quest)
+    !Challenge.exists?(user_id: current_user.id, quest_id: quest.id)
   end
 
   def current_user_owned?(property)
