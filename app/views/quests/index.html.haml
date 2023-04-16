@@ -5,10 +5,10 @@
 
 - @quests.each do |quest|
   %div{class: "quest_#{quest.id}"}
-  - if quest.public == true
+  - if public_quest?(quest)
     = quest.title
     = link_to "詳細", quest_path(quest)
-    - if quest && quest.user == current_user
+    - if quest && current_user_owned?(quest)
       = link_to "編集する", edit_quest_path(quest)
-      - if quest.public == false
+      - if !public_quest?(quest)
         = link_to "削除する", quest_path(quest), method: :delete
