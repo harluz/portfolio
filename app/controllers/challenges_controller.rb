@@ -11,9 +11,6 @@ class ChallengesController < ApplicationController
     @challenges = Challenge.where(user_id: current_user.id, close: true)
   end
 
-  def new
-  end
-
   def create
     @challenge = Challenge.new(challenge_params)
     begin
@@ -24,7 +21,7 @@ class ChallengesController < ApplicationController
       return
     end
 
-    if is_not_own_challenge? && (current_user_owned?(@quest) || ( !current_user_owned?(@quest) && @quest.public == true ))
+    if is_not_own_challenge?(@quest) && (current_user_owned?(@quest) || (!current_user_owned?(@quest) && public_quest?(@quest)))
       @challenge.user_id = current_user.id
       @challenge.quest_id = @quest.id
       @challenge.save
@@ -34,12 +31,6 @@ class ChallengesController < ApplicationController
       flash[:alert] = "挑戦リストの追加に失敗しました。"
       redirect_to challenges_path
     end
-  end
-
-  def show
-  end
-
-  def edit
   end
 
   def update

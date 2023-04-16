@@ -36,7 +36,7 @@ class QuestsController < ApplicationController
     if !current_user_owned?(@quest) && !public_quest?(@quest)
       flash[:alert] = "公開されていないクエストの詳細を見ることはできません。"
       redirect_to quests_path
-    elsif !current_user_owned?(@quest) || (current_user_owned?(@quest) && is_not_own_challenge?)
+    elsif !current_user_owned?(@quest) || (current_user_owned?(@quest) && is_not_own_challenge?(@quest))
       @challenge = Challenge.new
     end
 
