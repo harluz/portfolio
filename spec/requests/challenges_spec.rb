@@ -52,6 +52,29 @@ RSpec.describe "Challenges", type: :request do
           expect(subject).to include "挑戦中のクエストがありません"
         end
       end
+
+      context "挑戦中のクエストが非公開となった場合" do
+        let!(:public_quest_challenge) { create(:challenge, user_id: user.id, quest_id: other_non_public_quest.id) }
+        it "クエストのレスポンスが含まれていること" do
+          get challenges_path
+          expect(subject).to include other_non_public_quest.title
+          expect(subject).to include "非公開クエスト"
+          expect(subject).to include "諦める"
+          expect(subject).to include "達成"
+          expect(subject).not_to include "詳細"
+        end
+      end
+
+      context "挑戦中のクエストが削除された場合" do
+        let!(:public_quest_challenge) { create(:challenge, user_id: user.id, quest_id: other_non_public_quest.id) }
+        it "クエストが削除されたメッセージがレスポンスに含まれていること" do
+          other_non_public_quest.destroy
+          get challenges_path
+          expect(subject).to include "作成者によってクエストが削除されました。"
+          expect(subject).to include "リストから削除する"
+          expect(subject).not_to include other_non_public_quest.title
+        end
+      end
     end
 
     context "ユーザーがログインしていない場合" do
@@ -102,6 +125,28 @@ RSpec.describe "Challenges", type: :request do
         it "達成したクエストがないメッセージがレスポンスに含まれていること" do
           get closed_challenges_path
           expect(subject).to include "達成したクエストがありません"
+        end
+      end
+
+      context "達成済みのクエストが非公開となった場合" do
+        let!(:change_challenge_quest_to_private_from_public) { create(:closed_challenge, user_id: user.id, quest_id: other_non_public_quest.id) }
+        it "クエストのレスポンスが含まれていること" do
+          get closed_challenges_path
+          expect(subject).to include other_non_public_quest.title
+          expect(subject).to include "非公開クエスト"
+          expect(subject).not_to include "詳細"
+          expect(subject).not_to include "再挑戦"
+        end
+      end
+
+      context "達成済みのクエストが削除された場合" do
+        let!(:change_challenge_quest_to_private_from_public) { create(:closed_challenge, user_id: user.id, quest_id: other_non_public_quest.id) }
+        it "クエストが削除されたメッセージがレスポンスに含まれていること" do
+          other_non_public_quest.destroy
+          get closed_challenges_path
+          expect(subject).to include "作成者によってクエストが削除されました。"
+          expect(subject).to include "リストから削除する"
+          expect(subject).not_to include other_non_public_quest.title
         end
       end
     end
@@ -175,7 +220,7 @@ RSpec.describe "Challenges", type: :request do
       end
 
       context "既に挑戦中のクエストに、さらに挑戦しようとした場合" do
-        let(:duplicate_challenger) { create(:user, id: 1,email: "challenger@mail.com")}
+        let(:duplicate_challenger) { create(:user, id: 1, email: "challenger@mail.com")}
         before do
           params_challenge = {
             user_id: duplicate_challenger.id,
@@ -268,7 +313,7 @@ RSpec.describe "Challenges", type: :request do
       end
     end
 
-    context "存在しないクエストIDでchallengeを更新できないこと" do
+    context "存在しないクエストIDでchallengeを更新する場合" do
       before do
         params_challenge = {
           quest_id: 0,
@@ -287,6 +332,34 @@ RSpec.describe "Challenges", type: :request do
 
       it "closeがfalseとなっていること" do
         expect(user.challenges.first.close).to eq false
+      end
+
+      it "エラーメッセージが遷移先ページのレスポンスに含まれていること" do
+        get challenges_path
+        expect(response.body).to include "クエスト達成の更新ができませんでした。"
+      end
+    end
+
+    context "他ユーザーの公開クエストが非公開となった場合" do
+      let!(:change_challenge_quest_to_private_from_public) { create(:challenge, user_id: user.id, quest_id: other_non_public_quest.id) }
+      before do
+        params_challenge = {
+          quest_id: other_non_public_quest.id,
+          close: true,
+        }
+        patch challenge_path(change_challenge_quest_to_private_from_public), params: { challenge: params_challenge }
+      end
+
+      it "ステータスコード302（リダイレクト）がレスポンスされていること" do
+        expect(subject).to have_http_status(302)
+      end
+
+      it "挑戦リストにリダイレクトするレスポンスが含まれていること" do
+        expect(subject).to redirect_to challenges_path
+      end
+
+      it "closeがtrueとなっていること" do
+        expect(user.challenges.last.close).to eq true
       end
     end
   end
@@ -345,6 +418,26 @@ RSpec.describe "Challenges", type: :request do
 
       describe "レスポンス確認" do
         before { delete challenge_path(public_quest_challenge) }
+        it "ステータスコード302（リダイレクト）がレスポンスされていること" do
+          expect(subject).to have_http_status(302)
+        end
+  
+        it "挑戦リストにリダイレクトするレスポンスが含まれていること" do
+          expect(subject).to redirect_to challenges_path
+        end
+      end
+    end
+
+    context "他ユーザーの公開クエストが非公開となった場合" do
+      let!(:change_challenge_quest_to_private_from_public) { create(:challenge, user_id: user.id, quest_id: other_non_public_quest.id) }
+      it "削除が成功し、challenge数が減少していること" do
+        expect do
+          delete challenge_path(change_challenge_quest_to_private_from_public)
+        end.to change(Challenge, :count).by(-1)
+      end
+
+      describe "レスポンス確認" do
+        before { delete challenge_path(change_challenge_quest_to_private_from_public) }
         it "ステータスコード302（リダイレクト）がレスポンスされていること" do
           expect(subject).to have_http_status(302)
         end

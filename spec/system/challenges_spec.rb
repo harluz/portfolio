@@ -55,6 +55,7 @@ RSpec.describe "Challenges", type: :system do
           other_public_quest.save
           visit challenges_path
           expect(page).to have_content other_public_quest.title
+          expect(page).to have_content "非公開クエスト"
           expect(page).to have_button "達成"
           expect(page).to have_content "諦める"
         end
@@ -68,9 +69,10 @@ RSpec.describe "Challenges", type: :system do
           other_public_quest.save
           other_public_quest.destroy
           visit challenges_path
-          expect(page).to have_content "作成者によって削除されたクエストとなります。"
+          expect(page).to have_content "作成者によってクエストが削除されました。"
           expect(page).to have_content "リストから削除する"
           expect(page).not_to have_content other_public_quest.title
+          expect(page).not_to have_content "非公開クエスト"
           expect(page).not_to have_button "達成"
           expect(page).not_to have_content "諦める"
         end
@@ -104,7 +106,7 @@ RSpec.describe "Challenges", type: :system do
       end
 
       context "達成済みの他ユーザー公開クエストが非公開となった場合" do
-        it "挑戦中であったものは表示されていること" do
+        it "達成したクエストは表示されていること" do
           visit quest_path(other_public_quest)
           click_on "挑戦する"
           visit challenges_path
@@ -113,8 +115,9 @@ RSpec.describe "Challenges", type: :system do
           other_public_quest.save
           visit closed_challenges_path
           expect(page).to have_content other_public_quest.title
-          expect(page).to have_button "再挑戦"
-          expect(page).to have_content "詳細"
+          expect(page).to have_content "非公開クエスト"
+          expect(page).not_to have_button "再挑戦"
+          expect(page).not_to have_content "詳細"
         end
       end
 
@@ -128,7 +131,7 @@ RSpec.describe "Challenges", type: :system do
           other_public_quest.save
           other_public_quest.destroy
           visit closed_challenges_path
-          expect(page).to have_content "作成者によって削除されたクエストとなります。"
+          expect(page).to have_content "作成者によってクエストが削除されました。"
           expect(page).to have_content "リストから削除する"
           expect(page).not_to have_content other_public_quest.title
           expect(page).not_to have_button "再挑戦"
@@ -225,7 +228,7 @@ RSpec.describe "Challenges", type: :system do
     end
 
     context "他ユーザーの公開クエストが非公開となった場合" do
-      it "達成後、再挑戦することができる" do
+      it "達成後、再挑戦できないこと" do
         visit quest_path(other_public_quest)
         click_on "挑戦する"
         other_public_quest.public = false
@@ -233,10 +236,10 @@ RSpec.describe "Challenges", type: :system do
         visit challenges_path
         click_on "達成"
         visit closed_challenges_path
-        click_on "再挑戦"
-        expect(current_path).to eq challenges_path
-        expect(page).to have_content "挑戦リストに追加されました。"
         expect(page).to have_content other_public_quest.title
+        expect(page).to have_content "非公開クエスト"
+        expect(page).not_to have_button "再挑戦"
+        expect(page).not_to have_content "詳細"
       end
     end
   end
