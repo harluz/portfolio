@@ -6,6 +6,10 @@
   %p 挑戦中のクエストがありません
 - @challenges.each do |challenge|
   %div{class: "challenge_#{challenge.id}"}
+  - if challenge.quest == nil
+    %div 作成者によって削除されたクエストとなります。
+    = link_to "リストから削除する", challenge_path(challenge), method: :delete
+  - else
     = challenge.quest.title
     = link_to "詳細", quest_path(challenge.quest)
     = form_with(model: challenge, url: challenge_path(challenge)) do |f|
