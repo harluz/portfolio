@@ -18,7 +18,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :challenges do
+  resources :challenges, except: [:new, :show, :edit] do
     collection do
       get 'closed'
     end
