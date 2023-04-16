@@ -1,6 +1,6 @@
 class QuestsController < ApplicationController
   before_action :authenticate_user!, except: [:index]
-  before_action :load_quest, only: [:show, :edit, :update, :destroy]
+  before_action :find_quest, only: [:show, :edit, :update, :destroy]
   before_action :ensure_user, only: [:edit, :update, :destroy]
 
   def index
@@ -33,13 +33,10 @@ class QuestsController < ApplicationController
   end
 
   def show
-    @not_exist_challenge = !(Challenge.exists?(user_id: current_user.id, quest_id: @quest.id))
-    @own_quest = @quest.user == current_user
-    # 他人の公開されていないクエストの詳細が見れないようにする
-    if !@own_quest && @quest.public == false
+    if !current_user_owned?(@quest) && !public_quest?(@quest)
       flash[:alert] = "公開されていないクエストの詳細を見ることはできません。"
       redirect_to quests_path
-    elsif !@own_quest || (@own_quest && @not_exist_challenge)
+    elsif !current_user_owned?(@quest) || (current_user_owned?(@quest) && is_not_own_challenge?)
       @challenge = Challenge.new
     end
 
@@ -67,7 +64,7 @@ class QuestsController < ApplicationController
   end
 
   def destroy
-    if @quest.public == false && @quest.destroy
+    if !public_quest?(@quest) && @quest.destroy
       flash[:notice] = "クエストが削除されました。"
       redirect_to quests_path
     else
@@ -82,7 +79,7 @@ class QuestsController < ApplicationController
     params.require(:quest).permit(:title, :describe, :difficulty, :xp, :public)
   end
 
-  def load_quest
+  def find_quest
     @quest = Quest.find(params[:id])
   rescue
     flash[:alert] = "クエストが存在していません。"
@@ -90,7 +87,7 @@ class QuestsController < ApplicationController
   end
 
   def ensure_user
-    unless @quest.user == current_user
+    unless current_user_owned?(@quest)
       flash[:alert] = "他のユーザーのクエストを操作することはできません。"
       redirect_to quests_path
     end
