@@ -46,30 +46,94 @@ RSpec.describe "Challenges", type: :system do
           expect(page).to have_content "挑戦中のクエストがありません"
         end
       end
+
+      context "他ユーザーの公開クエストが非公開となった場合" do
+        it "挑戦中であったものは表示されていること" do
+          visit quest_path(other_public_quest)
+          click_on "挑戦する"
+          other_public_quest.public = false
+          other_public_quest.save
+          visit challenges_path
+          expect(page).to have_content other_public_quest.title
+          expect(page).to have_button "達成"
+          expect(page).to have_content "諦める"
+        end
+      end
+
+      context "他ユーザーの公開クエストが削除された場合" do
+        it "挑戦中であっても、削除されたクエストは削除されたメッセージが表示されること" do
+          visit quest_path(other_public_quest)
+          click_on "挑戦する"
+          other_public_quest.public = false
+          other_public_quest.save
+          other_public_quest.destroy
+          visit challenges_path
+          expect(page).to have_content "作成者によって削除されたクエストとなります。"
+          expect(page).to have_content "リストから削除する"
+          expect(page).not_to have_content other_public_quest.title
+          expect(page).not_to have_button "達成"
+          expect(page).not_to have_content "諦める"
+        end
+      end
     end
 
     context  "/challenge#closed" do
-      let!(:complete_challenge) { create(:challenge, user_id: user.id, quest_id: complete_quest.id)}
-      let!(:give_up_challenge) { create(:challenge, user_id: user.id, quest_id: give_up_quest.id)}
-      it "達成したクエストが表示されていること" do
-        visit closed_challenges_path
-        expect(page).not_to have_content complete_challenge.quest.title
-        expect(page).not_to have_content give_up_challenge.quest.title
-        expect(page).not_to have_content "詳細"
-        expect(page).not_to have_button "再挑戦"
-        expect(page).to have_content "達成したクエストがありません"
-        visit challenges_path
-        within (".challenge_#{complete_challenge.id}") do
+      context "クエストが達成される場合" do
+        let!(:complete_challenge) { create(:challenge, user_id: user.id, quest_id: complete_quest.id)}
+        let!(:give_up_challenge) { create(:challenge, user_id: user.id, quest_id: give_up_quest.id)}
+        it "達成したクエストが表示されていること" do
+          visit closed_challenges_path
+          expect(page).not_to have_content complete_challenge.quest.title
+          expect(page).not_to have_content give_up_challenge.quest.title
+          expect(page).not_to have_content "詳細"
+          expect(page).not_to have_button "再挑戦"
+          expect(page).to have_content "達成したクエストがありません"
+          visit challenges_path
+          within (".challenge_#{complete_challenge.id}") do
+            click_on "達成"
+          end
+          within (".challenge_#{give_up_challenge.id}") do
+            click_on "諦める"
+          end
+          visit closed_challenges_path
+          expect(page).to have_content complete_challenge.quest.title
+          expect(page).to have_content "詳細"
+          expect(page).to have_button "再挑戦"
+          expect(page).not_to have_content give_up_challenge.quest.title
+        end
+      end
+
+      context "達成済みの他ユーザー公開クエストが非公開となった場合" do
+        it "挑戦中であったものは表示されていること" do
+          visit quest_path(other_public_quest)
+          click_on "挑戦する"
+          visit challenges_path
           click_on "達成"
+          other_public_quest.public = false
+          other_public_quest.save
+          visit closed_challenges_path
+          expect(page).to have_content other_public_quest.title
+          expect(page).to have_button "再挑戦"
+          expect(page).to have_content "詳細"
         end
-        within (".challenge_#{give_up_challenge.id}") do
-          click_on "諦める"
+      end
+
+      context "達成済みの他ユーザー公開クエストが削除された場合" do
+        it "達成済みであっても、削除されたクエストは削除されたメッセージが表示されること" do
+          visit quest_path(other_public_quest)
+          click_on "挑戦する"
+          visit challenges_path
+          click_on "達成"
+          other_public_quest.public = false
+          other_public_quest.save
+          other_public_quest.destroy
+          visit closed_challenges_path
+          expect(page).to have_content "作成者によって削除されたクエストとなります。"
+          expect(page).to have_content "リストから削除する"
+          expect(page).not_to have_content other_public_quest.title
+          expect(page).not_to have_button "再挑戦"
+          expect(page).not_to have_content "詳細"
         end
-        visit closed_challenges_path
-        expect(page).to have_content complete_challenge.quest.title
-        expect(page).to have_content "詳細"
-        expect(page).to have_button "再挑戦"
-        expect(page).not_to have_content give_up_challenge.quest.title
       end
     end
   end
@@ -127,7 +191,7 @@ RSpec.describe "Challenges", type: :system do
     end
 
     context "他ユーザーの公開クエストの場合" do
-      let!(:other_quest) { create(:other_quest, public: true, user: other_user) }
+      let!(:other_quest) { create(:public_other_quest, user: other_user) }
 
       before do
         visit quest_path(other_quest)
@@ -158,6 +222,22 @@ RSpec.describe "Challenges", type: :system do
         expect(page).to have_content other_quest.title
       end
       # 他ユーザーの一度達成した公開クエストにquests_pathから再挑戦することができる
+    end
+
+    context "他ユーザーの公開クエストが非公開となった場合" do
+      it "達成後、再挑戦することができる" do
+        visit quest_path(other_public_quest)
+        click_on "挑戦する"
+        other_public_quest.public = false
+        other_public_quest.save
+        visit challenges_path
+        click_on "達成"
+        visit closed_challenges_path
+        click_on "再挑戦"
+        expect(current_path).to eq challenges_path
+        expect(page).to have_content "挑戦リストに追加されました。"
+        expect(page).to have_content other_public_quest.title
+      end
     end
   end
 
@@ -197,7 +277,18 @@ RSpec.describe "Challenges", type: :system do
       end
     end
 
-    context "更新に失敗する場合" do
+    context "他ユーザーの公開クエストが非公開となった場合" do
+      it "挑戦中であったものは達成できること" do
+        visit quest_path(other_public_quest)
+        click_on "挑戦する"
+        other_public_quest.public = false
+        other_public_quest.save
+        visit challenges_path
+        click_on "達成"
+        expect(current_path).to eq challenges_path
+        expect(page).to have_content "クエスト達成おめでとうございます。経験値#{other_public_quest.xp}ポイントを獲得しました。"
+        expect(page).not_to have_content other_public_quest.title
+      end
     end
   end
 
@@ -214,6 +305,7 @@ RSpec.describe "Challenges", type: :system do
           click_on "諦める"
         end
         expect(current_path).to eq challenges_path
+        expect(page).to have_content "挑戦リストから削除しました。"
         expect(page).not_to have_content public_quest_challenge.quest.title
       end
 
@@ -222,6 +314,7 @@ RSpec.describe "Challenges", type: :system do
           click_on "諦める"
         end
         expect(current_path).to eq challenges_path
+        expect(page).to have_content "挑戦リストから削除しました。"
         expect(page).not_to have_content non_public_quest_challenge.quest.title
       end
 
@@ -230,7 +323,40 @@ RSpec.describe "Challenges", type: :system do
           click_on "諦める"
         end
         expect(current_path).to eq challenges_path
+        expect(page).to have_content "挑戦リストから削除しました。"
         expect(page).not_to have_content other_public_quest_challenge.quest.title
+      end
+    end
+
+    context "他ユーザーの公開クエストが削除された場合" do
+      it "挑戦中だったクエストはリストから削除することができる" do
+        visit quest_path(other_public_quest)
+        click_on "挑戦する"
+        other_public_quest.public = false
+        other_public_quest.save
+        other_public_quest.destroy
+        visit challenges_path
+        click_on "リストから削除する"
+        expect(current_path).to eq challenges_path
+        expect(page).to have_content "挑戦リストから削除しました。"
+        expect(page).not_to have_content other_public_quest.title
+      end
+    end
+
+    context "達成済みの他ユーザー公開クエストが削除された場合" do
+      it "達成済みであっても、削除されたクエストはリストから削除することができる" do
+        visit quest_path(other_public_quest)
+        click_on "挑戦する"
+        visit challenges_path
+        click_on "達成"
+        other_public_quest.public = false
+        other_public_quest.save
+        other_public_quest.destroy
+        visit closed_challenges_path
+        click_on "リストから削除する"
+        expect(current_path).to eq challenges_path
+        expect(page).to have_content "挑戦リストから削除しました。"
+        expect(page).not_to have_content other_public_quest.title
       end
     end
   end
