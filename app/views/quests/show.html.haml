@@ -16,7 +16,7 @@
       %p このクエストは公開されていません。
     - if @quest && current_user_owned?(@quest)
       = link_to "編集する", edit_quest_path(@quest)
-    - if (public_quest?(@quest) && !current_user_owned?(@quest) && is_not_own_challenge?) || (current_user_owned?(@quest) && is_not_own_challenge?)
+    - if (public_quest?(@quest) && !current_user_owned?(@quest) && is_not_own_challenge?(@quest)) || (current_user_owned?(@quest) && is_not_own_challenge?(@quest))
       = form_with(model: @challenge, url: challenges_path(@challenge)) do |f|
         = f.hidden_field :quest_id, value: @quest.id
         .actions
