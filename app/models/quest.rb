@@ -4,7 +4,8 @@ class Quest < ApplicationRecord
 
   validates :title, presence: true
   validate :describe
-  validates :difficulty, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 5 }
+  validates :difficulty, presence: true,
+                         numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 5 }
   validates :xp, presence: true, numericality: { only_integer: true }
   validates :public, inclusion: { in: [true, false] }
   validates :user_id, presence: true
