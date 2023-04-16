@@ -1,0 +1,21 @@
+%h1 Challenges#closed
+%p Find me in app/views/challenges/closed.html.haml
+%p ユーザー自身が達成したクエストを表示するもの
+- if @challenges.empty?
+  %p 達成したクエストがありません
+- @challenges.each do |challenge|
+  %div{class: "closed_challenge_#{challenge.id}"}
+    - if challenge.quest == nil
+      %div 作成者によってクエストが削除されました。
+      = link_to "リストから削除する", challenge_path(challenge), method: :delete
+    - elsif !current_user_owned?(challenge.quest) && !public_quest?(challenge.quest)
+      = challenge.quest.title
+      %span{class: "bg-secondary text-white"} 非公開クエスト
+    - else
+      = challenge.quest.title
+      = link_to "詳細", quest_path(challenge.quest)
+      = form_with(model: challenge, url: challenge_path(challenge)) do |f|
+        = f.hidden_field :quest_id, value: challenge.quest.id
+        = f.hidden_field :close, value: false
+        .actions
+        = f.submit "再挑戦", class: "btn btn-primary", id: "retry_#{challenge.id}"

@@ -4,7 +4,8 @@ ARG UID
 
 RUN adduser -D app -u ${UID:-1000} && \
   apk update \
-  && apk add --no-cache gcc make libc-dev g++ mariadb-dev tzdata nodejs~=14 yarn mysql-client
+  && apk add --no-cache gcc make libc-dev g++ mariadb-dev tzdata nodejs~=14 yarn mysql-client \
+  && apk add less
 
 WORKDIR /myapp
 COPY Gemfile .

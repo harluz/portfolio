@@ -1,0 +1,13 @@
+%h1 My quest list
+%p Find me in app/views/quests/my_quest.html.haml
+
+- if @quests.empty?
+  %p 作成したクエストがありません
+- @quests.each do |quest|
+  %div{class: "my_quest_#{quest.id}"}
+  = quest.title
+  = link_to "詳細", quest_path(quest)
+  - if quest && current_user_owned?(quest)
+    = link_to "編集する", edit_quest_path(quest)
+    - if !public_quest?(quest)
+      = link_to "削除する", quest_path(quest), method: :delete

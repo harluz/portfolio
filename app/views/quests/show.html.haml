@@ -10,9 +10,15 @@
     %p 経験値
     = @quest.xp
     ポイント
-    - if @quest.public
+    - if public_quest?(@quest)
       %p このクエストは公開されています。
     - else
       %p このクエストは公開されていません。
-    - if @quest && @quest.user == current_user
+    - if @quest && current_user_owned?(@quest)
       = link_to "編集する", edit_quest_path(@quest)
+    - if (public_quest?(@quest) && !current_user_owned?(@quest) && is_not_own_challenge?(@quest)) || (current_user_owned?(@quest) && is_not_own_challenge?(@quest))
+      = form_with(model: @challenge, url: challenges_path(@challenge)) do |f|
+        = f.hidden_field :quest_id, value: @quest.id
+        .actions
+        = f.submit "挑戦する", class: "btn btn-primary"
+    = link_to "挑戦リストに戻る", challenges_path

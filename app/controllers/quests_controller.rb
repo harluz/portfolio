@@ -1,10 +1,14 @@
 class QuestsController < ApplicationController
   before_action :authenticate_user!, except: [:index]
-  before_action :load_quest, only: [:show, :edit, :update, :destroy]
+  before_action :find_quest, only: [:show, :edit, :update, :destroy]
   before_action :ensure_user, only: [:edit, :update, :destroy]
 
   def index
     @quests = Quest.all
+  end
+
+  def my_quest
+    @quests = current_user.quests
   end
 
   def new
@@ -17,6 +21,7 @@ class QuestsController < ApplicationController
     @quest.xp = @quest.set_xp
 
     if @quest.save
+      @challenge = Challenge.create(user_id: current_user.id, quest_id: @quest.id)
       session[:quest] = nil
       flash[:notice] = "BranChannelに新たなクエストが作成されました。"
       redirect_to quest_path(@quest)
@@ -28,6 +33,19 @@ class QuestsController < ApplicationController
   end
 
   def show
+    if !current_user_owned?(@quest) && !public_quest?(@quest)
+      flash[:alert] = "公開されていないクエストの詳細を見ることはできません。"
+      redirect_to quests_path
+    elsif !current_user_owned?(@quest) || (current_user_owned?(@quest) && is_not_own_challenge?(@quest))
+      @challenge = Challenge.new
+    end
+
+    # 他人のクエストを挑戦中にクエストが非公開になった場合、詳細は見れないがchallenge一覧から「達成」or「諦める」を選択できるようにする
+    # challengeを特定して、challenge.idを取得した上で↓
+    # if @quest.user != current_user && Challenge.exist?(user_id: current_user.id, quest_id: @quest.id)
+    # && @quest.public == flase && @challenge.close == false
+
+    # 自分のクエストでなければ、空のchallengeを生成する
   end
 
   def edit
@@ -46,7 +64,7 @@ class QuestsController < ApplicationController
   end
 
   def destroy
-    if @quest.public == false && @quest.destroy
+    if !public_quest?(@quest) && @quest.destroy
       flash[:notice] = "クエストが削除されました。"
       redirect_to quests_path
     else
@@ -61,7 +79,7 @@ class QuestsController < ApplicationController
     params.require(:quest).permit(:title, :describe, :difficulty, :xp, :public)
   end
 
-  def load_quest
+  def find_quest
     @quest = Quest.find(params[:id])
   rescue
     flash[:alert] = "クエストが存在していません。"
@@ -69,7 +87,7 @@ class QuestsController < ApplicationController
   end
 
   def ensure_user
-    unless @quest.user == current_user
+    unless current_user_owned?(@quest)
       flash[:alert] = "他のユーザーのクエストを操作することはできません。"
       redirect_to quests_path
     end

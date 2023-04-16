@@ -19,6 +19,26 @@ RSpec.describe User, type: :model do
       expect(duplicate_user2).not_to be_valid
     end
   end
-  describe "アソシエーション確認" do
+
+  describe "リレーション確認" do
+    let!(:association) do
+      described_class.reflect_on_association(model)
+    end
+
+    context "questとのリレーション" do
+      let(:model) { :quests }
+
+      it "questとの関連付けはhas_manyであること" do
+        expect(association.macro).to eq :has_many
+      end
+    end
+
+    context "challengesとのリレーション" do
+      let(:model) { :challenges }
+
+      it "challengeとの関連付けはhas_manyであること" do
+        expect(association.macro).to eq :has_many
+      end
+    end
   end
 end

@@ -12,6 +12,16 @@ Rails.application.routes.draw do
     get '/users', to: 'devise/registrations#new'
   end
   
-  resources :quests
+  resources :quests do
+    collection do
+      get 'my_quest'
+    end
+  end
+
+  resources :challenges, except: [:new, :show, :edit] do
+    collection do
+      get 'closed'
+    end
+  end
   get 'test', to: 'test#index'
 end

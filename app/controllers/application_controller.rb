@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  include ApplicationHelper
   # ログイン済ユーザーのみにアクセスを許可する
   before_action :authenticate_user!, except: [:top]
   # deviseコントローラーにストロングパラメータを追加する
