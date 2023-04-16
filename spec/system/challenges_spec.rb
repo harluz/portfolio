@@ -8,15 +8,15 @@ RSpec.describe "Challenges", type: :system do
   let(:other_public_quest) { create(:public_other_quest, user: other_user) }
 
   before { sign_in user }
-  
+
   describe "表示確認" do
     let(:complete_quest) { create(:quest, title: "This is a quest to complete", user: user) }
     let(:give_up_quest) { create(:quest, title: "This is a quest to give up", user: user) }
 
-    context  "/challenge#index" do
-      context  "挑戦中クエストがある場合" do
-        let!(:complete_challenge) { create(:challenge, user_id: user.id, quest_id: complete_quest.id)}
-        let!(:give_up_challenge) { create(:challenge, user_id: user.id, quest_id: give_up_quest.id)}
+    context "/challenge#index" do
+      context "挑戦中クエストがある場合" do
+        let!(:complete_challenge) { create(:challenge, user_id: user.id, quest_id: complete_quest.id) }
+        let!(:give_up_challenge) { create(:challenge, user_id: user.id, quest_id: give_up_quest.id) }
         it "自身の挑戦中のクエストが表示されていること" do
           visit challenges_path
           expect(page).not_to have_content "挑戦中のクエストがありません"
@@ -25,10 +25,10 @@ RSpec.describe "Challenges", type: :system do
           expect(page).to have_content "詳細"
           expect(page).to have_button "達成"
           expect(page).to have_content "諦める"
-          within (".challenge_#{complete_challenge.id}") do
+          within(".challenge_#{complete_challenge.id}") do
             click_on "達成"
           end
-          within (".challenge_#{give_up_challenge.id}") do
+          within(".challenge_#{give_up_challenge.id}") do
             click_on "諦める"
           end
           visit challenges_path
@@ -40,7 +40,7 @@ RSpec.describe "Challenges", type: :system do
         end
       end
 
-      context  "挑戦中クエストがない場合" do
+      context "挑戦中クエストがない場合" do
         it "挑戦中のクエストがないコメントが表示されていること" do
           visit challenges_path
           expect(page).to have_content "挑戦中のクエストがありません"
@@ -79,10 +79,10 @@ RSpec.describe "Challenges", type: :system do
       end
     end
 
-    context  "/challenge#closed" do
+    context "/challenge#closed" do
       context "クエストが達成される場合" do
-        let!(:complete_challenge) { create(:challenge, user_id: user.id, quest_id: complete_quest.id)}
-        let!(:give_up_challenge) { create(:challenge, user_id: user.id, quest_id: give_up_quest.id)}
+        let!(:complete_challenge) { create(:challenge, user_id: user.id, quest_id: complete_quest.id) }
+        let!(:give_up_challenge) { create(:challenge, user_id: user.id, quest_id: give_up_quest.id) }
         it "達成したクエストが表示されていること" do
           visit closed_challenges_path
           expect(page).not_to have_content complete_challenge.quest.title
@@ -91,10 +91,10 @@ RSpec.describe "Challenges", type: :system do
           expect(page).not_to have_button "再挑戦"
           expect(page).to have_content "達成したクエストがありません"
           visit challenges_path
-          within (".challenge_#{complete_challenge.id}") do
+          within(".challenge_#{complete_challenge.id}") do
             click_on "達成"
           end
-          within (".challenge_#{give_up_challenge.id}") do
+          within(".challenge_#{give_up_challenge.id}") do
             click_on "諦める"
           end
           visit closed_challenges_path
@@ -253,7 +253,7 @@ RSpec.describe "Challenges", type: :system do
       before { visit challenges_path }
 
       it "自身の公開クエストを達成することができる" do
-        within (".challenge_#{public_quest_challenge.id}") do
+        within(".challenge_#{public_quest_challenge.id}") do
           click_on "達成"
         end
         expect(current_path).to eq challenges_path
@@ -262,7 +262,7 @@ RSpec.describe "Challenges", type: :system do
       end
 
       it "自身の非公開クエストを達成することができる" do
-        within (".challenge_#{non_public_quest_challenge.id}") do
+        within(".challenge_#{non_public_quest_challenge.id}") do
           click_on "達成"
         end
         expect(current_path).to eq challenges_path
@@ -271,7 +271,7 @@ RSpec.describe "Challenges", type: :system do
       end
 
       it "他ユーザーの公開クエストを達成することができる" do
-        within (".challenge_#{other_public_quest_challenge.id}") do
+        within(".challenge_#{other_public_quest_challenge.id}") do
           click_on "達成"
         end
         expect(current_path).to eq challenges_path
@@ -304,7 +304,7 @@ RSpec.describe "Challenges", type: :system do
       before { visit challenges_path }
 
       it "自身の公開クエストを諦めることができる" do
-        within (".challenge_#{public_quest_challenge.id}") do
+        within(".challenge_#{public_quest_challenge.id}") do
           click_on "諦める"
         end
         expect(current_path).to eq challenges_path
@@ -313,7 +313,7 @@ RSpec.describe "Challenges", type: :system do
       end
 
       it "自身の非公開クエストを諦めることができる" do
-        within (".challenge_#{non_public_quest_challenge.id}") do
+        within(".challenge_#{non_public_quest_challenge.id}") do
           click_on "諦める"
         end
         expect(current_path).to eq challenges_path
@@ -322,7 +322,7 @@ RSpec.describe "Challenges", type: :system do
       end
 
       it "他ユーザーの公開クエストを諦めることができる" do
-        within (".challenge_#{other_public_quest_challenge.id}") do
+        within(".challenge_#{other_public_quest_challenge.id}") do
           click_on "諦める"
         end
         expect(current_path).to eq challenges_path

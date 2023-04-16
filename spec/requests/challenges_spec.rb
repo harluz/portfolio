@@ -9,11 +9,11 @@ RSpec.describe "Challenges", type: :request do
   let(:other_non_public_quest) { create(:other_quest, user: other_user) }
 
   describe "GET #index" do
-    subject{ response.body }
+    subject { response.body }
 
     context "ユーザーがログインしている場合" do
       before { sign_in user }
-      
+
       it "挑戦リストページのgetリクエストが成功していること" do
         get challenges_path
         expect(response).to have_http_status(200)
@@ -22,7 +22,9 @@ RSpec.describe "Challenges", type: :request do
       context "挑戦中のクエストがある場合" do
         let!(:public_quest_challenge) { create(:challenge, user_id: user.id, quest_id: public_quest.id) }
         let!(:non_public_quest_challenge) { create(:challenge, user_id: user.id, quest_id: non_public_quest.id) }
-        let!(:non_public_other_quest_challenge) { create(:challenge, user_id: other_user.id, quest_id: other_non_public_quest.id) }
+        let!(:non_public_other_quest_challenge) do
+          create(:challenge, user_id: other_user.id, quest_id: other_non_public_quest.id)
+        end
 
         before { get challenges_path }
 
@@ -91,7 +93,7 @@ RSpec.describe "Challenges", type: :request do
   end
 
   describe "GET #closed" do
-    subject{ response.body }
+    subject { response.body }
 
     context "ユーザーがログインしている場合" do
       before { sign_in user }
@@ -100,7 +102,9 @@ RSpec.describe "Challenges", type: :request do
         let!(:public_quest_challenge) { create(:closed_challenge, user_id: user.id, quest_id: public_quest.id) }
         let!(:non_public_quest_challenge) { create(:closed_challenge, user_id: user.id, quest_id: non_public_quest.id) }
         let!(:public_other_quest_challenge) { create(:closed_challenge, user_id: other_user.id, quest_id: other_public_quest.id) }
-        let!(:non_public_other_quest_challenge) { create(:closed_challenge, user_id: other_user.id, quest_id: other_non_public_quest.id) }
+        let!(:non_public_other_quest_challenge) do
+          create(:closed_challenge, user_id: other_user.id, quest_id: other_non_public_quest.id)
+        end
 
         before { get closed_challenges_path }
 
@@ -129,7 +133,9 @@ RSpec.describe "Challenges", type: :request do
       end
 
       context "達成済みのクエストが非公開となった場合" do
-        let!(:change_challenge_quest_to_private_from_public) { create(:closed_challenge, user_id: user.id, quest_id: other_non_public_quest.id) }
+        let!(:change_challenge_quest_to_private_from_public) do
+          create(:closed_challenge, user_id: user.id, quest_id: other_non_public_quest.id)
+        end
         it "クエストのレスポンスが含まれていること" do
           get closed_challenges_path
           expect(subject).to include other_non_public_quest.title
@@ -140,7 +146,9 @@ RSpec.describe "Challenges", type: :request do
       end
 
       context "達成済みのクエストが削除された場合" do
-        let!(:change_challenge_quest_to_private_from_public) { create(:closed_challenge, user_id: user.id, quest_id: other_non_public_quest.id) }
+        let!(:change_challenge_quest_to_private_from_public) do
+          create(:closed_challenge, user_id: user.id, quest_id: other_non_public_quest.id)
+        end
         it "クエストが削除されたメッセージがレスポンスに含まれていること" do
           other_non_public_quest.destroy
           get closed_challenges_path
@@ -220,7 +228,7 @@ RSpec.describe "Challenges", type: :request do
       end
 
       context "既に挑戦中のクエストに、さらに挑戦しようとした場合" do
-        let(:duplicate_challenger) { create(:user, id: 1, email: "challenger@mail.com")}
+        let(:duplicate_challenger) { create(:user, id: 1, email: "challenger@mail.com") }
         before do
           params_challenge = {
             user_id: duplicate_challenger.id,
@@ -229,7 +237,7 @@ RSpec.describe "Challenges", type: :request do
           }
           post challenges_path, params: { challenge: params_challenge }
         end
-  
+
         it "challengeの数が増加していないこと" do
           expect do
             duplicate_params_challenge = {
@@ -250,7 +258,7 @@ RSpec.describe "Challenges", type: :request do
           }
           post challenges_path, params: { challenge: params_challenge }
         end
-        
+
         it "ステータスコード302（リダイレクト）がレスポンスされていること" do
           expect(subject).to have_http_status(302)
         end
@@ -341,7 +349,9 @@ RSpec.describe "Challenges", type: :request do
     end
 
     context "他ユーザーの公開クエストが非公開となった場合" do
-      let!(:change_challenge_quest_to_private_from_public) { create(:challenge, user_id: user.id, quest_id: other_non_public_quest.id) }
+      let!(:change_challenge_quest_to_private_from_public) do
+        create(:challenge, user_id: user.id, quest_id: other_non_public_quest.id)
+      end
       before do
         params_challenge = {
           quest_id: other_non_public_quest.id,
@@ -383,7 +393,7 @@ RSpec.describe "Challenges", type: :request do
         it "ステータスコード302（リダイレクト）がレスポンスされていること" do
           expect(subject).to have_http_status(302)
         end
-  
+
         it "挑戦リストにリダイレクトするレスポンスが含まれていること" do
           expect(subject).to redirect_to challenges_path
         end
@@ -402,7 +412,7 @@ RSpec.describe "Challenges", type: :request do
         it "ステータスコード302（リダイレクト）がレスポンスされていること" do
           expect(subject).to have_http_status(302)
         end
-  
+
         it "挑戦リストにリダイレクトするレスポンスが含まれていること" do
           expect(subject).to redirect_to challenges_path
         end
@@ -421,7 +431,7 @@ RSpec.describe "Challenges", type: :request do
         it "ステータスコード302（リダイレクト）がレスポンスされていること" do
           expect(subject).to have_http_status(302)
         end
-  
+
         it "挑戦リストにリダイレクトするレスポンスが含まれていること" do
           expect(subject).to redirect_to challenges_path
         end
@@ -429,7 +439,9 @@ RSpec.describe "Challenges", type: :request do
     end
 
     context "他ユーザーの公開クエストが非公開となった場合" do
-      let!(:change_challenge_quest_to_private_from_public) { create(:challenge, user_id: user.id, quest_id: other_non_public_quest.id) }
+      let!(:change_challenge_quest_to_private_from_public) do
+        create(:challenge, user_id: user.id, quest_id: other_non_public_quest.id)
+      end
       it "削除が成功し、challenge数が減少していること" do
         expect do
           delete challenge_path(change_challenge_quest_to_private_from_public)
@@ -441,7 +453,7 @@ RSpec.describe "Challenges", type: :request do
         it "ステータスコード302（リダイレクト）がレスポンスされていること" do
           expect(subject).to have_http_status(302)
         end
-  
+
         it "挑戦リストにリダイレクトするレスポンスが含まれていること" do
           expect(subject).to redirect_to challenges_path
         end

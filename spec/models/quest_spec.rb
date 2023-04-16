@@ -32,13 +32,13 @@ RSpec.describe Quest, type: :model do
       quest.valid?
       expect(quest.errors[:difficulty]).to include("は整数で入力してください")
     end
-    
+
     it "difficultyが0である場合、無効である" do
       quest.difficulty = 0
       quest.valid?
       expect(quest.errors[:difficulty]).to include("は1以上の値にしてください")
     end
-    
+
     it "difficultyが5より大きい場合場合、無効である" do
       quest.difficulty = 6
       quest.valid?
