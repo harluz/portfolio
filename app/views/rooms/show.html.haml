@@ -1,2 +1,5 @@
-%h1 Rooms#show
-%p Find me in app/views/rooms/show.html.haml
+%h1 Chat room
+%div{id: 'messages'}
+  %div{class: 'message'}
+    - @messages.each do |message|
+      %p=message.content
