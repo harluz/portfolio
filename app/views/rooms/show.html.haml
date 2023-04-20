@@ -1,5 +1,5 @@
 %h1 Chat room
 %div{id: 'messages'}
-  %div{class: 'message'}
-    - @messages.each do |message|
-      %p=message.content
+  = render @messages
+= label_tag :content, 'Say something:'
+= text_field_tag :content, nil, data: { behavior: 'room_speaker' }
