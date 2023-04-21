@@ -22,6 +22,7 @@ class QuestsController < ApplicationController
 
     if @quest.save
       @challenge = Challenge.create(user_id: current_user.id, quest_id: @quest.id)
+      @room = Room.create(quest_id: @quest.id)
       session[:quest] = nil
       flash[:notice] = "BranChannelに新たなクエストが作成されました。"
       redirect_to quest_path(@quest)
@@ -33,6 +34,7 @@ class QuestsController < ApplicationController
   end
 
   def show
+    @room = @quest.room
     if !current_user_owned?(@quest) && !public_quest?(@quest)
       flash[:alert] = "公開されていないクエストの詳細を見ることはできません。"
       redirect_to quests_path
