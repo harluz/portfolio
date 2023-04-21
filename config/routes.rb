@@ -24,6 +24,8 @@ Rails.application.routes.draw do
       get 'closed'
     end
   end
-  get 'rooms/show', to: 'rooms#show'
+
   get 'test', to: 'test#index'
+
+  resources :rooms, only: [:show]
 end
