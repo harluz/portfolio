@@ -22,4 +22,4 @@
         .actions
         = f.submit "挑戦する", class: "btn btn-primary"
     = link_to "挑戦リストに戻る", challenges_path
-    = link_to "トークルームへ", room_path(@room)
+    = link_to "トークルームへ", room_path(@room), data: {"turbolinks": false}
