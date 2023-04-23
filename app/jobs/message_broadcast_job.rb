@@ -7,6 +7,6 @@ class MessageBroadcastJob < ApplicationJob
 
   private
   def render_message(message)
-    ApplicationController.renderer.render(partial: 'messages/message', locals: { message: message })
+    ApplicationController.render_with_signed_in_user(message.user, partial: 'messages/message', locals: { message: message })
   end
 end
