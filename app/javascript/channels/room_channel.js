@@ -14,7 +14,18 @@ $(function () {
 			// },
 
 			received: function (data) {
-				return $("#messages").append(data["message"]);
+				if (data["id"]) {
+					let id = "#" + data["id"];
+					$(id).remove();
+				} else {
+					$("#messages").append(data["message"]);
+				}
+			},
+
+			destroy: function (id) {
+				return this.perform("destroy", {
+					id: id,
+				});
 			},
 
 			speak: function (message) {
@@ -29,6 +40,10 @@ $(function () {
 		chatChannel.speak($("[data-behavior~=room_speaker]").val());
 		$("[data-behavior~=room_speaker]").val("");
 		event.preventDefault();
+	});
+
+	$(document).on("click", ".delete-btn", function (event) {
+		chatChannel.destroy(event.target.id);
 	});
 });
 // });
