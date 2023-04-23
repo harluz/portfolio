@@ -3,4 +3,5 @@
     = message.content
   %p{class: "text-secondary"}
     = l message.created_at, format: :long
-  %button{id: "#{message.id}", class: "delete-btn btn btn-danger mr-5"}コメントを削除
+  - if message.user == current_user
+    %button{id: "#{message.id}", class: "delete-btn btn btn-danger mr-5"}コメントを削除
