@@ -1,6 +1,6 @@
 %div{class: 'message', id: "#{message.id}"}
   %p{class: "text-break"}
-    = message.content
+    = safe_join(message.content.split("\n"),tag(:br))
   %p{class: "text-secondary"}
     = l message.created_at, format: :long
   - if message.user == current_user
