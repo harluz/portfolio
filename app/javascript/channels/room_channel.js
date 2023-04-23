@@ -25,12 +25,10 @@ $(function () {
 		}
 	);
 
-	$(document).on("keypress", "[data-behavior~=room_speaker]", function (event) {
-		if (event.key === "Enter") {
-			chatChannel.speak(event.target.value);
-			event.target.value = "";
-			event.preventDefault();
-		}
+	$(document).on("click", ".message_submit", function (event) {
+		chatChannel.speak($("[data-behavior~=room_speaker]").val());
+		$("[data-behavior~=room_speaker]").val("");
+		event.preventDefault();
 	});
 });
 // });
