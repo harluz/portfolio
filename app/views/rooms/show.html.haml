@@ -1,5 +1,10 @@
-%h1 Chat room
-%div{id: 'messages', data: {room_id: @room.id}}
-  = render @messages
-= label_tag :content, 'Say something:'
-= text_field_tag :content, nil, data: { behavior: 'room_speaker' }
+.container
+  .center-block
+    %h1 Chat room
+    %h2= "Quest  #{@room.quest.title}"
+    %p クエストについて語ってみよう
+    -# = text_area_tag :content, nil, data: { behavior: 'room_speaker' },placeholder: "メッセージを入力",size: "50x5"
+    %textarea{type: "text", data: {behavior: "room_speaker"}, class: "from-control"}
+    %button{class: "message_submit"}コメントを送信
+    %div{id: 'messages', data: {room_id: @room.id}}
+      = render @messages

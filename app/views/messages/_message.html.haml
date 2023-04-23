@@ -1,2 +1,5 @@
 %div{class: 'message'}
-  %p= message.content
+  %p{class: "text-break"}
+    = message.content
+  %p{class: "text-secondary"}
+    = l message.created_at, format: :long
