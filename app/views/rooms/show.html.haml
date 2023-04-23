@@ -3,7 +3,6 @@
     %h1 Chat room
     %h2= "Quest  #{@room.quest.title}"
     %p クエストについて語ってみよう
-    -# = text_area_tag :content, nil, data: { behavior: 'room_speaker' },placeholder: "メッセージを入力",size: "50x5"
     %textarea{type: "text", data: {behavior: "room_speaker"}, class: "from-control rounded-3 border border-info"}
     %button{class: "message_submit btn btn-info"}コメントを送信
     %div{id: 'messages', data: {room_id: @room.id}}

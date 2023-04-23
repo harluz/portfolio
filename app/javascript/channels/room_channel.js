@@ -1,6 +1,5 @@
 import consumer from "./consumer";
 
-// $(document).on("turbolinks:load", function () {
 $(function () {
 	const chatChannel = consumer.subscriptions.create(
 		{ channel: "RoomChannel", room: $("#messages").data("room-id") },
@@ -46,4 +45,3 @@ $(function () {
 		chatChannel.destroy(event.target.id);
 	});
 });
-// });
