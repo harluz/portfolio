@@ -6,6 +6,9 @@ RSpec.describe "Challenges", type: :system do
   let(:public_quest) { create(:public_quest, user: user) }
   let(:non_public_quest) { create(:non_public_quest, user: user) }
   let(:other_public_quest) { create(:public_other_quest, user: other_user) }
+  let!(:room) { create(:room, quest_id: public_quest.id) }
+  let!(:non_public_room) { create(:room, quest_id: non_public_quest.id) }
+  let!(:other_room) { create(:room, quest_id: other_public_quest.id) }
 
   before { sign_in user }
 
@@ -195,6 +198,7 @@ RSpec.describe "Challenges", type: :system do
 
     context "他ユーザーの公開クエストの場合" do
       let!(:other_quest) { create(:public_other_quest, user: other_user) }
+      let!(:room) { create(:room, quest_id: other_quest.id) }
 
       before do
         visit quest_path(other_quest)

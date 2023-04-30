@@ -187,6 +187,9 @@ RSpec.describe "Quests", type: :request do
     let!(:quest) { create(:public_quest, user: user) }
     let!(:other_quest) { create(:public_other_quest, user: other_user) }
     let!(:non_public_other_quest) { create(:other_quest, user: other_user) }
+    let!(:room) { create(:room, quest_id: quest.id) }
+    let!(:other_room) { create(:room, quest_id: other_quest.id) }
+    let!(:non_public_other_room) { create(:room, quest_id: non_public_other_quest.id) }
     subject { response }
 
     context "ユーザーがログインしている場合" do
@@ -213,11 +216,13 @@ RSpec.describe "Quests", type: :request do
         expect(response.body).to include quest.describe
         expect(response.body).to include quest.difficulty.to_s
         expect(response.body).to include quest.xp.to_s
+        expect(response.body).to include "トークルームへ"
         get quest_path(other_quest)
         expect(response.body).to include other_quest.title
         expect(response.body).to include other_quest.describe
         expect(response.body).to include other_quest.difficulty.to_s
         expect(response.body).to include other_quest.xp.to_s
+        expect(response.body).to include "トークルームへ"
       end
 
       context "存在しないquestにアクセスした場合" do

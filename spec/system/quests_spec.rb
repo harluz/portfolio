@@ -108,6 +108,7 @@ RSpec.describe "Quests", type: :system do
 
     context "/quests/show" do
       let(:quest) { create(:quest, user: user) }
+      let!(:room) { create(:room, quest_id: quest.id)}
       before do
         visit quest_path(quest)
       end
@@ -118,6 +119,8 @@ RSpec.describe "Quests", type: :system do
           expect(page).to have_content "Create quest achievement conditions."
           expect(page).to have_content "3"
           expect(page).to have_content "6 ポイント"
+          expect(page).to have_content "このクエストは公開されていません。"
+          expect(page).to have_link "トークルームへ"
         end
         # 　タイトルが〇〇となっていること
       end
@@ -160,7 +163,7 @@ RSpec.describe "Quests", type: :system do
 
       context "存在しないデータにアクセスする場合" do
         it "indexページにリダイレクトし、エラーメッセージが表示されていること" do
-          visit edit_quest_path(10000)
+          visit edit_quest_path(0)
           expect(current_path).to eq quests_path
           expect(page).to have_content "クエストが存在していません。"
         end
@@ -173,6 +176,7 @@ RSpec.describe "Quests", type: :system do
 
   describe "クエスト新規作成" do
     let(:quest) { create(:quest, user: user) }
+    let!(:room) { create(:room, quest_id: quest.id)}
     before do
       visit new_quest_path
     end
@@ -200,6 +204,7 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_content "3"
         expect(page).to have_content "6 ポイント"
         expect(page).to have_content "このクエストは公開されています。"
+        expect(page).to have_link "トークルームへ"
       end
 
       it "リロードした際に成功したフラッシュメッセージが消えていること" do
@@ -244,6 +249,7 @@ RSpec.describe "Quests", type: :system do
 
   describe "クエスト編集" do
     let!(:quest) { create(:quest, user: user) }
+    let!(:room) { create(:room, quest_id: quest.id)}
     before do
       visit edit_quest_path(quest)
     end
@@ -271,6 +277,7 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_content "2"
         expect(page).to have_content "4 ポイント"
         expect(page).to have_content "このクエストは公開されていません。"
+        expect(page).to have_link "トークルームへ"
       end
     end
 
@@ -305,6 +312,7 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_content "3"
         expect(page).to have_content "6 ポイント"
         expect(page).to have_content "このクエストは公開されていません。"
+        expect(page).to have_link "トークルームへ"
       end
     end
 
