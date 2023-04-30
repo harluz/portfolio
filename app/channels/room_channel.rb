@@ -15,7 +15,7 @@ class RoomChannel < ApplicationCable::Channel
     @message = Message.find_by(id: data['id'])
     if @message.user == current_user
       @message.destroy
-      ActionCable.server.broadcast "room_channel_#{params['room']}", {id: data['id']}
+      ActionCable.server.broadcast "room_channel_#{params['room']}", { id: data['id'] }
     end
   end
 end

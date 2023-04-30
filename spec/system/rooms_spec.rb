@@ -6,11 +6,11 @@ RSpec.describe "Rooms", type: :system do
 
   describe "表示確認" do
     let(:quest) { create(:quest, user: user) }
-    let!(:room) { create(:room, quest_id: quest.id)}
+    let!(:room) { create(:room, quest_id: quest.id) }
 
     context "/rooms#show" do
       context "メッセージがある場合" do
-        let!(:message) { create(:message, user: user, room_id: room.id, created_at: "2023-04-1 12:00:00")}
+        let!(:message) { create(:message, user: user, room_id: room.id, created_at: "2023-04-1 12:00:00") }
         it "メッセージが表示されていること" do
           visit quest_room_path(room.quest.id, room.id)
           expect(current_path).to eq quest_room_path(room.quest.id, room.id)
@@ -26,7 +26,7 @@ RSpec.describe "Rooms", type: :system do
 
       context "他ユーザーのメッセージがある場合" do
         let(:other_user) { create(:correct_user) }
-        let!(:other_message) { create(:message, user: other_user, room_id: room.id, created_at: "2023-04-1 12:00:00")}
+        let!(:other_message) { create(:message, user: other_user, room_id: room.id, created_at: "2023-04-1 12:00:00") }
         it "メッセージが表示され、削除リンクは表示されていないこと" do
           visit quest_room_path(room.quest.id, room.id)
           expect(current_path).to eq quest_room_path(room.quest.id, room.id)
@@ -63,7 +63,6 @@ RSpec.describe "Rooms", type: :system do
     end
   end
   describe "ページ遷移確認" do
-
   end
   describe "room新規作成" do
     before do
@@ -90,7 +89,7 @@ RSpec.describe "Rooms", type: :system do
 
   describe "room削除" do
     let!(:quest) { create(:quest, user: user) }
-    let!(:room) { create(:room, quest_id: quest.id)}
+    let!(:room) { create(:room, quest_id: quest.id) }
 
     it "クエストの削除と同時にトークルームも削除されていること" do
       quest.destroy

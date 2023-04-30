@@ -6,7 +6,7 @@ RSpec.describe Room, type: :model do
     let(:quest) { create(:quest, user: user) }
     let(:room) { build(:room, quest: quest) }
     let(:message) { build(:message, user: user, room: room) }
-  
+
     it "quest_idがある場合、有効である" do
       expect(room).to be_valid
     end

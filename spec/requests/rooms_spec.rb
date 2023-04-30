@@ -8,17 +8,19 @@ RSpec.describe "Rooms", type: :request do
   let!(:room) { create(:room, quest_id: quest.id) }
   let!(:other_room) { create(:room, quest_id: non_public_quest.id) }
   let!(:message) { create(:message, user: user, room_id: room.id, content: "My message", created_at: "2023-04-1 12:00:00") }
-  let!(:other_message) { create(:message, user: other_user, room_id: room.id, content: "Other message", created_at: "2023-04-2 12:12:00")}
+  let!(:other_message) do
+    create(:message, user: other_user, room_id: room.id, content: "Other message", created_at: "2023-04-2 12:12:00")
+  end
 
   describe "GET #show" do
-    subject{ response.body }
+    subject { response.body }
 
     context "ユーザーがログインしている場合" do
       before do
         sign_in user
         get quest_room_path(room.quest, room)
       end
-  
+
       it "トークルームのgetリクエストが成功していること" do
         expect(response).to have_http_status(200)
       end
@@ -43,12 +45,12 @@ RSpec.describe "Rooms", type: :request do
         it "ステータスコード302（リダイレクト）がレスポンスされていること" do
           expect(response).to have_http_status(302)
         end
-  
+
         it "クエスト一覧ページにリダイレクトするレスポンスが含まれていること" do
           expect(subject).to redirect_to quests_path
         end
       end
-  
+
       context "他ユーザーの非公開クエストのトークルームにアクセスしようとした場合" do
         before do
           get quest_room_path(other_room.quest, other_room)
@@ -57,7 +59,7 @@ RSpec.describe "Rooms", type: :request do
         it "ステータスコード302（リダイレクト）がレスポンスされていること" do
           expect(response).to have_http_status(302)
         end
-  
+
         it "クエスト一覧ページにリダイレクトするレスポンスが含まれていること" do
           expect(subject).to redirect_to quests_path
         end

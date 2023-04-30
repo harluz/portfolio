@@ -16,12 +16,11 @@ RSpec.describe Message, type: :model do
       message.valid?
       expect(message.errors[:content]).to include("を入力してください")
     end
-    
+
     it "user_idがない場合、無効である" do
       message.user_id = nil
       message.valid?
       expect(message.errors[:user_id]).to include("を入力してください")
-    
     end
     it "room_idがない場合、無効である" do
       message.room_id = nil
