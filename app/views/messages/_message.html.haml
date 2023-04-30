@@ -1,0 +1,7 @@
+%div{class: 'message', id: "#{message.id}"}
+  %p{class: "text-break"}
+    = safe_join(message.content.split("\n"),tag(:br))
+  %p{class: "text-secondary"}
+    = l message.created_at, format: :long
+  - if message.user == current_user
+    %button{id: "#{message.id}", class: "delete-btn btn btn-danger mr-5"}コメントを削除

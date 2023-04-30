@@ -1,0 +1,9 @@
+.container
+  .center-block
+    %h1 Chat room
+    %h2= "Quest  #{@room.quest.title}"
+    %p クエストについて語ってみよう
+    %textarea{type: "text", data: {behavior: "room_speaker"}, class: "from-control rounded-3 border border-info", id: "message-textarea"}
+    %button{class: "message_submit btn btn-info"}コメントを送信
+    %div{id: 'messages', data: {room_id: @room.id}}
+      = render @messages

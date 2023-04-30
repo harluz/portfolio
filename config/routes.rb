@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  # get 'quests/index'
+  mount ActionCable.server => '/cable'
   root 'pages#top'
   get 'pages/top'
   get 'pages/main'
@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   end
   
   resources :quests do
+    resources :rooms, only: [:show]
     collection do
       get 'my_quest'
     end
@@ -23,5 +24,6 @@ Rails.application.routes.draw do
       get 'closed'
     end
   end
+
   get 'test', to: 'test#index'
 end
