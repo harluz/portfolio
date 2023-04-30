@@ -35,7 +35,7 @@ RSpec.describe "Rooms", type: :system do
           expect(page).to have_content "コメントを送信"
           expect(page).to have_content other_message.content
           expect(page).to have_content "2023/04/01 12:00"
-          expect(page).to have_button "コメントを削除"
+          expect(page).not_to have_button "コメントを削除"
         end
       end
 
