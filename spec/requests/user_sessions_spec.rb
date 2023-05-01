@@ -52,6 +52,22 @@ RSpec.describe "UserSessions", type: :request do
     end
   end
 
+  describe "POST #guest_sign_in" do
+    subject { response }
+
+    before do
+      post users_guest_sign_in_path
+    end
+
+    it "〇〇ページにリダイレクトされていること" do
+      expect(subject).to redirect_to root_path
+    end
+
+    it "ステータスコード303（リダイレクト）がレスポンスされていること" do
+      expect(subject).to have_http_status(302)
+    end
+  end
+
   describe "DELET #destroy" do
     let(:user) { create(:user) }
     subject { response }
