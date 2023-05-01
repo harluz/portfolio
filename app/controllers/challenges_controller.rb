@@ -39,6 +39,7 @@ class ChallengesController < ApplicationController
       when "true"
         @user = User.find(@challenge.user_id)
         @user.having_xp += @challenge.quest.xp
+        @user.challenge_achieved += 1
         @user.save(validate: false)
         flash[:notice] = "クエスト達成おめでとうございます。経験値#{@challenge.quest.xp}ポイントを獲得しました。"
         redirect_to challenges_path
