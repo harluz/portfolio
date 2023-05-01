@@ -3,6 +3,7 @@ FactoryBot.define do
     name { "sample user" }
     email { "sample@mail.com" }
     password { "samplepassword" }
+    having_xp { 100 }
   end
 
   factory :correct_user, :class => "User" do
