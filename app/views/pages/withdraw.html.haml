@@ -1,0 +1,7 @@
+%h3 ユーザー退会
+%div
+  退会した場合、あなたの挑戦とメッセージは削除されます。
+  作成したクエストについては、削除されないためご注意ください。
+%div
+  #{button_to "ユーザー退会", registration_path(@user), data: { confirm: "本当に削除してよろしいですか？", turbo_confirm: "本当に削除してよろしいですか？" }, method: :delete}
+= link_to "Back", :back
