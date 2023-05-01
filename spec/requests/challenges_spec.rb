@@ -20,10 +20,10 @@ RSpec.describe "Challenges", type: :request do
       end
 
       context "挑戦中のクエストがある場合" do
-        let!(:public_quest_challenge) { create(:challenge, user_id: user.id, quest_id: public_quest.id) }
-        let!(:non_public_quest_challenge) { create(:challenge, user_id: user.id, quest_id: non_public_quest.id) }
+        let!(:public_quest_challenge) { create(:challenge, user: user, quest: public_quest) }
+        let!(:non_public_quest_challenge) { create(:challenge, user: user, quest: non_public_quest) }
         let!(:non_public_other_quest_challenge) do
-          create(:challenge, user_id: other_user.id, quest_id: other_non_public_quest.id)
+          create(:challenge, user: other_user, quest: other_non_public_quest)
         end
 
         before { get challenges_path }
@@ -56,7 +56,7 @@ RSpec.describe "Challenges", type: :request do
       end
 
       context "挑戦中のクエストが非公開となった場合" do
-        let!(:public_quest_challenge) { create(:challenge, user_id: user.id, quest_id: other_non_public_quest.id) }
+        let!(:public_quest_challenge) { create(:challenge, user: user, quest: other_non_public_quest) }
         it "クエストのレスポンスが含まれていること" do
           get challenges_path
           expect(subject).to include other_non_public_quest.title
@@ -68,7 +68,7 @@ RSpec.describe "Challenges", type: :request do
       end
 
       context "挑戦中のクエストが削除された場合" do
-        let!(:public_quest_challenge) { create(:challenge, user_id: user.id, quest_id: other_non_public_quest.id) }
+        let!(:public_quest_challenge) { create(:challenge, user: user, quest: other_non_public_quest) }
         it "クエストが削除されたメッセージがレスポンスに含まれていること" do
           other_non_public_quest.destroy
           get challenges_path
@@ -99,11 +99,11 @@ RSpec.describe "Challenges", type: :request do
       before { sign_in user }
 
       context "達成したクエストがある場合" do
-        let!(:public_quest_challenge) { create(:closed_challenge, user_id: user.id, quest_id: public_quest.id) }
-        let!(:non_public_quest_challenge) { create(:closed_challenge, user_id: user.id, quest_id: non_public_quest.id) }
-        let!(:public_other_quest_challenge) { create(:closed_challenge, user_id: other_user.id, quest_id: other_public_quest.id) }
+        let!(:public_quest_challenge) { create(:closed_challenge, user: user, quest: public_quest) }
+        let!(:non_public_quest_challenge) { create(:closed_challenge, user: user, quest: non_public_quest) }
+        let!(:public_other_quest_challenge) { create(:closed_challenge, user: other_user, quest: other_public_quest) }
         let!(:non_public_other_quest_challenge) do
-          create(:closed_challenge, user_id: other_user.id, quest_id: other_non_public_quest.id)
+          create(:closed_challenge, user: other_user, quest: other_non_public_quest)
         end
 
         before { get closed_challenges_path }
@@ -134,7 +134,7 @@ RSpec.describe "Challenges", type: :request do
 
       context "達成済みのクエストが非公開となった場合" do
         let!(:change_challenge_quest_to_private_from_public) do
-          create(:closed_challenge, user_id: user.id, quest_id: other_non_public_quest.id)
+          create(:closed_challenge, user: user, quest: other_non_public_quest)
         end
         it "クエストのレスポンスが含まれていること" do
           get closed_challenges_path
@@ -147,7 +147,7 @@ RSpec.describe "Challenges", type: :request do
 
       context "達成済みのクエストが削除された場合" do
         let!(:change_challenge_quest_to_private_from_public) do
-          create(:closed_challenge, user_id: user.id, quest_id: other_non_public_quest.id)
+          create(:closed_challenge, user: user, quest: other_non_public_quest)
         end
         it "クエストが削除されたメッセージがレスポンスに含まれていること" do
           other_non_public_quest.destroy
@@ -271,8 +271,8 @@ RSpec.describe "Challenges", type: :request do
   end
 
   describe "PATCH #update" do
-    let!(:public_quest_challenge) { create(:challenge, user_id: user.id, quest_id: public_quest.id) }
-    let!(:non_public_quest_challenge) { create(:challenge, user_id: user.id, quest_id: non_public_quest.id, close: true) }
+    let!(:public_quest_challenge) { create(:challenge, user: user, quest: public_quest) }
+    let!(:non_public_quest_challenge) { create(:challenge, user: user, quest: non_public_quest, close: true) }
 
     subject { response }
     before { sign_in user }
@@ -350,7 +350,7 @@ RSpec.describe "Challenges", type: :request do
 
     context "他ユーザーの公開クエストが非公開となった場合" do
       let!(:change_challenge_quest_to_private_from_public) do
-        create(:challenge, user_id: user.id, quest_id: other_non_public_quest.id)
+        create(:challenge, user: user, quest: other_non_public_quest)
       end
       before do
         params_challenge = {
@@ -375,8 +375,8 @@ RSpec.describe "Challenges", type: :request do
   end
 
   describe "DELETE #destroy" do
-    let!(:public_quest_challenge) { create(:challenge, user_id: user.id, quest_id: public_quest.id) }
-    let!(:public_other_quest_challenge) { create(:closed_challenge, user_id: other_user.id, quest_id: other_public_quest.id) }
+    let!(:public_quest_challenge) { create(:challenge, user: user, quest: public_quest) }
+    let!(:public_other_quest_challenge) { create(:closed_challenge, user: other_user, quest: other_public_quest) }
 
     subject { response }
     before { sign_in user }
@@ -440,7 +440,7 @@ RSpec.describe "Challenges", type: :request do
 
     context "他ユーザーの公開クエストが非公開となった場合" do
       let!(:change_challenge_quest_to_private_from_public) do
-        create(:challenge, user_id: user.id, quest_id: other_non_public_quest.id)
+        create(:challenge, user: user, quest: other_non_public_quest)
       end
       it "削除が成功し、challenge数が減少していること" do
         expect do
@@ -457,6 +457,14 @@ RSpec.describe "Challenges", type: :request do
         it "挑戦リストにリダイレクトするレスポンスが含まれていること" do
           expect(subject).to redirect_to challenges_path
         end
+      end
+    end
+
+    context "ユーザーが退会した場合" do
+      it "challenge数が減少していること" do
+        expect do
+          delete user_registration_path
+        end.to change(Challenge, :count).by(-1)
       end
     end
   end

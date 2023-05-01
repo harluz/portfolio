@@ -169,6 +169,15 @@ RSpec.describe "UserRegistrations", type: :system do
   end
 
   describe "ユーザー削除" do
+    let(:user) { create(:user) }
+    before { sign_in user }
+
+    it "退会に成功すること" do
+      visit pages_withdraw_path
+      click_on "ユーザー退会"
+      expect(current_path).to eq root_path
+      expect(page).to have_content "アカウントを削除しました。またのご利用をお待ちしております。"
+    end
   end
   # 別タブで操作されている場合
 end
