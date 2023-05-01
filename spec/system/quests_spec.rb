@@ -108,7 +108,7 @@ RSpec.describe "Quests", type: :system do
 
     context "/quests/show" do
       let(:quest) { create(:quest, user: user) }
-      let!(:room) { create(:room, quest_id: quest.id) }
+      let!(:room) { create(:room, quest: quest) }
       before do
         visit quest_path(quest)
       end
@@ -176,7 +176,7 @@ RSpec.describe "Quests", type: :system do
 
   describe "クエスト新規作成" do
     let(:quest) { create(:quest, user: user) }
-    let!(:room) { create(:room, quest_id: quest.id) }
+    let!(:room) { create(:room, quest: quest) }
     before do
       visit new_quest_path
     end
@@ -249,7 +249,7 @@ RSpec.describe "Quests", type: :system do
 
   describe "クエスト編集" do
     let!(:quest) { create(:quest, user: user) }
-    let!(:room) { create(:room, quest_id: quest.id) }
+    let!(:room) { create(:room, quest: quest) }
     before do
       visit edit_quest_path(quest)
     end

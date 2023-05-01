@@ -6,9 +6,9 @@ RSpec.describe "Challenges", type: :system do
   let(:public_quest) { create(:public_quest, user: user) }
   let(:non_public_quest) { create(:non_public_quest, user: user) }
   let(:other_public_quest) { create(:public_other_quest, user: other_user) }
-  let!(:room) { create(:room, quest_id: public_quest.id) }
-  let!(:non_public_room) { create(:room, quest_id: non_public_quest.id) }
-  let!(:other_room) { create(:room, quest_id: other_public_quest.id) }
+  let!(:room) { create(:room, quest: public_quest) }
+  let!(:non_public_room) { create(:room, quest: non_public_quest) }
+  let!(:other_room) { create(:room, quest: other_public_quest) }
 
   before { sign_in user }
 
@@ -18,8 +18,8 @@ RSpec.describe "Challenges", type: :system do
 
     context "/challenge#index" do
       context "挑戦中クエストがある場合" do
-        let!(:complete_challenge) { create(:challenge, user_id: user.id, quest_id: complete_quest.id) }
-        let!(:give_up_challenge) { create(:challenge, user_id: user.id, quest_id: give_up_quest.id) }
+        let!(:complete_challenge) { create(:challenge, user: user, quest: complete_quest) }
+        let!(:give_up_challenge) { create(:challenge, user: user, quest: give_up_quest) }
         it "自身の挑戦中のクエストが表示されていること" do
           visit challenges_path
           expect(page).not_to have_content "挑戦中のクエストがありません"
@@ -84,8 +84,8 @@ RSpec.describe "Challenges", type: :system do
 
     context "/challenge#closed" do
       context "クエストが達成される場合" do
-        let!(:complete_challenge) { create(:challenge, user_id: user.id, quest_id: complete_quest.id) }
-        let!(:give_up_challenge) { create(:challenge, user_id: user.id, quest_id: give_up_quest.id) }
+        let!(:complete_challenge) { create(:challenge, user: user, quest: complete_quest) }
+        let!(:give_up_challenge) { create(:challenge, user: user, quest: give_up_quest) }
         it "達成したクエストが表示されていること" do
           visit closed_challenges_path
           expect(page).not_to have_content complete_challenge.quest.title
@@ -198,7 +198,7 @@ RSpec.describe "Challenges", type: :system do
 
     context "他ユーザーの公開クエストの場合" do
       let!(:other_quest) { create(:public_other_quest, user: other_user) }
-      let!(:room) { create(:room, quest_id: other_quest.id) }
+      let!(:room) { create(:room, quest: other_quest) }
 
       before do
         visit quest_path(other_quest)
@@ -250,9 +250,9 @@ RSpec.describe "Challenges", type: :system do
 
   describe "challenge編集" do
     context "更新に成功する場合" do
-      let!(:public_quest_challenge) { create(:challenge, user_id: user.id, quest_id: public_quest.id) }
-      let!(:non_public_quest_challenge) { create(:challenge, user_id: user.id, quest_id: non_public_quest.id) }
-      let!(:other_public_quest_challenge) { create(:challenge, user_id: user.id, quest_id: other_public_quest.id) }
+      let!(:public_quest_challenge) { create(:challenge, user: user, quest: public_quest) }
+      let!(:non_public_quest_challenge) { create(:challenge, user: user, quest: non_public_quest) }
+      let!(:other_public_quest_challenge) { create(:challenge, user: user, quest: other_public_quest) }
 
       before { visit challenges_path }
 
@@ -301,9 +301,9 @@ RSpec.describe "Challenges", type: :system do
 
   describe "challenge削除" do
     context "削除に成功する場合" do
-      let!(:public_quest_challenge) { create(:challenge, user_id: user.id, quest_id: public_quest.id) }
-      let!(:non_public_quest_challenge) { create(:challenge, user_id: user.id, quest_id: non_public_quest.id) }
-      let!(:other_public_quest_challenge) { create(:challenge, user_id: user.id, quest_id: other_public_quest.id) }
+      let!(:public_quest_challenge) { create(:challenge, user: user, quest: public_quest) }
+      let!(:non_public_quest_challenge) { create(:challenge, user: user, quest: non_public_quest) }
+      let!(:other_public_quest_challenge) { create(:challenge, user: user, quest: other_public_quest) }
 
       before { visit challenges_path }
 

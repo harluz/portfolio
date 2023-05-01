@@ -4,7 +4,7 @@ RSpec.describe Challenge, type: :model do
   describe "バリデーション確認" do
     let(:user) { create(:user) }
     let(:quest) { create(:quest, user: user) }
-    let!(:challenge) { build(:challenge, user_id: user.id, quest_id: quest.id) }
+    let!(:challenge) { build(:challenge, user: user, quest: quest) }
 
     it "user_id,quest_idがある場合、有効である" do
       expect(challenge).to be_valid

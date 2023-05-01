@@ -6,11 +6,11 @@ RSpec.describe "Rooms", type: :system do
 
   describe "表示確認" do
     let(:quest) { create(:quest, user: user) }
-    let!(:room) { create(:room, quest_id: quest.id) }
+    let!(:room) { create(:room, quest: quest) }
 
     context "/rooms#show" do
       context "メッセージがある場合" do
-        let!(:message) { create(:message, user: user, room_id: room.id, created_at: "2023-04-1 12:00:00") }
+        let!(:message) { create(:message, user: user, room: room, created_at: "2023-04-1 12:00:00") }
         it "メッセージが表示されていること" do
           visit quest_room_path(room.quest.id, room.id)
           expect(current_path).to eq quest_room_path(room.quest.id, room.id)
@@ -26,7 +26,7 @@ RSpec.describe "Rooms", type: :system do
 
       context "他ユーザーのメッセージがある場合" do
         let(:other_user) { create(:correct_user) }
-        let!(:other_message) { create(:message, user: other_user, room_id: room.id, created_at: "2023-04-1 12:00:00") }
+        let!(:other_message) { create(:message, user: other_user, room: room, created_at: "2023-04-1 12:00:00") }
         it "メッセージが表示され、削除リンクは表示されていないこと" do
           visit quest_room_path(room.quest.id, room.id)
           expect(current_path).to eq quest_room_path(room.quest.id, room.id)
@@ -52,7 +52,7 @@ RSpec.describe "Rooms", type: :system do
       context "他ユーザーの非公開クエストのトークルームにアクセスする場合" do
         let(:other_user) { create(:correct_user) }
         let(:non_public_quest) { create(:non_public_quest, user: other_user) }
-        let!(:non_public_room) { create(:room, quest_id: non_public_quest.id) }
+        let!(:non_public_room) { create(:room, quest: non_public_quest) }
 
         it "フラッシュメッセージが表示され、クエスト一覧ページにリダイレクトしていること" do
           visit quest_room_path(non_public_room.quest, non_public_room)
@@ -89,7 +89,7 @@ RSpec.describe "Rooms", type: :system do
 
   describe "room削除" do
     let!(:quest) { create(:quest, user: user) }
-    let!(:room) { create(:room, quest_id: quest.id) }
+    let!(:room) { create(:room, quest: quest) }
 
     it "クエストの削除と同時にトークルームも削除されていること" do
       quest.destroy

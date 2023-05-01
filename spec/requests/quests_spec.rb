@@ -187,9 +187,9 @@ RSpec.describe "Quests", type: :request do
     let!(:quest) { create(:public_quest, user: user) }
     let!(:other_quest) { create(:public_other_quest, user: other_user) }
     let!(:non_public_other_quest) { create(:other_quest, user: other_user) }
-    let!(:room) { create(:room, quest_id: quest.id) }
-    let!(:other_room) { create(:room, quest_id: other_quest.id) }
-    let!(:non_public_other_room) { create(:room, quest_id: non_public_other_quest.id) }
+    let!(:room) { create(:room, quest: quest) }
+    let!(:other_room) { create(:room, quest: other_quest) }
+    let!(:non_public_other_room) { create(:room, quest: non_public_other_quest) }
     subject { response }
 
     context "ユーザーがログインしている場合" do
