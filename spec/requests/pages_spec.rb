@@ -31,9 +31,11 @@ RSpec.describe "Pages", type: :request do
         challenge1.close = true
         challenge2.close = true
         expect(subject).to include user.name
+        expect(subject).to include user.email
         expect(subject).to include "2"
         expect(subject).to include "3"
         expect(subject).to include "100"
+        expect(subject).to include "ユーザー編集"
       end
     end
 
