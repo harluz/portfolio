@@ -42,6 +42,5 @@ RSpec.describe "Pages", type: :system do
   end
 
   describe "ページ遷移確認" do
-
   end
 end

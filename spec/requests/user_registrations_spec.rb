@@ -137,11 +137,11 @@ RSpec.describe "UserRegistrations", type: :request do
           }
           patch user_registration_path, params: { user: user_params }
         end
-  
+
         it "ステータスコード422(バリデーションエラー)がレスポンスされていること" do
           expect(subject).to have_http_status(422)
         end
-  
+
         it "フラッシュメッセージがレスポンスに含まれていること" do
           expect(response.body).to include "ユーザー名を入力してください"
           expect(response.body).to include "メールアドレスを入力してください"
@@ -159,11 +159,11 @@ RSpec.describe "UserRegistrations", type: :request do
           }
           patch user_registration_path, params: { user: user_params }
         end
-  
+
         it "ステータスコード422(バリデーションエラー)がレスポンスされていること" do
           expect(subject).to have_http_status(422)
         end
-  
+
         it "フラッシュメッセージがレスポンスに含まれていること" do
           expect(response.body).to include "メールアドレスはすでに存在します"
         end

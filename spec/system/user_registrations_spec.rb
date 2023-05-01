@@ -6,7 +6,7 @@ RSpec.describe "UserRegistrations", type: :system do
       before do
         visit new_user_registration_path
       end
-  
+
       it "サインアップのフォームが表示されていること" do
         expect(page).to have_content "ユーザー名"
         expect(page).to have_content "メールアドレス"
@@ -23,7 +23,7 @@ RSpec.describe "UserRegistrations", type: :system do
     end
 
     context "users/edit" do
-      let(:user) { create(:user)}
+      let(:user) { create(:user) }
       before do
         sign_in user
         visit edit_user_registration_path
@@ -219,7 +219,7 @@ RSpec.describe "UserRegistrations", type: :system do
       end
 
       it "リロードした際にフラッシュメッセージが消えていること" do
-        visit pages_profile_path
+        visit current_path
         expect(page).not_to have_content "アカウント情報を変更しました。"
       end
     end
@@ -251,7 +251,7 @@ RSpec.describe "UserRegistrations", type: :system do
       end
 
       it "リロードした際にフラッシュメッセージが消えていること" do
-        visit pages_profile_path
+        visit current_path
         expect(page).not_to have_content "ユーザー名を入力してください"
         expect(page).not_to have_content "メールアドレスを入力してください"
         expect(page).not_to have_content "6文字以上のパスワードを入力してください。"
