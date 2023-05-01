@@ -296,8 +296,7 @@ RSpec.describe "Quests", type: :request do
 
     context "ユーザーがログインしていない場合" do
       before { get edit_quest_path(quest) }
-
-      it "editページのgetリクエストが成功していること" do
+      it "ステータスコード302（リダイレクト）がレスポンスされていること" do
         expect(subject).to have_http_status(302)
       end
 
@@ -346,6 +345,7 @@ RSpec.describe "Quests", type: :request do
         expect(response.body).to include "type=\"checkbox\" value=\"1\" checked=\"checked\""
       end
     end
+
     context "存在しないquestを更新しようとした場合" do
       before do
         patch quest_path(0), params: { quest: attributes_for(:quest) }
