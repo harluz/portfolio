@@ -10,12 +10,15 @@ ja:
       user: ユーザー
       quest: クエスト
       challenge: チャレンジ
+      room: トークルーム
+      message: メッセージ
     attributes:
       user:
         name: ユーザー名
         email: メールアドレス
         password: パスワード
         password_confirmation: 確認用パスワード
+        current_password: 現在のパスワード
         having_xp: 獲得経験値
         level: レベル
       quest:
@@ -28,6 +31,8 @@ ja:
         user_id: ユーザーID
         quest_id: クエストID
         close: 完了
+      message:
+        content: メッセージ内容
   date:
     abbr_day_names:
       - 日
