@@ -2,23 +2,48 @@ require 'rails_helper'
 
 RSpec.describe "UserRegistrations", type: :system do
   describe "表示確認" do
-    before do
-      visit new_user_registration_path
+    context "users/new" do
+      before do
+        visit new_user_registration_path
+      end
+  
+      it "サインアップのフォームが表示されていること" do
+        expect(page).to have_content "ユーザー名"
+        expect(page).to have_content "メールアドレス"
+        expect(page).to have_content "パスワード"
+        expect(page).to have_content "確認用パスワード"
+        expect(page).to have_content "Sign up"
+        expect(page).to have_field "ユーザー名"
+        expect(page).to have_field "メールアドレス"
+        expect(page).to have_field "パスワード"
+        expect(page).to have_field "確認用パスワード"
+        expect(page).to have_button "Sign up"
+      end
+      # タイトルが〇〇となっていること
     end
 
-    it "サインアップのフォームが表示されていること" do
-      expect(page).to have_content "ユーザー名"
-      expect(page).to have_content "メールアドレス"
-      expect(page).to have_content "パスワード"
-      expect(page).to have_content "確認用パスワード"
-      expect(page).to have_content "Sign up"
-      expect(page).to have_field "ユーザー名"
-      expect(page).to have_field "メールアドレス"
-      expect(page).to have_field "パスワード"
-      expect(page).to have_field "確認用パスワード"
-      expect(page).to have_button "Sign up"
+    context "users/edit" do
+      let(:user) { create(:user)}
+      before do
+        sign_in user
+        visit edit_user_registration_path
+      end
+
+      it "編集のフォームが表示されていること" do
+        expect(page).to have_content "ユーザー名"
+        expect(page).to have_content "メールアドレス"
+        expect(page).to have_content "パスワード (変更する場合のみ入力)"
+        expect(page).to have_content "6文字以上のパスワードを入力してください。"
+        expect(page).to have_content "確認用パスワード"
+        expect(page).to have_content "現在のパスワード (変更を適用するためには、現在のパスワードの入力が必要となります。)"
+        expect(page).to have_field "ユーザー名"
+        expect(page).to have_field "メールアドレス"
+        expect(page).to have_field "パスワード"
+        expect(page).to have_field "確認用パスワード"
+        expect(page).to have_field "現在のパスワード"
+        expect(page).to have_button "更新"
+      end
     end
-    # タイトルが〇〇となっていること
   end
 
   describe "ページ遷移確認" do
@@ -166,6 +191,73 @@ RSpec.describe "UserRegistrations", type: :system do
   end
 
   describe "ユーザー編集" do
+    let(:user) { create(:user) }
+    before { sign_in user }
+
+    context "更新に成功する場合" do
+      before do
+        visit edit_user_registration_path
+        fill_in 'ユーザー名', with: "サンプルユーザー"
+        fill_in 'メールアドレス', with: "samplemail@mail.com"
+        fill_in 'パスワード', with: "password"
+        fill_in '確認用パスワード', with: "password"
+        fill_in '現在のパスワード', with: "samplepassword"
+        click_on '更新'
+      end
+
+      it "profileページに遷移していること" do
+        expect(current_path).to eq pages_profile_path
+      end
+
+      it "フラッシュメッセージが表示されていること" do
+        expect(page).to have_content "アカウント情報を変更しました。"
+      end
+
+      it "変更後のユーザー名、メールアドレスが表示されていること" do
+        expect(page).to have_content "サンプルユーザー"
+        expect(page).to have_content "samplemail@mail.com"
+      end
+
+      it "リロードした際にフラッシュメッセージが消えていること" do
+        visit pages_profile_path
+        expect(page).not_to have_content "アカウント情報を変更しました。"
+      end
+    end
+
+    context "更新に失敗する場合" do
+      let!(:other_user) { create(:correct_user) }
+      before do
+        visit edit_user_registration_path
+        fill_in 'ユーザー名', with: ""
+        fill_in 'メールアドレス', with: ""
+        fill_in 'パスワード', with: ""
+        fill_in '確認用パスワード', with: ""
+        fill_in '現在のパスワード', with: ""
+        click_on '更新'
+      end
+
+      it "フラッシュメッセージが表示されていること" do
+        expect(page).to have_content "ユーザー名を入力してください"
+        expect(page).to have_content "メールアドレスを入力してください"
+        expect(page).to have_content "6文字以上のパスワードを入力してください。"
+        expect(page).to have_content "現在のパスワードを入力してください"
+        fill_in 'メールアドレス', with: "correct@mail.com"
+        click_on '更新'
+        expect(page).to have_content "メールアドレスはすでに存在します"
+      end
+
+      it "/users/editページに遷移していること" do
+        expect(current_path).to eq user_registration_path
+      end
+
+      it "リロードした際にフラッシュメッセージが消えていること" do
+        visit pages_profile_path
+        expect(page).not_to have_content "ユーザー名を入力してください"
+        expect(page).not_to have_content "メールアドレスを入力してください"
+        expect(page).not_to have_content "6文字以上のパスワードを入力してください。"
+        expect(page).not_to have_content "現在のパスワードを入力してください"
+      end
+    end
   end
 
   describe "ユーザー削除" do
