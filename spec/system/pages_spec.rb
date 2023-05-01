@@ -18,13 +18,16 @@ RSpec.describe "Pages", type: :system do
 
       it "プロフィール情報が表示されていること" do
         expect(page).to have_content "ユーザー名"
+        expect(page).to have_content "メールアドレス"
         expect(page).to have_content "達成クエスト数(再挑戦を含む)"
         expect(page).to have_content "作成クエスト数"
         expect(page).to have_content "獲得経験値"
         expect(page).to have_content user.name
+        expect(page).to have_content user.email
         expect(page).to have_content "1"
         expect(page).to have_content "3"
         expect(page).to have_content "106"
+        expect(page).to have_link "ユーザー編集"
       end
 
       it "数値が３桁区切りとなっていること" do
