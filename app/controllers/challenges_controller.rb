@@ -40,6 +40,7 @@ class ChallengesController < ApplicationController
         @user = User.find(@challenge.user_id)
         @user.having_xp += @challenge.quest.xp
         @user.challenge_achieved += 1
+        upgrade(@user)
         @user.save(validate: false)
         flash[:notice] = "クエスト達成おめでとうございます。経験値#{@challenge.quest.xp}ポイントを獲得しました。"
         redirect_to challenges_path
@@ -76,6 +77,14 @@ class ChallengesController < ApplicationController
     unless current_user_owned?(@challenge)
       flash[:alert] = "他のユーザーの挑戦を操作することはできません。"
       redirect_to challenges_path
+    end
+  end
+
+  def upgrade(user)
+    current_grade = GradeSetting.find_by(grade: user.grade)
+    next_grade = GradeSetting.find_by(tag: current_grade.tag += 1)
+    if next_grade && next_grade.judgement_xp <= user.having_xp
+      user.grade = next_grade.grade
     end
   end
 end
