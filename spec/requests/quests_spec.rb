@@ -187,9 +187,9 @@ RSpec.describe "Quests", type: :request do
     let!(:quest) { create(:public_quest, user: user) }
     let!(:other_quest) { create(:public_other_quest, user: other_user) }
     let!(:non_public_other_quest) { create(:other_quest, user: other_user) }
-    let!(:room) { create(:room, quest_id: quest.id) }
-    let!(:other_room) { create(:room, quest_id: other_quest.id) }
-    let!(:non_public_other_room) { create(:room, quest_id: non_public_other_quest.id) }
+    let!(:room) { create(:room, quest: quest) }
+    let!(:other_room) { create(:room, quest: other_quest) }
+    let!(:non_public_other_room) { create(:room, quest: non_public_other_quest) }
     subject { response }
 
     context "ユーザーがログインしている場合" do
@@ -296,8 +296,7 @@ RSpec.describe "Quests", type: :request do
 
     context "ユーザーがログインしていない場合" do
       before { get edit_quest_path(quest) }
-
-      it "editページのgetリクエストが成功していること" do
+      it "ステータスコード302（リダイレクト）がレスポンスされていること" do
         expect(subject).to have_http_status(302)
       end
 
@@ -346,6 +345,7 @@ RSpec.describe "Quests", type: :request do
         expect(response.body).to include "type=\"checkbox\" value=\"1\" checked=\"checked\""
       end
     end
+
     context "存在しないquestを更新しようとした場合" do
       before do
         patch quest_path(0), params: { quest: attributes_for(:quest) }

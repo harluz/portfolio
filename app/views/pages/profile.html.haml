@@ -1,0 +1,15 @@
+%div
+  %div ユーザー名
+  %p= @user.name
+  %div メールアドレス
+  %p= @user.email
+  %div 達成クエスト数(再挑戦を含む)
+  %p= @user.challenge_achieved.to_s(:delimited)
+  %div 作成クエスト数
+  %p= @user.quests.count.to_s(:delimited)
+  %div 獲得経験値
+  %p= "#{@user.having_xp.to_s(:delimited)}ポイント"
+  %div 称号
+  %p= @user.grade
+%div
+  = link_to "ユーザー編集", edit_user_registration_path

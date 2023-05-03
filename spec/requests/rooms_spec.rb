@@ -5,11 +5,11 @@ RSpec.describe "Rooms", type: :request do
   let(:other_user) { create(:correct_user) }
   let!(:quest) { create(:quest, user: user) }
   let(:non_public_quest) { create(:non_public_quest, user: other_user) }
-  let!(:room) { create(:room, quest_id: quest.id) }
-  let!(:other_room) { create(:room, quest_id: non_public_quest.id) }
-  let!(:message) { create(:message, user: user, room_id: room.id, content: "My message", created_at: "2023-04-1 12:00:00") }
+  let!(:room) { create(:room, quest: quest) }
+  let!(:other_room) { create(:room, quest: non_public_quest) }
+  let!(:message) { create(:message, user: user, room: room, content: "My message", created_at: "2023-04-1 12:00:00") }
   let!(:other_message) do
-    create(:message, user: other_user, room_id: room.id, content: "Other message", created_at: "2023-04-2 12:12:00")
+    create(:message, user: other_user, room: room, content: "Other message", created_at: "2023-04-2 12:12:00")
   end
 
   describe "GET #show" do

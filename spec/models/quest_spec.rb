@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Quest, type: :model do
   describe "バリデーション確認" do
     let(:user) { create(:user) }
-    let(:quest) { build(:quest, user_id: user.id) }
+    let(:quest) { build(:quest, user: user) }
 
     it "title,describe,difficulty,xp,publicがある場合、有効である" do
       expect(quest).to be_valid

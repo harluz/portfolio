@@ -85,7 +85,7 @@ RSpec.describe "UserSessions", type: :system do
         click_on 'Log in'
       end
 
-      it "ログイン後に〇〇ページに遷移していること" do
+      it "〇〇ページに遷移していること" do
         expect(current_path).to eq new_user_session_path
       end
 
@@ -103,6 +103,49 @@ RSpec.describe "UserSessions", type: :system do
     end
   end
 
+  describe "ゲストログイン確認" do
+    before do
+      visit root_path
+      click_on "ゲストログイン"
+    end
+
+    it "ログイン後に〇〇ページに遷移していること" do
+      expect(current_path).to eq root_path
+    end
+
+    it "成功したフラッシュメッセージが表示されること" do
+      expect(page).to have_content 'ゲストユーザーとしてログインしました。'
+    end
+
+    it "ログインに成功したとき、成功したフラッシュメッセージが表示されリロードすると表示が消えること" do
+      visit current_path
+      expect(page).not_to have_content 'ゲストユーザーとしてログインしました。'
+    end
+  end
+
   describe "ログアウト確認" do
+    let(:user) { create(:user) }
+    before do
+      sign_in user
+      visit root_path
+      click_on "ログアウト"
+    end
+
+    it "ログアウト後にルートページに遷移していること" do
+      expect(current_path).to eq root_path
+    end
+
+    it "成功したフラッシュメッセージが表示されること" do
+      expect(page).to have_content 'ログアウトしました。'
+    end
+
+    it "ログアウト後にログインするリンクが表示されていること" do
+      expect(page).to have_content "ログイン"
+    end
+
+    it "ログインに成功したとき、成功したフラッシュメッセージが表示されリロードすると表示が消えること" do
+      visit current_path
+      expect(page).not_to have_content 'ログアウトしました。'
+    end
   end
 end

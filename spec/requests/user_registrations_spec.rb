@@ -37,7 +37,6 @@ RSpec.describe "UserRegistrations", type: :request do
         end
       end
 
-      # 許可されたページにアクセスした際、ステータスコード200（）がレスポンスされていること
       # サインアップした場合に表示されるヘッダーのレスポンスが含まれていること
     end
 
@@ -58,6 +57,115 @@ RSpec.describe "UserRegistrations", type: :request do
         it "許可されていないページにアクセスした際、ステータスコード302（リダイレクト）がレスポンスされていること" do
           get pages_main_path
           expect(subject).to have_http_status(302)
+        end
+      end
+    end
+  end
+
+  describe "GET #edit" do
+    let(:user) { create(:user) }
+    subject { response }
+
+    context "ユーザーがログインしている場合" do
+      before do
+        sign_in user
+        get edit_user_registration_path
+      end
+
+      it "ユーザー編集ページのgetリクエストが成功していること" do
+        get edit_user_registration_path
+        expect(subject).to have_http_status(200)
+      end
+
+      it "フォームがレスポンスに含まれること" do
+        expect(response.body).to include "ユーザー名"
+        expect(response.body).to include "メールアドレス"
+        expect(response.body).to include "パスワード"
+        expect(response.body).to include "確認用パスワード"
+        expect(response.body).to include "現在のパスワード"
+      end
+    end
+
+    context "ユーザーがログインしていない場合" do
+      before { get edit_user_registration_path }
+
+      it "ステータスコード302（リダイレクト）がレスポンスされていること" do
+        expect(subject).to have_http_status(302)
+      end
+
+      it "sign_inページにリダイレクトするレスポンスが含まれていること" do
+        expect(subject).to redirect_to new_user_session_path
+      end
+    end
+  end
+
+  describe "PATCH #update" do
+    let(:user) { create(:user) }
+    subject { response }
+    before { sign_in user }
+
+    context "userの更新に成功する場合" do
+      before do
+        user_params = {
+          name: "サンプルユーザー",
+          email: "correct@mail.com",
+          password: "password",
+          password_confirmation: "password",
+          current_password: "samplepassword",
+        }
+        patch user_registration_path, params: { user: user_params }
+      end
+
+      it "users/profileページにリダイレクトされていること" do
+        expect(subject).to redirect_to pages_profile_path
+      end
+
+      it "ステータスコード302（リダイレクト）がレスポンスさていること" do
+        expect(subject).to have_http_status(303)
+      end
+    end
+
+    context "userの更新に失敗する場合" do
+      context "入力内容が空である場合" do
+        before do
+          user_params = {
+            name: "",
+            email: "",
+            password: "",
+            password_confirmation: "",
+            current_password: "",
+          }
+          patch user_registration_path, params: { user: user_params }
+        end
+
+        it "ステータスコード422(バリデーションエラー)がレスポンスされていること" do
+          expect(subject).to have_http_status(422)
+        end
+
+        it "フラッシュメッセージがレスポンスに含まれていること" do
+          expect(response.body).to include "ユーザー名を入力してください"
+          expect(response.body).to include "メールアドレスを入力してください"
+          expect(response.body).to include "6文字以上のパスワードを入力してください。"
+          expect(response.body).to include "現在のパスワードを入力してください"
+        end
+      end
+
+      context "変更しようとしているメールアドレスが他ユーザーと重複している場合" do
+        let!(:other_user) { create(:correct_user) }
+        before do
+          user_params = {
+            email: "correct@mail.com",
+            current_password: "samplepassword",
+          }
+          patch user_registration_path, params: { user: user_params }
+        end
+
+        it "ステータスコード422(バリデーションエラー)がレスポンスされていること" do
+          expect(subject).to have_http_status(422)
+        end
+
+        it "フラッシュメッセージがレスポンスに含まれていること" do
+          expect(response.body).to include "メールアドレスはすでに存在します"
         end
       end
     end

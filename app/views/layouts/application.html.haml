@@ -11,13 +11,28 @@
   %body
     .container
       .center-block
-      = link_to "新規登録", new_user_registration_path
-      = link_to "サインイン", new_user_session_path
-      = link_to "ログアウト", destroy_user_session_path, method: :delete
       = link_to "作成したクエスト", my_quest_quests_path
       = link_to "Quest一覧", quests_path
       = link_to "挑戦中のクエスト", challenges_path
       = link_to "達成したクエスト", closed_challenges_path
+      - if user_signed_in?
+        .dropdown
+          %button#dropdownMenuButton1.btn.btn-secondary.dropdown-toggle{"aria-expanded" => "false", "data-bs-toggle" => "dropdown", :type => "button"}
+            = current_user.name
+          %ul.dropdown-menu{"aria-labelledby" => "dropdownMenuButton1"}
+            %li
+              %p.dropdown-item
+                = link_to "プロフィール", pages_profile_path
+            %li
+              %p.dropdown-item
+                = link_to "ログアウト", destroy_user_session_path, method: :delete
+      - else
+        %li.nav-item.text-light
+          = link_to "新規登録", new_user_registration_path
+        %li.nav-item.text-light
+          = link_to "ログイン", new_user_session_path
+        %li.nav-item.text-light
+          = link_to "ゲストログイン", users_guest_sign_in_path, method: :post
 
     %p.notice
       = notice

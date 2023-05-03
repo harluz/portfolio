@@ -3,6 +3,8 @@ Rails.application.routes.draw do
   root 'pages#top'
   get 'pages/top'
   get 'pages/main'
+  get 'pages/profile'
+  get 'pages/withdraw'
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   devise_for :users, controllers: {
     registrations: 'users/registrations',
@@ -10,6 +12,7 @@ Rails.application.routes.draw do
   }
   devise_scope :user do
     get '/users', to: 'devise/registrations#new'
+    post '/users/guest_sign_in', to: 'users/sessions#guest_sign_in'
   end
   
   resources :quests do

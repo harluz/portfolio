@@ -1,0 +1,2 @@
+class GradeSetting < ApplicationRecord
+end
