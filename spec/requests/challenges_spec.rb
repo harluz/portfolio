@@ -7,14 +7,14 @@ RSpec.describe "Challenges", type: :request do
   let(:non_public_quest) { create(:non_public_quest, user: user) }
   let(:other_public_quest) { create(:public_other_quest, user: other_user) }
   let(:other_non_public_quest) { create(:other_quest, user: other_user) }
-  let!(:first_stepper) { create(:first_stepper)}
-  let!(:second_stepper) { create(:second_stepper)}
-  let!(:noticer) { create(:noticer)}
-  let!(:discoverer) { create(:discoverer)}
-  let!(:changer) { create(:changer)}
-  let!(:challenger) { create(:challenger)}
-  let!(:accomplisher) { create(:accomplisher)}
-  let!(:legend) { create(:legend)}
+  let!(:first_stepper) { create(:first_stepper) }
+  let!(:second_stepper) { create(:second_stepper) }
+  let!(:noticer) { create(:noticer) }
+  let!(:discoverer) { create(:discoverer) }
+  let!(:changer) { create(:changer) }
+  let!(:challenger) { create(:challenger) }
+  let!(:accomplisher) { create(:accomplisher) }
+  let!(:legend) { create(:legend) }
 
   describe "GET #index" do
     subject { response.body }
