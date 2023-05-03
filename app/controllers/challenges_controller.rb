@@ -37,11 +37,10 @@ class ChallengesController < ApplicationController
     if @challenge.update(challenge_params)
       case params[:challenge][:close]
       when "true"
-        @user = User.find(@challenge.user_id)
-        @user.having_xp += @challenge.quest.xp
-        @user.challenge_achieved += 1
-        upgrade(@user)
-        @user.save(validate: false)
+        current_user.having_xp += @challenge.quest.xp
+        current_user.challenge_achieved += 1
+        user_upgrade
+        current_user.save(validate: false)
         flash[:notice] = "クエスト達成おめでとうございます。経験値#{@challenge.quest.xp}ポイントを獲得しました。"
         redirect_to challenges_path
       when "false"
@@ -80,11 +79,11 @@ class ChallengesController < ApplicationController
     end
   end
 
-  def upgrade(user)
-    current_grade = GradeSetting.find_by(grade: user.grade)
-    next_grade = GradeSetting.find_by(tag: current_grade.tag += 1)
-    if next_grade && next_grade.judgement_xp <= user.having_xp
-      user.grade = next_grade.grade
+  def user_upgrade
+    current_grade = GradeSetting.find_by(grade: current_user.grade)
+    next_grade = GradeSetting.find_by(tag: current_grade.tag + 1)
+    if next_grade && current_grade.judgement_xp <= current_user.having_xp
+      current_user.grade = next_grade.grade
     end
   end
 end
