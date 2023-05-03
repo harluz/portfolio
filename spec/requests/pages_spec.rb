@@ -52,14 +52,14 @@ RSpec.describe "Pages", type: :request do
     end
 
     context "ユーザーの経験値が増加した場合" do
-      let!(:first_stepper) { create(:first_stepper)}
-      let!(:second_stepper) { create(:second_stepper)}
-      let!(:noticer) { create(:noticer)}
-      let!(:discoverer) { create(:discoverer)}
-      let!(:changer) { create(:changer)}
-      let!(:challenger) { create(:challenger)}
-      let!(:accomplisher) { create(:accomplisher)}
-      let!(:legend) { create(:legend)}
+      let!(:first_stepper) { create(:first_stepper) }
+      let!(:second_stepper) { create(:second_stepper) }
+      let!(:noticer) { create(:noticer) }
+      let!(:discoverer) { create(:discoverer) }
+      let!(:changer) { create(:changer) }
+      let!(:challenger) { create(:challenger) }
+      let!(:accomplisher) { create(:accomplisher) }
+      let!(:legend) { create(:legend) }
       before do
         sign_in user
       end

@@ -4,7 +4,7 @@ FactoryBot.define do
     email { "sample@mail.com" }
     password { "samplepassword" }
     having_xp { 100 }
-    grade { "First Stepper"}
+    grade { "First Stepper" }
   end
 
   factory :correct_user, :class => "User" do

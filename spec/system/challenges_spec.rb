@@ -9,14 +9,14 @@ RSpec.describe "Challenges", type: :system do
   let!(:room) { create(:room, quest: public_quest) }
   let!(:non_public_room) { create(:room, quest: non_public_quest) }
   let!(:other_room) { create(:room, quest: other_public_quest) }
-  let!(:first_stepper) { create(:first_stepper)}
-  let!(:second_stepper) { create(:second_stepper)}
-  let!(:noticer) { create(:noticer)}
-  let!(:discoverer) { create(:discoverer)}
-  let!(:changer) { create(:changer)}
-  let!(:challenger) { create(:challenger)}
-  let!(:accomplisher) { create(:accomplisher)}
-  let!(:legend) { create(:legend)}
+  let!(:first_stepper) { create(:first_stepper) }
+  let!(:second_stepper) { create(:second_stepper) }
+  let!(:noticer) { create(:noticer) }
+  let!(:discoverer) { create(:discoverer) }
+  let!(:changer) { create(:changer) }
+  let!(:challenger) { create(:challenger) }
+  let!(:accomplisher) { create(:accomplisher) }
+  let!(:legend) { create(:legend) }
 
   before { sign_in user }
 
