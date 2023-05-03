@@ -1,12 +1,12 @@
 GradeSetting.create!(
   tag: 1,
-  grade: "First stepper",
+  grade: "First Stepper",
   judgement_xp: 30,
 )
 
 GradeSetting.create!(
   tag: 2,
-  grade: "Seconed stepper",
+  grade: "Seconed Stepper",
   judgement_xp: 70,
 )
 

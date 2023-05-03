@@ -1,13 +1,13 @@
 FactoryBot.define do
   factory :first_stepper, :class => "GradeSetting" do
     tag { 1 }
-    grade { "First stepper" }
+    grade { "First Stepper" }
     judgement_xp { 30 }
   end
 
   factory :second_stepper, :class => "GradeSetting" do
     tag { 2 }
-    grade { "Second stepper" }
+    grade { "Second Stepper" }
     judgement_xp { 70 }
   end
 
