@@ -2,6 +2,8 @@ class Quest < ApplicationRecord
   belongs_to :user
   has_many :challenges
   has_one :room, dependent: :destroy
+  has_many :quest_tags, dependent: :destroy
+  has_many :tags, through: :quest_tags
 
   validates :title, presence: true
   validate :describe
@@ -14,5 +16,28 @@ class Quest < ApplicationRecord
 
   def set_xp
     difficulty * 2
+  end
+
+  def save_tag(sent_tags)
+    current_tags = self.tags.pluck(:name) unless self.tags.nil?
+    old_tags = current_tags - sent_tags
+    new_tags = sent_tags - current_tags
+
+    old_tags.each do |old|
+      self.tags.delete Tag.find_by(name: old)
+    end
+
+    new_tags.each do |new|
+      new_quest_tag = Tag.find_or_create_by(name: new)
+      self.tags << new_quest_tag
+    end
+  end
+
+  def self.search(search)
+    if search != nil
+      Quest.where('title LIKE(?)', "%#{search}%")
+    else
+      Quest.all
+    end
   end
 end
