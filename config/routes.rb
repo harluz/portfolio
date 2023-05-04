@@ -27,6 +27,4 @@ Rails.application.routes.draw do
       get 'closed'
     end
   end
-
-  get 'test', to: 'test#index'
 end
