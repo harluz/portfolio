@@ -1,7 +1,7 @@
-%h1 Quest repository
-%p Find me in app/views/quests/index.html.haml
-%p public trueになっているもののみを表示するページ
-%p 自身が作成したクエスト及び挑戦中のクエストはchallenge indexに表示する？
+= form_with url: quests_path, method: :get do |f|
+  %p 検索したいキーワードを一つ入力してください。
+  = f.text_field :search
+  = f.submit "検索"
 
 - @quests.each do |quest|
   %div{class: "quest_#{quest.id}"}
