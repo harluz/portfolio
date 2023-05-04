@@ -23,10 +23,12 @@ class QuestsController < ApplicationController
     @quest = Quest.new(quest_params)
     @quest.user_id = current_user.id
     @quest.xp = @quest.set_xp
-    tag_list = params[:quest][:name].gsub(/(^[[:space:]]+)|([[:space:]]+$)/, '').split(/[[:space:]]+/)
-
+    
     if @quest.save
-      @quest.save_tag(tag_list)
+      if params[:quest][:name]
+        tag_list = params[:quest][:name].gsub(/(^[[:space:]]+)|([[:space:]]+$)/, '').split(/[[:space:]]+/)
+        @quest.save_tag(tag_list)
+      end
       @challenge = Challenge.create(user_id: current_user.id, quest_id: @quest.id)
       @room = Room.create(quest_id: @quest.id)
       session[:quest] = nil

@@ -118,7 +118,7 @@ RSpec.describe "Quests", type: :system do
           expect(page).to have_content "Create a quest you want to complete."
           expect(page).to have_content "Create quest achievement conditions."
           expect(page).to have_content "3"
-          expect(page).to have_content "6 ポイント"
+          expect(page).to have_content "6ポイント"
           expect(page).to have_content "このクエストは公開されていません。"
           expect(page).to have_link "トークルームへ"
         end
@@ -202,7 +202,7 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_content "Create a quest you want to complete."
         expect(page).to have_content "Create quest achievement conditions."
         expect(page).to have_content "3"
-        expect(page).to have_content "6 ポイント"
+        expect(page).to have_content "6ポイント"
         expect(page).to have_content "このクエストは公開されています。"
         expect(page).to have_link "トークルームへ"
       end
@@ -275,7 +275,7 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_content "updated quest"
         expect(page).to have_content "Update quest achievement conditions."
         expect(page).to have_content "2"
-        expect(page).to have_content "4 ポイント"
+        expect(page).to have_content "4ポイント"
         expect(page).to have_content "このクエストは公開されていません。"
         expect(page).to have_link "トークルームへ"
       end
@@ -310,7 +310,7 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_content "Create a quest you want to complete."
         expect(page).to have_content "Create quest achievement conditions."
         expect(page).to have_content "3"
-        expect(page).to have_content "6 ポイント"
+        expect(page).to have_content "6ポイント"
         expect(page).to have_content "このクエストは公開されていません。"
         expect(page).to have_link "トークルームへ"
       end
