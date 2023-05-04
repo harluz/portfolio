@@ -4,7 +4,11 @@ class QuestsController < ApplicationController
   before_action :ensure_user, only: [:edit, :update, :destroy]
 
   def index
-    @quests = Quest.all
+    if params[:search] && (params[:search])[0] == '#'
+      @quests = Tag.search(params[:search]).order(created_at: :desc)
+    elsif
+      @quests = Quest.search(params[:search]).order(created_at: :desc)
+    end
   end
 
   def my_quest
@@ -19,8 +23,10 @@ class QuestsController < ApplicationController
     @quest = Quest.new(quest_params)
     @quest.user_id = current_user.id
     @quest.xp = @quest.set_xp
+    tag_list = params[:quest][:name].gsub(/(^[[:space:]]+)|([[:space:]]+$)/, '').split(/[[:space:]]+/)
 
     if @quest.save
+      @quest.save_tag(tag_list)
       @challenge = Challenge.create(user_id: current_user.id, quest_id: @quest.id)
       @room = Room.create(quest_id: @quest.id)
       session[:quest] = nil
