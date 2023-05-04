@@ -18,7 +18,8 @@
       .field
         %p スペースを入力することで複数のタグを設定することができます。
         %p 例:趣味 健康 スポーツ
-        = f.text_field :name
+        = f.label "タグ"
+        = f.text_field :tag_name
       .field
         = f.check_box :public
         = f.label "クエストを公開する", class: "form-check-label", for: "flexCheckChecked"

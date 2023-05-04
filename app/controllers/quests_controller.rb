@@ -24,8 +24,8 @@ class QuestsController < ApplicationController
     @quest.user_id = current_user.id
     @quest.xp = @quest.set_xp
     if @quest.save
-      if params[:quest][:name] && !params[:quest][:name].blank?
-        tag_list = params[:quest][:name].gsub(/(^[[:space:]]+)|([[:space:]]+$)/, '').split(/[[:space:]]+/)
+      if params[:quest][:tag_name] && !params[:quest][:tag_name].blank?
+        tag_list = params[:quest][:tag_name].gsub(/(^[[:space:]]+)|([[:space:]]+$)/, '').split(/[[:space:]]+/)
         @quest.save_tag(tag_list.uniq)
       end
       @challenge = Challenge.create(user_id: current_user.id, quest_id: @quest.id)
