@@ -96,5 +96,29 @@ RSpec.describe Quest, type: :model do
         expect(association.macro).to eq :has_many
       end
     end
+
+    context "roomとのリレーション" do
+      let(:model) { :room }
+
+      it "roomとの関連付けはhas_manyであること" do
+        expect(association.macro).to eq :has_one
+      end
+    end
+
+    context "quest_tagとのリレーション" do
+      let(:model) { :quest_tags }
+
+      it "quest_tagとの関連付けはhas_manyであること" do
+        expect(association.macro).to eq :has_many
+      end
+    end
+
+    context "tagとのリレーション" do
+      let(:model) { :tags }
+
+      it "tagとの関連付けはhas_manyであること" do
+        expect(association.macro).to eq :has_many
+      end
+    end
   end
 end
