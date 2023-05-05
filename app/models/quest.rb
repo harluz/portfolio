@@ -19,22 +19,22 @@ class Quest < ApplicationRecord
   end
 
   def save_tag(sent_tags)
-    current_tags = self.tags.pluck(:name) unless self.tags.nil?
+    current_tags = tags.pluck(:name) unless tags.nil?
     old_tags = current_tags - sent_tags
     new_tags = sent_tags - current_tags
 
     old_tags.each do |old|
-      self.tags.delete Tag.find_by(name: old)
+      tags.delete Tag.find_by(name: old)
     end
 
     new_tags.each do |new|
       new_quest_tag = Tag.find_or_create_by(name: new)
-      self.tags << new_quest_tag
+      tags << new_quest_tag
     end
   end
 
   def self.search(search)
-    if search != nil
+    if !search.nil?
       search_word = search.gsub(/(^[[:space:]]+)|([[:space:]]+$)/, '').split(/[[:space:]]+/)
       Quest.where('title LIKE(?)', "%#{search_word.first}%")
     else

@@ -6,9 +6,9 @@ class Tag < ApplicationRecord
 
   def self.search(search)
     search_word = search.sub(/#/, '').split(/[[:space:]]+/)
-    if search_word && !search_word.blank?
+    if search_word && search_word.present?
       tag = Tag.where(name: search_word.first)
-      if tag && !tag.blank?
+      if tag && tag.present?
         tag.first.quests
       else
         Quest.all

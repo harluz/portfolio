@@ -4,9 +4,9 @@ class QuestsController < ApplicationController
   before_action :ensure_user, only: [:edit, :update, :destroy]
 
   def index
-    if params[:search] && (params[:search])[0] == '#'
+    if params[:search] && params[:search][0] == '#'
       @quests = Tag.search(params[:search]).order(created_at: :desc)
-    elsif
+    else
       @quests = Quest.search(params[:search]).order(created_at: :desc)
     end
   end
@@ -102,10 +102,10 @@ class QuestsController < ApplicationController
   end
 
   def add_or_change_tag
-    if params[:quest][:tag_name] && !params[:quest][:tag_name].blank?
+    if params[:quest][:tag_name] && params[:quest][:tag_name].present?
       tag_list = params[:quest][:tag_name].gsub(/(^[[:space:]]+)|([[:space:]]+$)/, '').split(/[[:space:]]+/)
       @quest.save_tag(tag_list.uniq)
-    elsif !@quest.tags.blank? && params[:quest][:tag_name].blank?
+    elsif @quest.tags.present? && params[:quest][:tag_name].blank?
       @quest.tags.clear
     end
   end

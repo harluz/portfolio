@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :tag do
-    sequence(:name) { |n| "tag-#{n}"}
+    sequence(:name) { |n| "tag-#{n}" }
 
     trait :tag_trip do
       name { "trip" }
@@ -16,6 +16,6 @@ FactoryBot.define do
   end
 
   factory :other_tag, :class => "Tag" do
-    sequence(:name) { |n| "other_tag-#{n}"}
+    sequence(:name) { |n| "other_tag-#{n}" }
   end
 end

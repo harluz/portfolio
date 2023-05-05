@@ -12,7 +12,7 @@ RSpec.describe "Tags", type: :request do
       difficulty: 1,
       xp: 2,
       public: false,
-      tag_name: "クエストタグ"
+      tag_name: "クエストタグ",
     }
 
     context "tagの作成に成功すること" do
@@ -90,7 +90,7 @@ RSpec.describe "Tags", type: :request do
       difficulty: 1,
       xp: 2,
       public: false,
-      tag_name: "travel"
+      tag_name: "travel",
     }
 
     it "新しいタグが追加された場合、tagの数が増加すること" do

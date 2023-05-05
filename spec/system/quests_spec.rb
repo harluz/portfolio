@@ -46,7 +46,7 @@ RSpec.describe "Quests", type: :system do
         let!(:non_public_quest2) { create(:non_public_quest, user: other_user, title: "sample hoge") }
 
         before { visit quests_path }
-        
+
         it "キーワードに関連した公開クエストが表示されること" do
           fill_in "search", with: "sample"
           click_on "検索"
