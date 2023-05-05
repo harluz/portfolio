@@ -24,10 +24,7 @@ class QuestsController < ApplicationController
     @quest.user_id = current_user.id
     @quest.xp = @quest.set_xp
     if @quest.save
-      if params[:quest][:tag_name] && !params[:quest][:tag_name].blank?
-        tag_list = params[:quest][:tag_name].gsub(/(^[[:space:]]+)|([[:space:]]+$)/, '').split(/[[:space:]]+/)
-        @quest.save_tag(tag_list.uniq)
-      end
+      add_or_change_tag
       @challenge = Challenge.create(user_id: current_user.id, quest_id: @quest.id)
       @room = Room.create(quest_id: @quest.id)
       session[:quest] = nil
@@ -58,12 +55,14 @@ class QuestsController < ApplicationController
   end
 
   def edit
+    @tag_list = @quest.tags.pluck(:name).join(' ')
   end
 
   def update
     params[:quest][:xp] = params[:quest][:difficulty].to_i * 2
 
     if @quest.update(quest_params)
+      add_or_change_tag
       flash[:notice] = "クエストを更新しました。"
       redirect_to quest_path(@quest)
     else
@@ -99,6 +98,13 @@ class QuestsController < ApplicationController
     unless current_user_owned?(@quest)
       flash[:alert] = "他のユーザーのクエストを操作することはできません。"
       redirect_to quests_path
+    end
+  end
+
+  def add_or_change_tag
+    if params[:quest][:tag_name] && !params[:quest][:tag_name].blank?
+      tag_list = params[:quest][:tag_name].gsub(/(^[[:space:]]+)|([[:space:]]+$)/, '').split(/[[:space:]]+/)
+      @quest.save_tag(tag_list.uniq)
     end
   end
 end
