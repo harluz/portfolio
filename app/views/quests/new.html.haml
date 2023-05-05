@@ -1,4 +1,4 @@
-= form_with model: @quest do |f|
+= form_with model: @quest, url: quests_path do |f|
   .container
     .center-block
       .field
@@ -15,6 +15,11 @@
         - 5.times do |num|
           = f.radio_button :difficulty, num + 1
           #{num + 1}
+      .field
+        %p スペースを入力することで複数のタグを設定することができます。
+        %p 例:趣味 健康 スポーツ
+        = f.label "タグ"
+        = f.text_field :tag_name
       .field
         = f.check_box :public
         = f.label "クエストを公開する", class: "form-check-label", for: "flexCheckChecked"

@@ -59,7 +59,108 @@ RSpec.describe "Quests", type: :request do
     end
   end
 
-  describe "GET my_quest" do
+  describe "GET #index prams[search]" do
+    subject { response.body }
+    before { sign_in user }
+    context "キーワード検索を行なった場合" do
+      let!(:public_quest1) { create(:public_quest, user: user, title: "sample sentence") }
+      let!(:public_quest2) { create(:public_quest, user: user, title: "keyword search") }
+      let!(:public_quest3) { create(:public_quest, user: other_user, title: "sample quest") }
+      let!(:non_public_quest1) { create(:non_public_quest, user: user, title: "sample input") }
+      let!(:non_public_quest2) { create(:non_public_quest, user: other_user, title: "sample hoge") }
+
+      it "キーワードに関連した公開クエストがレスポンスに含まれていること" do
+        get quests_path, params: { search: "sample" }
+        expect(subject).to include public_quest1.title
+        expect(subject).to include public_quest3.title
+        expect(subject).not_to include public_quest2.title
+        expect(subject).not_to include non_public_quest1.title
+        expect(subject).not_to include non_public_quest2.title
+      end
+
+      it "あいまい検索が機能し、関連した公開クエストがレスポンスに含まれていること" do
+        get quests_path, params: { search: "samp" }
+        expect(subject).to include public_quest1.title
+        expect(subject).to include public_quest3.title
+        expect(subject).not_to include public_quest2.title
+        expect(subject).not_to include non_public_quest1.title
+        expect(subject).not_to include non_public_quest2.title
+      end
+
+      it "検索フォームが空の状態で検索をクリックした際は、すべての公開クエストがレスポンスに含まれていること" do
+        get quests_path, params: { search: "" }
+        expect(subject).to include public_quest1.title
+        expect(subject).to include public_quest2.title
+        expect(subject).to include public_quest3.title
+        expect(subject).not_to include non_public_quest1.title
+        expect(subject).not_to include non_public_quest2.title
+      end
+
+      it "キーワードが合致しなかった場合、クエストがレスポンスに含まれていないこと" do
+        get quests_path, params: { search: "example" }
+        expect(subject).not_to include public_quest1.title
+        expect(subject).not_to include public_quest2.title
+        expect(subject).not_to include public_quest3.title
+        expect(subject).not_to include non_public_quest1.title
+        expect(subject).not_to include non_public_quest2.title
+      end
+
+      it "複数ワードで検索した場合、最初の単語に関連した公開クエストが表示されること" do
+        get quests_path, params: { search: "sample keyword" }
+        expect(subject).to include public_quest1.title
+        expect(subject).to include public_quest3.title
+        expect(subject).not_to include public_quest2.title
+        expect(subject).not_to include non_public_quest1.title
+        expect(subject).not_to include non_public_quest2.title
+      end
+
+      it "キーワードの先頭にスペースがあった場合、スペース後の単語に関連した公開クエストがレスポンスに含まれていること" do
+        get quests_path, params: { search: " sample" }
+        expect(subject).to include public_quest1.title
+        expect(subject).to include public_quest3.title
+        expect(subject).not_to include public_quest2.title
+        expect(subject).not_to include non_public_quest1.title
+        expect(subject).not_to include non_public_quest2.title
+      end
+    end
+
+    context "キーワード検索でタグ検索が行われた場合" do
+      let!(:public_quest1) { create(:public_quest, :tag_name_trip, user: user, title: "sample sentence") }
+      let!(:public_quest2) { create(:public_quest, :tag_name_sports, user: user, title: "keyword search") }
+      let!(:public_quest3) { create(:public_quest, :tag_name_hobby, user: other_user, title: "sample quest") }
+      let!(:non_public_quest1) { create(:non_public_quest, user: user, title: "sample input") }
+      let!(:non_public_quest2) { create(:non_public_quest, user: other_user, title: "sample hoge") }
+
+      it "入力されたタグに関連した公開クエストがレスポンスに含まれていること" do
+        get quests_path, params: { search: "#trip" }
+        expect(subject).to include public_quest1.title
+        expect(subject).not_to include public_quest2.title
+        expect(subject).not_to include public_quest3.title
+        expect(subject).not_to include non_public_quest1.title
+        expect(subject).not_to include non_public_quest2.title
+      end
+
+      it "複数タグで検索した場合、最初のタグに関連した公開クエストがレスポンスに含まれていること" do
+        get quests_path, params: { search: "#sports #hobby" }
+        expect(subject).to include public_quest2.title
+        expect(subject).not_to include public_quest1.title
+        expect(subject).not_to include public_quest3.title
+        expect(subject).not_to include non_public_quest1.title
+        expect(subject).not_to include non_public_quest2.title
+      end
+
+      it "#のみで検索した場合、すべての公開クエストがレスポンスに含まれていること" do
+        get quests_path, params: { search: "#" }
+        expect(subject).to include public_quest2.title
+        expect(subject).to include public_quest1.title
+        expect(subject).to include public_quest3.title
+        expect(subject).not_to include non_public_quest1.title
+        expect(subject).not_to include non_public_quest2.title
+      end
+    end
+  end
+
+  describe "GET #my_quest" do
     let!(:quest) { create(:public_quest, user: user) }
     let!(:non_public_quest) { create(:non_public_quest, user: user) }
     let!(:other_quest) { create(:public_other_quest, user: other_user) }
@@ -252,7 +353,7 @@ RSpec.describe "Quests", type: :request do
   end
 
   describe "GET #edit" do
-    let!(:quest) { create(:public_quest, user: user) }
+    let!(:quest) { create(:public_quest, :tag_name_trip, user: user) }
     subject { response }
 
     context "ユーザーがログインしている場合" do
@@ -266,6 +367,7 @@ RSpec.describe "Quests", type: :request do
       end
 
       it "フォームがレスポンスに含まれていること" do
+        expect(response.body).to include "trip"
         expect(response.body).to include "タイトル"
         expect(response.body).to include "Public quest"
         expect(response.body).to include "クエスト詳細"

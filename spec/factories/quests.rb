@@ -5,6 +5,10 @@ FactoryBot.define do
     difficulty { 3 }
     xp { 6 }
     public { false }
+
+    after(:create) do |quest|
+      create_list(:quest_tag, 1, quest: quest, tag: create(:tag))
+    end
   end
 
   factory :public_quest, :class => "Quest" do
@@ -13,6 +17,27 @@ FactoryBot.define do
     difficulty { 2 }
     xp { 4 }
     public { true }
+    after(:create) do |quest|
+      create_list(:quest_tag, 1, quest: quest, tag: create(:tag))
+    end
+
+    trait :tag_name_trip do
+      after(:create) do |quest|
+        create_list(:quest_tag, 1, quest: quest, tag: create(:tag, :tag_trip))
+      end
+    end
+
+    trait :tag_name_sports do
+      after(:create) do |quest|
+        create_list(:quest_tag, 1, quest: quest, tag: create(:tag, :tag_sports))
+      end
+    end
+
+    trait :tag_name_hobby do
+      after(:create) do |quest|
+        create_list(:quest_tag, 1, quest: quest, tag: create(:tag, :tag_hobby))
+      end
+    end
   end
 
   factory :non_public_quest, :class => "Quest" do
@@ -21,6 +46,15 @@ FactoryBot.define do
     difficulty { 1 }
     xp { 2 }
     public { false }
+    after(:create) do |quest|
+      create_list(:quest_tag, 1, quest: quest, tag: create(:tag))
+    end
+
+    trait :tag_name_trip do
+      after(:create) do |quest|
+        create_list(:quest_tag, 1, quest: quest, tag: create(:tag, :tag_trip))
+      end
+    end
   end
 
   factory :other_quest, :class => "Quest" do

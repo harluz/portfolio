@@ -4,7 +4,11 @@ class QuestsController < ApplicationController
   before_action :ensure_user, only: [:edit, :update, :destroy]
 
   def index
-    @quests = Quest.all
+    if params[:search] && params[:search][0] == '#'
+      @quests = Tag.search(params[:search]).order(created_at: :desc)
+    else
+      @quests = Quest.search(params[:search]).order(created_at: :desc)
+    end
   end
 
   def my_quest
@@ -19,8 +23,8 @@ class QuestsController < ApplicationController
     @quest = Quest.new(quest_params)
     @quest.user_id = current_user.id
     @quest.xp = @quest.set_xp
-
     if @quest.save
+      add_or_change_tag
       @challenge = Challenge.create(user_id: current_user.id, quest_id: @quest.id)
       @room = Room.create(quest_id: @quest.id)
       session[:quest] = nil
@@ -51,12 +55,14 @@ class QuestsController < ApplicationController
   end
 
   def edit
+    @tag_list = @quest.tags.pluck(:name).join(' ')
   end
 
   def update
     params[:quest][:xp] = params[:quest][:difficulty].to_i * 2
 
     if @quest.update(quest_params)
+      add_or_change_tag
       flash[:notice] = "クエストを更新しました。"
       redirect_to quest_path(@quest)
     else
@@ -92,6 +98,15 @@ class QuestsController < ApplicationController
     unless current_user_owned?(@quest)
       flash[:alert] = "他のユーザーのクエストを操作することはできません。"
       redirect_to quests_path
+    end
+  end
+
+  def add_or_change_tag
+    if params[:quest][:tag_name] && params[:quest][:tag_name].present?
+      tag_list = params[:quest][:tag_name].gsub(/(^[[:space:]]+)|([[:space:]]+$)/, '').split(/[[:space:]]+/)
+      @quest.save_tag(tag_list.uniq)
+    elsif @quest.tags.present? && params[:quest][:tag_name].blank?
+      @quest.tags.clear
     end
   end
 end

@@ -2,14 +2,16 @@
   .center-block
     %p クエスト
     = @quest.title
+    %p タグ
+    - @quest.tags.each do |tag|
+      = link_to "##{tag.name}", quests_path(search: "##{tag.name}")
     - if !(@quest.describe.blank?)
       %p クエスト詳細
       = @quest.describe
     %p 難易度
     = @quest.difficulty
     %p 経験値
-    = @quest.xp
-    ポイント
+    = "#{@quest.xp}ポイント"
     - if public_quest?(@quest)
       %p このクエストは公開されています。
     - else
