@@ -114,17 +114,18 @@ RSpec.describe "Quests", type: :system do
         end
       end
 
-      context "キーワード検索でタグ検索が行われた場合" do
+      context "タグ検索が行われた場合" do
         let(:other_user) { create(:correct_user) }
         let!(:public_quest1) { create(:public_quest, :tag_name_trip, user: user, title: "sample sentence") }
         let!(:public_quest2) { create(:public_quest, :tag_name_sports, user: user, title: "keyword search") }
         let!(:public_quest3) { create(:public_quest, :tag_name_hobby, user: other_user, title: "sample quest") }
         let!(:non_public_quest1) { create(:non_public_quest, user: user, title: "sample input") }
         let!(:non_public_quest2) { create(:non_public_quest, user: other_user, title: "sample hoge") }
+        let!(:room) { create(:room, quest: public_quest1) }
 
         before { visit quests_path }
 
-        it "入力されたタグに関連した公開クエストが表示されること" do
+        it "検索フォームで入力されたタグに関連した公開クエストが表示されること" do
           # 複数のクエストに同一のタグを設定したテストを実装したい。updateを実装した場合にその処理を行なった上でテストできれば
           fill_in "search", with: "#trip"
           click_on "検索"
@@ -136,7 +137,7 @@ RSpec.describe "Quests", type: :system do
           expect(page).not_to have_content "sampla hoge"
         end
 
-        it "複数タグで検索した場合、最初のタグに関連した公開クエストが表示されること" do
+        it "複数タグを検索フォームに入力した場合、最初のタグに関連した公開クエストが表示されること" do
           fill_in "search", with: "#sports #hobby"
           click_on "検索"
           expect(current_path).to eq quests_path
@@ -147,13 +148,24 @@ RSpec.describe "Quests", type: :system do
           expect(page).not_to have_content "sampla hoge"
         end
 
-        it "#のみで検索した場合、すべての公開クエストが表示されること" do
+        it "#のみを検索フォームに入力した場合、すべての公開クエストが表示されること" do
           fill_in "search", with: "#"
           click_on "検索"
           expect(current_path).to eq quests_path
           expect(page).to have_content "keyword search"
           expect(page).to have_content "sample sentence"
           expect(page).to have_content "sample quest"
+          expect(page).not_to have_content "sample input"
+          expect(page).not_to have_content "sampla hoge"
+        end
+
+        it "questのshowページからタグリンクによる検索の場合、関連したクエストが表示されること" do
+          visit quest_path(public_quest1)
+          click_on "#trip"
+          expect(current_path).to eq quests_path
+          expect(page).to have_content "sample sentence"
+          expect(page).not_to have_content "sample quest"
+          expect(page).not_to have_content "keyword search"
           expect(page).not_to have_content "sample input"
           expect(page).not_to have_content "sampla hoge"
         end
