@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :quest_tag do
-    quest_id { 1 }
-    tag_id { 1 }
+    association :quest
+    association :tag
   end
 end
