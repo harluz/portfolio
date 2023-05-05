@@ -35,7 +35,8 @@ class Quest < ApplicationRecord
 
   def self.search(search)
     if search != nil
-      Quest.where('title LIKE(?)', "%#{search}%")
+      search_word = search.gsub(/(^[[:space:]]+)|([[:space:]]+$)/, '').split(/[[:space:]]+/)
+      Quest.where('title LIKE(?)', "%#{search_word.first}%")
     else
       Quest.all
     end
