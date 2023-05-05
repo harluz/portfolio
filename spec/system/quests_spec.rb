@@ -122,17 +122,21 @@ RSpec.describe "Quests", type: :system do
         let!(:non_public_quest1) { create(:non_public_quest, user: user, title: "sample input") }
         let!(:non_public_quest2) { create(:non_public_quest, user: other_user, title: "sample hoge") }
         let!(:room) { create(:room, quest: public_quest1) }
+        let!(:room2) { create(:room, quest: public_quest2) }
 
         before { visit quests_path }
 
         it "検索フォームで入力されたタグに関連した公開クエストが表示されること" do
-          # 複数のクエストに同一のタグを設定したテストを実装したい。updateを実装した場合にその処理を行なった上でテストできれば
+          visit edit_quest_path(public_quest2)
+          fill_in "quest[tag_name]", with: "sports trip"
+          click_on "更新"
+          visit quests_path
           fill_in "search", with: "#trip"
           click_on "検索"
           expect(current_path).to eq quests_path
           expect(page).to have_content "sample sentence"
+          expect(page).to have_content "keyword search"
           expect(page).not_to have_content "sample quest"
-          expect(page).not_to have_content "keyword search"
           expect(page).not_to have_content "sample input"
           expect(page).not_to have_content "sampla hoge"
         end

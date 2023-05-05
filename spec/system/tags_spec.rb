@@ -67,4 +67,50 @@ RSpec.describe "Tags", type: :system do
       expect(page).to have_link "#食べ物"
     end
   end
+
+  describe "tag編集" do
+    before do
+      visit new_quest_path
+      fill_in 'タイトル', with: "Create a quest you want to complete."
+      fill_in 'クエスト詳細', with: "Create quest achievement conditions."
+      choose('quest_difficulty_3')
+      fill_in "quest[tag_name]", with: 'trip'
+      click_on "クエスト作成！"
+      visit edit_quest_path(user.quests.last)
+    end
+
+    it "既存のタグフォーム内に表示されていること" do
+      expect(page.body).to include "input value=\"trip\""
+    end
+
+    it "タグを追加することができること" do
+      fill_in "quest[tag_name]", with: "trip travel"
+      click_on "更新"
+      expect(current_path).to eq quest_path(user.quests.last)
+      expect(page).to have_link "#trip"
+      expect(page).to have_link "#travel"
+    end
+
+    it "既にあるタグを変更することができる" do
+      fill_in "quest[tag_name]", with: "travel"
+      click_on "更新"
+      expect(current_path).to eq quest_path(user.quests.last)
+      expect(page).not_to have_link "#trip"
+      expect(page).to have_link "#travel"
+    end
+
+    it "タグが重複しても、重複は削除されエラーが発生せず変更することができる" do
+      fill_in "quest[tag_name]", with: "trip trip"
+      click_on "更新"
+      expect(current_path).to eq quest_path(user.quests.last)
+      expect(page).to have_link "#trip"
+    end
+
+    it "タグを削除することができる" do
+      fill_in "quest[tag_name]", with: ""
+      click_on "更新"
+      expect(current_path).to eq quest_path(user.quests.last)
+      expect(page).not_to have_content "#trip"
+    end
+  end
 end

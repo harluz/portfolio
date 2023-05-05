@@ -79,4 +79,38 @@ RSpec.describe "Tags", type: :request do
       end
     end
   end
+
+  describe "PATCH #update" do
+    let!(:public_quest1) { create(:public_quest, :tag_name_trip, user: user, title: "sample sentence") }
+    let!(:public_quest2) { create(:public_quest, :tag_name_sports, user: user, title: "keyword search") }
+    let!(:room) { create(:room, quest: public_quest1) }
+    quest_change_tag_params = {
+      title: "quest title",
+      describe: "quest describe",
+      difficulty: 1,
+      xp: 2,
+      public: false,
+      tag_name: "travel"
+    }
+
+    it "新しいタグが追加された場合、tagの数が増加すること" do
+      expect do
+        patch quest_path(public_quest1), params: { quest: quest_change_tag_params }
+      end.to change(Tag, :count).by(1)
+    end
+
+    it "既存のタグが追加された場合、tagの数が増加していないこと" do
+      quest_change_tag_params[:tag_name] = "sports"
+      expect do
+        patch quest_path(public_quest1), params: { quest: quest_change_tag_params }
+      end.to change(Tag, :count).by(0)
+    end
+
+    it "クエストのタグを無くした場合、tagの数は変化していないこと" do
+      quest_change_tag_params[:tag_name] = ""
+      expect do
+        patch quest_path(public_quest1), params: { quest: quest_change_tag_params }
+      end.to change(Tag, :count).by(0)
+    end
+  end
 end

@@ -367,6 +367,7 @@ RSpec.describe "Quests", type: :request do
       end
 
       it "フォームがレスポンスに含まれていること" do
+        expect(response.body).to include "<input value=\"tag-1\""
         expect(response.body).to include "タイトル"
         expect(response.body).to include "Public quest"
         expect(response.body).to include "クエスト詳細"
