@@ -10,6 +10,8 @@ RSpec.describe "Quests", type: :system do
         let!(:public_quest) { create(:public_quest, user: user) }
         it "リンクが正しく表示・非表示となっていること" do
           visit quests_path
+          expect(page).to have_field "search"
+          expect(page).to have_button "検索"
           expect(page).to have_content "詳細"
           expect(page).to have_content "編集する"
           public_quest.public = false
@@ -24,6 +26,8 @@ RSpec.describe "Quests", type: :system do
         let!(:public_other_quest) { create(:public_other_quest, user: other_user) }
         it "詳細及び編集リンクが表示されていないこと" do
           visit quests_path
+          expect(page).to have_field "search"
+          expect(page).to have_button "検索"
           expect(page).to have_content "詳細"
           expect(page).not_to have_content "編集する"
           public_other_quest.public = false
@@ -32,7 +36,128 @@ RSpec.describe "Quests", type: :system do
           expect(page).not_to have_content "編集する"
         end
       end
-      # public:falseとなっているものだけを表示
+
+      context "キーワード検索を行なった場合" do
+        let(:other_user) { create(:correct_user) }
+        let!(:public_quest1) { create(:public_quest, user: user, title: "sample sentence") }
+        let!(:public_quest2) { create(:public_quest, user: user, title: "keyword search") }
+        let!(:public_quest3) { create(:public_quest, user: other_user, title: "sample quest") }
+        let!(:non_public_quest1) { create(:non_public_quest, user: user, title: "sample input") }
+        let!(:non_public_quest2) { create(:non_public_quest, user: other_user, title: "sample hoge") }
+
+        before { visit quests_path }
+        
+        it "キーワードに関連した公開クエストが表示されること" do
+          fill_in "search", with: "sample"
+          click_on "検索"
+          expect(current_path).to eq quests_path
+          expect(page).to have_content "sample sentence"
+          expect(page).to have_content "sample quest"
+          expect(page).not_to have_content "keyword search"
+          expect(page).not_to have_content "sample input"
+          expect(page).not_to have_content "sampla hoge"
+        end
+
+        it "あいまい検索が機能し、関連した公開クエストが表示されること" do
+          fill_in "search", with: "samp"
+          click_on "検索"
+          expect(current_path).to eq quests_path
+          expect(page).to have_content "sample sentence"
+          expect(page).to have_content "sample quest"
+          expect(page).not_to have_content "keyword search"
+          expect(page).not_to have_content "sample input"
+          expect(page).not_to have_content "sampla hoge"
+        end
+
+        it "検索フォームが空の状態で検索をクリックした際は、すべての公開クエストが表示されること" do
+          fill_in "search", with: ""
+          click_on "検索"
+          expect(current_path).to eq quests_path
+          expect(page).to have_content "sample sentence"
+          expect(page).to have_content "sample quest"
+          expect(page).to have_content "keyword search"
+          expect(page).not_to have_content "sample input"
+          expect(page).not_to have_content "sampla hoge"
+        end
+
+        it "キーワードが合致しなかった場合、クエストが表示されないこと" do
+          fill_in "search", with: "example"
+          click_on "検索"
+          expect(current_path).to eq quests_path
+          expect(page).not_to have_content "sample sentence"
+          expect(page).not_to have_content "sample quest"
+          expect(page).not_to have_content "keyword search"
+          expect(page).not_to have_content "sample input"
+          expect(page).not_to have_content "sampla hoge"
+        end
+
+        it "複数ワードで検索した場合、最初の単語に関連した公開クエストが表示されること" do
+          fill_in "search", with: "sample keyword"
+          click_on "検索"
+          expect(current_path).to eq quests_path
+          expect(page).to have_content "sample sentence"
+          expect(page).to have_content "sample quest"
+          expect(page).not_to have_content "keyword search"
+          expect(page).not_to have_content "sample input"
+          expect(page).not_to have_content "sampla hoge"
+        end
+
+        it "キーワードの先頭にスペースがあった場合、スペース後の単語に関連した公開クエストが表示されること" do
+          fill_in "search", with: " sample"
+          click_on "検索"
+          expect(current_path).to eq quests_path
+          expect(page).to have_content "sample sentence"
+          expect(page).to have_content "sample quest"
+          expect(page).not_to have_content "keyword search"
+          expect(page).not_to have_content "sample input"
+          expect(page).not_to have_content "sampla hoge"
+        end
+      end
+
+      context "キーワード検索でタグ検索が行われた場合" do
+        let(:other_user) { create(:correct_user) }
+        let!(:public_quest1) { create(:public_quest, :tag_name_trip, user: user, title: "sample sentence") }
+        let!(:public_quest2) { create(:public_quest, :tag_name_sports, user: user, title: "keyword search") }
+        let!(:public_quest3) { create(:public_quest, :tag_name_hobby, user: other_user, title: "sample quest") }
+        let!(:non_public_quest1) { create(:non_public_quest, user: user, title: "sample input") }
+        let!(:non_public_quest2) { create(:non_public_quest, user: other_user, title: "sample hoge") }
+
+        before { visit quests_path }
+
+        it "入力されたタグに関連した公開クエストが表示されること" do
+          # 複数のクエストに同一のタグを設定したテストを実装したい。updateを実装した場合にその処理を行なった上でテストできれば
+          fill_in "search", with: "#trip"
+          click_on "検索"
+          expect(current_path).to eq quests_path
+          expect(page).to have_content "sample sentence"
+          expect(page).not_to have_content "sample quest"
+          expect(page).not_to have_content "keyword search"
+          expect(page).not_to have_content "sample input"
+          expect(page).not_to have_content "sampla hoge"
+        end
+
+        it "複数タグで検索した場合、最初のタグに関連した公開クエストが表示されること" do
+          fill_in "search", with: "#sports #hobby"
+          click_on "検索"
+          expect(current_path).to eq quests_path
+          expect(page).to have_content "keyword search"
+          expect(page).not_to have_content "sample sentence"
+          expect(page).not_to have_content "sample quest"
+          expect(page).not_to have_content "sample input"
+          expect(page).not_to have_content "sampla hoge"
+        end
+
+        it "#のみで検索した場合、すべての公開クエストが表示されること" do
+          fill_in "search", with: "#"
+          click_on "検索"
+          expect(current_path).to eq quests_path
+          expect(page).to have_content "keyword search"
+          expect(page).to have_content "sample sentence"
+          expect(page).to have_content "sample quest"
+          expect(page).not_to have_content "sample input"
+          expect(page).not_to have_content "sampla hoge"
+        end
+      end
     end
 
     context "/quests/my_quest" do
