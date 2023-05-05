@@ -113,4 +113,14 @@ RSpec.describe "Tags", type: :request do
       end.to change(Tag, :count).by(0)
     end
   end
+
+  describe "DELETE #destroy" do
+    let!(:non_public_quest1) { create(:non_public_quest, :tag_name_trip, user: user) }
+
+    it "クエストが削除されても、tagの数は変化しないこと" do
+      expect do
+        delete quest_path(non_public_quest1)
+      end.to change(Tag, :count).by(0)
+    end
+  end
 end
