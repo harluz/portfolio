@@ -49,6 +49,12 @@ FactoryBot.define do
     after(:create) do |quest|
       create_list(:quest_tag, 1, quest: quest, tag: create(:tag))
     end
+
+    trait :tag_name_trip do
+      after(:create) do |quest|
+        create_list(:quest_tag, 1, quest: quest, tag: create(:tag, :tag_trip))
+      end
+    end
   end
 
   factory :other_quest, :class => "Quest" do
