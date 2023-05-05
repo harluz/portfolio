@@ -353,7 +353,7 @@ RSpec.describe "Quests", type: :request do
   end
 
   describe "GET #edit" do
-    let!(:quest) { create(:public_quest, user: user) }
+    let!(:quest) { create(:public_quest, :tag_name_trip, user: user) }
     subject { response }
 
     context "ユーザーがログインしている場合" do
@@ -367,7 +367,7 @@ RSpec.describe "Quests", type: :request do
       end
 
       it "フォームがレスポンスに含まれていること" do
-        expect(response.body).to include "<input value=\"tag-1\""
+        expect(response.body).to include "trip"
         expect(response.body).to include "タイトル"
         expect(response.body).to include "Public quest"
         expect(response.body).to include "クエスト詳細"
