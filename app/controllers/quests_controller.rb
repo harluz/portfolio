@@ -105,6 +105,8 @@ class QuestsController < ApplicationController
     if params[:quest][:tag_name] && !params[:quest][:tag_name].blank?
       tag_list = params[:quest][:tag_name].gsub(/(^[[:space:]]+)|([[:space:]]+$)/, '').split(/[[:space:]]+/)
       @quest.save_tag(tag_list.uniq)
+    elsif !@quest.tags.blank? && params[:quest][:tag_name].blank?
+      @quest.tags.clear
     end
   end
 end
