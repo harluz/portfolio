@@ -11,10 +11,10 @@ class Tag < ApplicationRecord
       if tag && tag.present?
         tag.first.quests
       else
-        Quest.all
+        Quest.eager_load(:user).all
       end
     else
-      Quest.all
+      Quest.eager_load(:user).all
     end
   end
 end

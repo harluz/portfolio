@@ -7,14 +7,14 @@ class RoomsController < ApplicationController
       flash[:alert] = "非公開クエストのトークルームにアクセスすることはできません。"
       redirect_to quests_path
     else
-      @messages = @room.messages
+      @messages = Message.eager_load(:user).where(room_id: params[:id])
     end
   end
 
   private
 
   def find_room
-    @room = Room.find(params[:id])
+    @room = Room.eager_load(quest: [user: :messages]).find(params[:id])
   rescue
     flash[:alert] = "クエストもしくはトークルームが存在していません。"
     redirect_to quests_path
