@@ -9,119 +9,886 @@ Dir.glob(File.join(Rails.root, 'db', 'seeds', '*.rb')) do |file|
   load(file)
 end
 
-2.times do |n|
-  User.create!(
-    name: "sample#{n+1}",
-    email: "sample#{n+1}@mail.com",
-    password: "password",
-    password_confirmation: "password"
-  )
-end
+User.create!(
+  [
+    {
+      name: "佐藤 一郎",
+      email: "ichisato@mail.com",
+      password: "satoupassword0101",
+      password_confirmation: "satoupassword0101",
+      having_xp: 0,
+      grade: "First Stepper",
+    },
+    {
+      name: "伊藤 花",
+      email: "hanaito@mail.com",
+      password: "hana511itopassword",
+      password_confirmation: "hana511itopassword",
+      having_xp: 50,
+      grade: "Seconed Stepper",
+    },
+    {
+      name: "鈴木 真",
+      email: "suzumako@mail.com",
+      password: "suzumakopassword",
+      password_confirmation: "suzumakopassword",
+      having_xp: 200,
+      grade: "Changer",
+    },
+    {
+      name: "加藤 あい",
+      email: "aikato@mail.com",
+      password: "kato1216aipassword",
+      password_confirmation: "kato1216aipassword",
+      having_xp: 450,
+      grade: "Legend",
+    }
+  ]
+)
 
-10.times do |n|
-  Quest.create!(
-    title: "My sample title#{n + 1} public false",
-    describe: "My sample describe#{n + 1}",
-    difficulty: 3,
-    public: false,
-    xp: 6, 
-    user_id: 1
-  )
-end
+Quest.create!(
+  [
+    {
+      title: "1週間日記をつけてみよう",
+      describe: "日記の内容はなんでも可。達成条件は１週間続けることです。",
+      difficulty: 2,
+      public: true,
+      xp: 4, 
+      user_id: 1,
+    },
+    {
+      title: "1人海外旅行をしてみよう",
+      describe: "行ってみたい国に1人で行って、楽しんでください。1人で行くことに価値があります。",
+      difficulty: 5,
+      public: true,
+      xp: 10, 
+      user_id: 2,
+    },
+    {
+      title: "思い切って坊主にしよう！",
+      describe: "自分に坊主が似合うか不安ですが、一度は坊主にしてみたい。応援よろしくお願いします。",
+      difficulty: 5,
+      public: true,
+      xp: 10,
+      user_id: 3,
+    },
+    {
+      title: "誰かに料理を振る舞ってみよう",
+      describe: "家族、友達、誰でもいいです。料理を振る舞ってみてください。よければ感想をトークルームに綴ってください。",
+      difficulty: 3,
+      public: true,
+      xp: 6,
+      user_id: 4,
+    },
+    {
+      title: "行ったことのない喫茶店に３日連続行ってみよう",
+      describe: "店主と仲良くなれたら、満点です！！",
+      difficulty: 4,
+      public: true,
+      xp: 8,
+      user_id: 1,
+    },
+    {
+      title: "なんとなく神社に行ってみては？",
+      describe: "普段は神社に行かないのですが、日本の古き良き文化をなんとく感じれたらなと。不思議な体験をした人は、ぜひトークルームへコメントを",
+      difficulty: 1,
+      public: true,
+      xp: 2,
+      user_id: 2,
+    },
+    {
+      title: "限界まで腕立て伏せ（筋トレなら部位は指定なし）",
+      describe: "体動かせてないので、一回だけ限界まで筋トレする。",
+      difficulty: 3,
+      public: true,
+      xp: 6,
+      user_id: 3,
+    },
+    {
+      title: "お金の勉強をしてみよう",
+      describe: "生きていく上で、お金の勉強は大切だと思います。ユーチューブでもなんでもいいので少しだけ勉強してみよう",
+      difficulty: 2,
+      public: true,
+      xp: 4,
+      user_id: 4,
+    },
+    {
+      title: "お世話になってる人に唐突にプレゼントを渡そう",
+      describe: "サプライズ的にプレゼントを。面白エピソードを期待してます。",
+      difficulty: 2,
+      public: true,
+      xp: 4,
+      user_id: 1,
+    },
+    {
+      title: "伊達メガネで登校・出社してみる",
+      describe: "めっちゃイメチェンして周りの反応に耐える修行及び意外とメガネ似合うかもよ。難易度高めです。",
+      difficulty: 4,
+      public: true,
+      xp: 8,
+      user_id: 2,
+    },
+    {
+      title: "水を味わって飲んでみよう",
+      describe: "水を味わって飲んだことありますか？くだらないかもしれませんが、何気ない生活や自分の感覚を見つめ直すことも大切です。",
+      difficulty: 1,
+      public: true,
+      xp: 2,
+      user_id: 3,
+    },
+    {
+      title: "ヨガを2週間続けてみよう",
+      describe: "2週間とは言わずにまずはやってみよう。それが継続できたら2週間後、何か変わってるかもよ？",
+      difficulty: 3,
+      public: true,
+      xp: 6,
+      user_id: 4,
+    },
+    {
+      title: "1万円を使って休日の1日を「最高の休日」にしてみよう",
+      describe: "あなたにとっての「最高の休日」を追求してください。もしよければ、あなたの「最高の休日」のプランを共有してください。",
+      difficulty: 2,
+      public: true,
+      xp: 4,
+      user_id: 1,
+    },
+    {
+      title: "生活圏内の風景を撮影してみよう",
+      describe: "何気ない風景に気づきあり。",
+      difficulty: 1,
+      public: true,
+      xp: 2,
+      user_id: 2,
+    },
+    {
+      title: "居酒屋のカウンターで隣の人（知らない人）に話しかけてみよう",
+      describe: "お酒の席なら、多少コミュニケーションが取りやすいかも？普段話さないような人との会話は新鮮でいい経験になるかも。いっそ奢ったりして",
+      difficulty: 3,
+      public: true,
+      xp: 6,
+      user_id: 3,
+    },
+    {
+      title: "1人ピザパーティー開催!",
+      describe: "タイトルの通りです。好きな映画でも見ながらピザパを堪能するのも悪くないですよ",
+      difficulty: 1,
+      public: true,
+      xp: 2,
+      user_id: 4,
+    },
+    {
+      title: "知らない漫画を全巻購入して読破しよう",
+      describe: "マイナーな漫画を読破して、友達に熱く語ってみたらどんな反応をするのか実験したいので、このクエストを作成してみました。",
+      difficulty: 3,
+      public: true,
+      xp: 6,
+      user_id: 1,
+    },
+    {
+      title: "日本のがっかり名所巡り!",
+      describe: "話題のネタとしては最高です。",
+      difficulty: 5,
+      public: true,
+      xp: 10,
+      user_id: 2,
+    },
+    {
+      title: "定期的に歯医者に行こう",
+      describe: "歯のメンテナンスは大事です。評判のよい歯医者に行ってみては？",
+      difficulty: 1,
+      public: true,
+      xp: 2,
+      user_id: 3,
+    },
+    {
+      title: "1ヶ月、禁酒!!!",
+      describe: "飲酒量によって難易度は異なるかもしれません。達成後、体調などの変化を共有しよう。一緒に頑張りましょう！",
+      difficulty: 4,
+      public: true,
+      xp: 8,
+      user_id: 4,
+    },
+    {
+      title: "小説を書いてみよう",
+      describe: "自分だけの小説を書いてみてください。題材もクオリティも何もかも自由です。決して、他人に見られないようにだけ注意しましょう",
+      difficulty: 3,
+      public: true,
+      xp: 6,
+      user_id: 1,
+    },
+    {
+      title: "擬似インド体験（食事を右手で食べてみよう）",
+      describe: "インドに行かなくとも、それなりのカレーを右手で食べてみればもうインドでは？",
+      difficulty: 2,
+      public: true,
+      xp: 4,
+      user_id: 2,
+    },
+    {
+      title: "Let's go skydiving!!",
+      describe: "人生１度はやってみたい...",
+      difficulty: 5,
+      public: true,
+      xp: 10,
+      user_id: 3,
+    },
+    {
+      title: "食べたことのないお菓子をたくさん買って、友達とシェアしよう",
+      describe: "スーパーにあるこれ誰が食べるんだろう？っていうお菓子を買って、試食会！",
+      difficulty: 2,
+      public: true,
+      xp: 4,
+      user_id: 4,
+    },
+  ]
+)
 
-10.times do |n|
-  Quest.create!(
-    title: "My sample title#{n + 10} public true",
-    describe: "Mysample describe#{n + 10}",
-    difficulty: 4,
-    public: true,
-    xp: 8,
-    user_id: 1
-  )
-end
+Challenge.create!(
+  [
+    { user_id: 1, quest_id: 1, close: false, },
+    { user_id: 2, quest_id: 2, close: false, },
+    { user_id: 3, quest_id: 3, close: false, },
+    { user_id: 4, quest_id: 4, close: false, },
+    { user_id: 1, quest_id: 5, close: false, },
+    { user_id: 2, quest_id: 6, close: false, },
+    { user_id: 3, quest_id: 7, close: false, },
+    { user_id: 4, quest_id: 8, close: false, },
+    { user_id: 1, quest_id: 9, close: false, },
+    { user_id: 2, quest_id: 10, close: false, },
+    { user_id: 3, quest_id: 11, close: false, },
+    { user_id: 4, quest_id: 12, close: false, },
+    { user_id: 1, quest_id: 13, close: false, },
+    { user_id: 2, quest_id: 14, close: false, },
+    { user_id: 3, quest_id: 15, close: false, },
+    { user_id: 4, quest_id: 16, close: false, },
+    { user_id: 1, quest_id: 17, close: false, },
+    { user_id: 2, quest_id: 18, close: false, },
+    { user_id: 3, quest_id: 19, close: false, },
+    { user_id: 4, quest_id: 20, close: false, },
+    { user_id: 1, quest_id: 21, close: false, },
+    { user_id: 2, quest_id: 22, close: false, },
+    { user_id: 3, quest_id: 23, close: false, },
+    { user_id: 4, quest_id: 24, close: false, },
+    { user_id: 1, quest_id: 2, close: false, },
+    { user_id: 1, quest_id: 7, close: false, },
+    { user_id: 1, quest_id: 12, close: false, },
+    { user_id: 1, quest_id: 18, close: false, },
+    { user_id: 1, quest_id: 24, close: false, },
+    { user_id: 1, quest_id: 3, close: true, },
+    { user_id: 1, quest_id: 8, close: true, },
+    { user_id: 1, quest_id: 14, close: true, },
+    { user_id: 1, quest_id: 19, close: true, },
+    { user_id: 1, quest_id: 23, close: true, },
+    { user_id: 2, quest_id: 1, close: false, },
+    { user_id: 2, quest_id: 8, close: false, },
+    { user_id: 2, quest_id: 11, close: false, },
+    { user_id: 2, quest_id: 13, close: false, },
+    { user_id: 2, quest_id: 16, close: false, },
+    { user_id: 2, quest_id: 17, close: true, },
+    { user_id: 2, quest_id: 20, close: true, },
+    { user_id: 2, quest_id: 21, close: true, },
+    { user_id: 2, quest_id: 23, close: true, },
+    { user_id: 2, quest_id: 24, close: true, },
+    { user_id: 3, quest_id: 2, close: false, },
+    { user_id: 3, quest_id: 4, close: false, },
+    { user_id: 3, quest_id: 6, close: false, },
+    { user_id: 3, quest_id: 9, close: false, },
+    { user_id: 3, quest_id: 10, close: false, },
+    { user_id: 3, quest_id: 16, close: true, },
+    { user_id: 3, quest_id: 18, close: true, },
+    { user_id: 3, quest_id: 20, close: true, },
+    { user_id: 3, quest_id: 22, close: true, },
+    { user_id: 3, quest_id: 24, close: true, },
+    { user_id: 4, quest_id: 23, close: false, },
+    { user_id: 4, quest_id: 21, close: false, },
+    { user_id: 4, quest_id: 19, close: false, },
+    { user_id: 4, quest_id: 18, close: false, },
+    { user_id: 4, quest_id: 14, close: false, },
+    { user_id: 4, quest_id: 13, close: true, },
+    { user_id: 4, quest_id: 11, close: true, },
+    { user_id: 4, quest_id: 7, close: true, },
+    { user_id: 4, quest_id: 6, close: true, },
+    { user_id: 4, quest_id: 1, close: true, },
+  ]
+)
 
-10.times do |n|
-  Quest.create!(
-    title: "Other sample title#{n + 1} public false",
-    describe: "Other sample describe#{n + 1}",
-    difficulty: 2,
-    public: false,
-    xp: 4,
-    user_id: 2
-  )
-end
+Tag.create!(
+  [
+    { name: "日記", },
+    { name: "旅行", },
+    { name: "観光", },
+    { name: "髪型", },
+    { name: "食事", },
+    { name: "コミュニケーション", },
+    { name: "筋トレ", },
+    { name: "お金", },
+    { name: "サプライズ", },
+    { name: "メガネ", },
+    { name: "健康", },
+    { name: "休日", },
+    { name: "趣味", },
+    { name: "お酒", },
+    { name: "漫画", },
+    { name: "小説", },
+    { name: "絶叫", },
+  ]
+)
 
-10.times do |n|
-  Quest.create!(
-    title: "sample title#{n + 1} public true",
-    describe: "sample describe#{n + 1}",
-    difficulty: 1,
-    public: true,
-    xp: 2,
-    user_id: 2
-  )
-end
+Room.create!(
+  [
+    { quest_id: 1 },
+    { quest_id: 2 },
+    { quest_id: 3 },
+    { quest_id: 4 },
+    { quest_id: 5 },
+    { quest_id: 6 },
+    { quest_id: 7 },
+    { quest_id: 8 },
+    { quest_id: 9 },
+    { quest_id: 10 },
+    { quest_id: 11 },
+    { quest_id: 12 },
+    { quest_id: 13 },
+    { quest_id: 14 },
+    { quest_id: 15 },
+    { quest_id: 16 },
+    { quest_id: 17 },
+    { quest_id: 18 },
+    { quest_id: 19 },
+    { quest_id: 20 },
+    { quest_id: 21 },
+    { quest_id: 22 },
+    { quest_id: 23 },
+    { quest_id: 24 },
+  ]
+)
 
-5.times do |n|
-  Challenge.create!(
-    user_id: 1,
-    quest_id: n + 1,
-    close: false
-  )
-end
+QuestTag.create!(
+  [
+    {quest_id: 1, tag_id: 1},
+    {quest_id: 2, tag_id: 2},
+    {quest_id: 2, tag_id: 3},
+    {quest_id: 3, tag_id: 4},
+    {quest_id: 4, tag_id: 5},
+    {quest_id: 4, tag_id: 6},
+    {quest_id: 4, tag_id: 9},
+    {quest_id: 5, tag_id: 5},
+    {quest_id: 5, tag_id: 12},
+    {quest_id: 6, tag_id: 3},
+    {quest_id: 7, tag_id: 7},
+    {quest_id: 7, tag_id: 11},
+    {quest_id: 8, tag_id: 8},
+    {quest_id: 9, tag_id: 9},
+    {quest_id: 10, tag_id: 9},
+    {quest_id: 10, tag_id: 10},
+    {quest_id: 11, tag_id: 5},
+    {quest_id: 12, tag_id: 11},
+    {quest_id: 13, tag_id: 12},
+    {quest_id: 13, tag_id: 2},
+    {quest_id: 13, tag_id: 5},
+    {quest_id: 14, tag_id: 12},
+    {quest_id: 14, tag_id: 13},
+    {quest_id: 15, tag_id: 6},
+    {quest_id: 15, tag_id: 14},
+    {quest_id: 16, tag_id: 5},
+    {quest_id: 16, tag_id: 12},
+    {quest_id: 17, tag_id: 15},
+    {quest_id: 18, tag_id: 2},
+    {quest_id: 18, tag_id: 3},
+    {quest_id: 19, tag_id: 11},
+    {quest_id: 20, tag_id: 11},
+    {quest_id: 20, tag_id: 14},
+    {quest_id: 21, tag_id: 13},
+    {quest_id: 21, tag_id: 16},
+    {quest_id: 22, tag_id: 2},
+    {quest_id: 22, tag_id: 5},
+    {quest_id: 23, tag_id: 17},
+    {quest_id: 24, tag_id: 5},
+    {quest_id: 24, tag_id: 6},
+  ]
+)
 
-5.times do |n|
-  Challenge.create!(
-    user_id: 1,
-    quest_id: n + 20,
-    close: false
-  )
-end
-
-5.times do |n|
-  Challenge.create!(
-    user_id: 1,
-    quest_id: n + 10,
-    close: true
-  )
-end
-
-5.times do |n|
-  Challenge.create!(
-    user_id: 1,
-    quest_id: n + 30,
-    close: true
-  )
-end
-
-5.times do |n|
-  Challenge.create!(
-    user_id: 2,
-    quest_id: n + 5,
-    close: false
-  )
-end
-
-5.times do |n|
-  Challenge.create!(
-    user_id: 2,
-    quest_id: n + 25,
-    close: false
-  )
-end
-
-5.times do |n|
-  Challenge.create!(
-    user_id: 2,
-    quest_id: n + 15,
-    close: true
-  )
-end
-
-5.times do |n|
-  Challenge.create!(
-    user_id: 2,
-    quest_id: n + 35,
-    close: true
-  )
-end
+Message.create!(
+  [
+    {
+      user_id: 1,
+      room_id: 1,
+      content: "1週間は続けれなかった。",
+    },
+    {
+      user_id: 2,
+      room_id: 1,
+      content: "元々、日記つけてるからチャレンジ成功でいいかな？",
+    },
+    {
+      user_id: 3,
+      room_id: 1,
+      content: "やってみたけど、自分はなんか微妙やった",
+    },
+    {
+      user_id: 4,
+      room_id: 1,
+      content: "意外と楽しかった",
+    },
+    {
+      user_id: 1,
+      room_id: 2,
+      content: "1人とかすげー勇気いるやん",
+    },
+    {
+      user_id: 2,
+      room_id: 2,
+      content: "次の連休、挑戦してみる",
+    },
+    {
+      user_id: 3,
+      room_id: 2,
+      content: "治安のいい国ってどこ？おすすめある？",
+    },
+    {
+      user_id: 4,
+      room_id: 2,
+      content: "めっちゃ不安だったけど、刺激的で楽しかった。1人ってのが肝心だね",
+    },
+    {
+      user_id: 1,
+      room_id: 3,
+      content: "難易度高すぎ...",
+    },
+    {
+      user_id: 2,
+      room_id: 3,
+      content: "同感",
+    },
+    {
+      user_id: 3,
+      room_id: 3,
+      content: "バズカット似合う人はいいけどね",
+    },
+    {
+      user_id: 4,
+      room_id: 3,
+      content: "美容師に似合うかどうか聞いた方が良いよ",
+    },
+    {
+      user_id: 1,
+      room_id: 4,
+      content: "生姜焼きとかでええの？",
+    },
+    {
+      user_id: 2,
+      room_id: 4,
+      content: "やってみたけど、なんか照れた",
+    },
+    {
+      user_id: 3,
+      room_id: 4,
+      content: "まずは料理ができるようにならなければ（汗）",
+    },
+    {
+      user_id: 4,
+      room_id: 4,
+      content: "お母さんとか毎日経験値もらえるイージークエスト発見",
+    },
+    {
+      user_id: 1,
+      room_id: 5,
+      content: "顔覚えられた。3日間で常連になれたかな笑",
+    },
+    {
+      user_id: 2,
+      room_id: 5,
+      content: "3日間連続、同じメニュー頼んだ。3日目にして「いつもの」が通じる",
+    },
+    {
+      user_id: 3,
+      room_id: 5,
+      content: "せめて別々の喫茶店巡りたいな",
+    },
+    {
+      user_id: 4,
+      room_id: 5,
+      content: "地元の小さい喫茶店に初めて行った",
+    },
+    {
+      user_id: 1,
+      room_id: 6,
+      content: "近くに神社ない",
+    },
+    {
+      user_id: 2,
+      room_id: 6,
+      content: "不審者っぽくみられた...",
+    },
+    {
+      user_id: 3,
+      room_id: 6,
+      content: "やってみた。たまにはいいかも",
+    },
+    {
+      user_id: 4,
+      room_id: 6,
+      content: "ジブリとかみると行きたくなるよね",
+    },
+    {
+      user_id: 1,
+      room_id: 7,
+      content: "筋肉痛がやばい",
+    },
+    {
+      user_id: 2,
+      room_id: 7,
+      content: "限界は無理だぁ、意志が弱い...",
+    },
+    {
+      user_id: 3,
+      room_id: 7,
+      content: "腹筋で挑戦した",
+    },
+    {
+      user_id: 4,
+      room_id: 7,
+      content: "ジム通いしているからOK",
+    },
+    {
+      user_id: 1,
+      room_id: 8,
+      content: "おすすめのyoutubeある？",
+    },
+    {
+      user_id: 2,
+      room_id: 8,
+      content: "お金の使い方のメリハリが大事！",
+    },
+    {
+      user_id: 3,
+      room_id: 8,
+      content: "資格とってみようかな",
+    },
+    {
+      user_id: 4,
+      room_id: 8,
+      content: "知識があるとお金の捉え方が変わるよ。おすすめ",
+    },
+    {
+      user_id: 1,
+      room_id: 9,
+      content: "さすがにぽかーーんとされた笑",
+    },
+    {
+      user_id: 2,
+      room_id: 9,
+      content: "高めのワインあげた。結局一緒に飲んでしまった",
+    },
+    {
+      user_id: 3,
+      room_id: 9,
+      content: "唐突とは「出勤直後に渡すことである」 社員から変に心配された",
+    },
+    {
+      user_id: 4,
+      room_id: 9,
+      content: "めっちゃ喜ばれた。",
+    },
+    {
+      user_id: 1,
+      room_id: 10,
+      content: "普段コンタクトの人がメガネするのとは訳が違う",
+    },
+    {
+      user_id: 2,
+      room_id: 10,
+      content: "平常心ではいられない",
+    },
+    {
+      user_id: 3,
+      room_id: 10,
+      content: "気づかれなかった。",
+    },
+    {
+      user_id: 4,
+      room_id: 10,
+      content: "気づかれないってどういうこと！？",
+    },
+    {
+      user_id: 1,
+      room_id: 11,
+      content: "It tasted like water.(それは水の味がした)",
+    },
+    {
+      user_id: 2,
+      room_id: 11,
+      content: "地域によって水道水の味って違うよね",
+    },
+    {
+      user_id: 3,
+      room_id: 11,
+      content: "水を味わう。なかなか斬新というか、灯台下暗し",
+    },
+    {
+      user_id: 4,
+      room_id: 11,
+      content: "当たり前って幸せですね",
+    },
+    {
+      user_id: 1,
+      room_id: 12,
+      content: "ヨガとストレッチの違いって何？",
+    },
+    {
+      user_id: 2,
+      room_id: 12,
+      content: "2週間は長めですね",
+    },
+    {
+      user_id: 3,
+      room_id: 12,
+      content: "整う感じはあった",
+    },
+    {
+      user_id: 4,
+      room_id: 12,
+      content: "運動不足解消になるかな？",
+    },
+    {
+      user_id: 1,
+      room_id: 13,
+      content: "1万円って絶妙な金額。",
+    },
+    {
+      user_id: 2,
+      room_id: 13,
+      content: "「最高の休日」 好きなものたらふく食べようかな",
+    },
+    {
+      user_id: 3,
+      room_id: 13,
+      content: "マッサージ受けてみた",
+    },
+    {
+      user_id: 4,
+      room_id: 13,
+      content: "友達も参加させてショッピングした",
+    },
+    {
+      user_id: 1,
+      room_id: 14,
+      content: "こんなところにこんなのあったんだっていう気づきがあった",
+    },
+    {
+      user_id: 2,
+      room_id: 14,
+      content: "スナップショット面白いかも",
+    },
+    {
+      user_id: 3,
+      room_id: 14,
+      content: "山しかない...",
+    },
+    {
+      user_id: 4,
+      room_id: 14,
+      content: "帰り際、色々と撮影した",
+    },
+    {
+      user_id: 1,
+      room_id: 15,
+      content: "まじで、奢ってやった",
+    },
+    {
+      user_id: 2,
+      room_id: 15,
+      content: "知らない業界の話が聞けた",
+    },
+    {
+      user_id: 3,
+      room_id: 15,
+      content: "話しかける勇気ない",
+    },
+    {
+      user_id: 4,
+      room_id: 15,
+      content: "迷惑かなって思い込んでたけど、意外と相手も楽しんでくれた",
+    },
+    {
+      user_id: 1,
+      room_id: 16,
+      content: "久しぶりにピザ食べた",
+    },
+    {
+      user_id: 2,
+      room_id: 16,
+      content: "これは、毎日やりたい笑",
+    },
+    {
+      user_id: 3,
+      room_id: 16,
+      content: "なんだろ、アメリカを感じた",
+    },
+    {
+      user_id: 4,
+      room_id: 16,
+      content: "チートデイに絶対やる！",
+    },
+    {
+      user_id: 1,
+      room_id: 17,
+      content: "これはどの漫画を選ぶかによって充実度が違うぞ",
+    },
+    {
+      user_id: 2,
+      room_id: 17,
+      content: "語れるほど、熟読できない苦笑",
+    },
+    {
+      user_id: 3,
+      room_id: 17,
+      content: "友達の間だけでブームが起きた",
+    },
+    {
+      user_id: 4,
+      room_id: 17,
+      content: "ワンピース読んでみたドヤ",
+    },
+    {
+      user_id: 1,
+      room_id: 18,
+      content: "本当にがっかりだった",
+    },
+    {
+      user_id: 2,
+      room_id: 18,
+      content: "想像以上でした。",
+    },
+    {
+      user_id: 3,
+      room_id: 18,
+      content: "ある意味、面白いクエスト",
+    },
+    {
+      user_id: 4,
+      room_id: 18,
+      content: "難易度に相応しいほど躊躇う",
+    },
+    {
+      user_id: 1,
+      room_id: 19,
+      content: "今日、予約した",
+    },
+    {
+      user_id: 2,
+      room_id: 19,
+      content: "久しぶりに行ったけど、虫歯なし",
+    },
+    {
+      user_id: 3,
+      room_id: 19,
+      content: "健康の意識が上がった",
+    },
+    {
+      user_id: 4,
+      room_id: 19,
+      content: "矯正しようかな",
+    },
+    {
+      user_id: 1,
+      room_id: 20,
+      content: "達成できた！！",
+    },
+    {
+      user_id: 2,
+      room_id: 20,
+      content: "2週間目で脱落",
+    },
+    {
+      user_id: 3,
+      room_id: 20,
+      content: "体調がめっちゃ良くなった",
+    },
+    {
+      user_id: 4,
+      room_id: 20,
+      content: "顔つきが変わった",
+    },
+    {
+      user_id: 1,
+      room_id: 21,
+      content: "小説を初めて書いた。楽しい",
+    },
+    {
+      user_id: 2,
+      room_id: 21,
+      content: "平日の１時間とかでも挑戦できる",
+    },
+    {
+      user_id: 3,
+      room_id: 21,
+      content: "文章能力が無さすぎて...",
+    },
+    {
+      user_id: 4,
+      room_id: 21,
+      content: "大作ができそう笑",
+    },
+    {
+      user_id: 1,
+      room_id: 22,
+      content: "衛生的にと感じてしまうが、異国体験を安価で体験できた",
+    },
+    {
+      user_id: 2,
+      room_id: 22,
+      content: "擬似インド体験は確かにできたかも",
+    },
+    {
+      user_id: 3,
+      room_id: 22,
+      content: "手ベトベトになった笑",
+    },
+    {
+      user_id: 4,
+      room_id: 22,
+      content: "グリーンカレーで挑戦した",
+    },
+    {
+      user_id: 1,
+      room_id: 23,
+      content: "難易度高ぇ",
+    },
+    {
+      user_id: 2,
+      room_id: 23,
+      content: "やったことある。試してみ",
+    },
+    {
+      user_id: 3,
+      room_id: 23,
+      content: "一度はやってみたい",
+    },
+    {
+      user_id: 4,
+      room_id: 23,
+      content: "日本でできるの？",
+    },
+    {
+      user_id: 1,
+      room_id: 24,
+      content: "確かに需要なさそうなお菓子はあるけども",
+    },
+    {
+      user_id: 2,
+      room_id: 24,
+      content: "初めて食べたのあるけど美味しかった",
+    },
+    {
+      user_id: 3,
+      room_id: 24,
+      content: "これは安価で楽しめる",
+    },
+    {
+      user_id: 4,
+      room_id: 24,
+      content: "気分転換にいいかも",
+    },
+  ]
+)
