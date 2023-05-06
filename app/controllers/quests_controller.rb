@@ -5,9 +5,9 @@ class QuestsController < ApplicationController
 
   def index
     if params[:search] && params[:search][0] == '#'
-      @quests = Tag.search(params[:search]).order(created_at: :desc)
+      @quests = Tag.eager_load(quest_tags: [quest: :user]).search(params[:search]).order(created_at: :desc)
     else
-      @quests = Quest.search(params[:search]).order(created_at: :desc)
+      @quests = Quest.eager_load(:user).search(params[:search]).order(created_at: :desc)
     end
   end
 

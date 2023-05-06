@@ -4,11 +4,11 @@ class ChallengesController < ApplicationController
   before_action :ensure_user, only: [:update, :destroy]
 
   def index
-    @challenges = Challenge.where(user_id: current_user.id, close: false)
+    @challenges = Challenge.eager_load(quest: :user).where(user_id: current_user.id, close: false)
   end
 
   def closed
-    @challenges = Challenge.where(user_id: current_user.id, close: true)
+    @challenges = Challenge.eager_load(quest: :user).where(user_id: current_user.id, close: true)
   end
 
   def create

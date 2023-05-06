@@ -38,7 +38,7 @@ class Quest < ApplicationRecord
       search_word = search.gsub(/(^[[:space:]]+)|([[:space:]]+$)/, '').split(/[[:space:]]+/)
       Quest.where('title LIKE(?)', "%#{search_word.first}%")
     else
-      Quest.all
+      Quest.eager_load(:user).all
     end
   end
 end
