@@ -1,13 +1,20 @@
-%h1 My quest list
-%p Find me in app/views/quests/my_quest.html.haml
-
-- if @quests.empty?
-  %p 作成したクエストがありません
-- @quests.each do |quest|
-  %div{class: "my_quest_#{quest.id}"}
-  = quest.title
-  = link_to "詳細", quest_path(quest)
-  - if quest && current_user_owned?(quest)
-    = link_to "編集する", edit_quest_path(quest)
-    - if !public_quest?(quest)
-      = link_to "削除する", quest_path(quest), method: :delete
+.container
+  .center-block
+    - if @quests.empty?
+      .card.m-2.text-center.text-bg-light.col-md-6.mx-auto
+        .crad-body.p-3
+          %p.card-title.mb-0.text-secondary
+            作成したクエストがありません
+    - @quests.each do |quest|
+      %div{class: "my_quest_#{quest.id}"}
+        .card.border-secondary.m-2.text-center.text-bg-light.col-md-6.mx-auto
+          .crad-body.p-3
+            %p.card-title.mb-0
+              = quest.title
+              %p.card-text.text-secondary.mb-0
+                = "難易度:#{quest.difficulty}"
+              = link_to "詳細", quest_path(quest), class: "btn btn-outline-success my-1 my-sm-0 col-3 mx-1"
+              - if quest && current_user_owned?(quest)
+                = link_to "編集", edit_quest_path(quest), class: "btn btn-outline-success my-1 my-sm-0 col-3 mx-1"
+                - if !public_quest?(quest)
+                  = link_to "削除", quest_path(quest), method: :delete, class: "btn btn-outline-secondary my-1 my-sm-0 col-3 mx-1"
