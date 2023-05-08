@@ -1,27 +1,52 @@
 .container
   .center-block
-    %p クエスト
-    = @quest.title
-    %p タグ
-    - @quest.tags.each do |tag|
-      = link_to "##{tag.name}", quests_path(search: "##{tag.name}")
-    - if !(@quest.describe.blank?)
-      %p クエスト詳細
-      = @quest.describe
-    %p 難易度
-    = @quest.difficulty
-    %p 経験値
-    = "#{@quest.xp}ポイント"
-    - if public_quest?(@quest)
-      %p このクエストは公開されています。
-    - else
-      %p このクエストは公開されていません。
-    - if @quest && current_user_owned?(@quest)
-      = link_to "編集する", edit_quest_path(@quest)
-    - if (public_quest?(@quest) && !current_user_owned?(@quest) && is_not_own_challenge?(@quest)) || (current_user_owned?(@quest) && is_not_own_challenge?(@quest))
-      = form_with(model: @challenge, url: challenges_path(@challenge)) do |f|
-        = f.hidden_field :quest_id, value: @quest.id
-        .actions
-        = f.submit "挑戦する", class: "btn btn-primary"
-    = link_to "挑戦リストに戻る", challenges_path
-    = link_to "トークルームへ", quest_room_path(@quest, @room), data: {"turbolinks": false}
+    .card.text-center.border-secondary.col-md-6.mx-auto
+      .card-header.p-3
+        %h5.mb-0
+          = @quest.title
+      .card-body
+        .card-title.mb-3
+          - if !(@quest.describe.blank?)
+            = @quest.describe
+          - else
+            %p.text-secondary 詳細なし
+        .card-text.text-secondary.border-top
+          %p.mb-0
+            = "難易度: #{@quest.difficulty}"
+          - if public_quest?(@quest)
+            %p.mb-0 クエスト公開中
+          - else
+            %p.mb-0 クエスト非公開
+          .row.justify-content-center
+            - if @quest && current_user_owned?(@quest)
+              = link_to "編集", edit_quest_path(@quest), class: "btn btn-outline-success my-1 my-sm-0 col-5"
+            - if (public_quest?(@quest) && !current_user_owned?(@quest) && is_not_own_challenge?(@quest)) || (current_user_owned?(@quest) && is_not_own_challenge?(@quest))
+              = form_with model: @challenge, url: challenges_path(@challenge), class: "p-0 mx-3 col-5" do |f|
+                = f.hidden_field :quest_id, value: @quest.id
+                .actions
+                = f.submit "挑戦",class: "btn btn-outline-success my-1 my-sm-0 w-100"
+      .card-footer
+        = link_to "トークルームへ", quest_room_path(@quest, @room), data: {"turbolinks": false}, class: "btn btn-outline-secondary my-1 my-sm-0 col-12"
+    -# %p クエスト
+    -# %h4= @quest.title
+    -# %p タグ
+    -# - @quest.tags.each do |tag|
+    -#   = link_to "##{tag.name}", quests_path(search: "##{tag.name}")
+    -# - if !(@quest.describe.blank?)
+    -#   %p クエスト詳細
+    -#   = @quest.describe
+    -# %p= "難易度: #{@quest.difficulty}"
+    -# %p= "経験値: #{@quest.xp}ポイント"
+    -# - if public_quest?(@quest)
+    -#   %p このクエストは公開されています。
+    -# - else
+    -#   %p このクエストは公開されていません。
+    -# - if @quest && current_user_owned?(@quest)
+    -#   = link_to "編集する", edit_quest_path(@quest)
+    -# - if (public_quest?(@quest) && !current_user_owned?(@quest) && is_not_own_challenge?(@quest)) || (current_user_owned?(@quest) && is_not_own_challenge?(@quest))
+    -#   = form_with(model: @challenge, url: challenges_path(@challenge)) do |f|
+    -#     = f.hidden_field :quest_id, value: @quest.id
+    -#     .actions
+    -#     = f.submit "挑戦する", class: "btn btn-primary"
+    -# = link_to "挑戦リストに戻る", challenges_path
+    -# = link_to "トークルームへ", quest_room_path(@quest, @room), data: {"turbolinks": false}
