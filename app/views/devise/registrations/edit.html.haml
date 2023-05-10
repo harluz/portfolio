@@ -1,46 +1,46 @@
-%h2
-  Edit #{resource_name.to_s.humanize}
-= form_with model: @user, url: registration_path(@user), local: true do |f|
-  .field
-    = f.label :name
-    %br
-    = f.text_field :name, autofocus: true, autocomplete: "name"
-  - if @user.errors.include?(:name)
-    %p{class: "text-danger"}
-      =@user.errors.full_messages_for(:name).first
-  .field
-    = f.label :email
-    %br
-    = f.email_field :email, autofocus: true, autocomplete: "email"
-  - if @user.errors.include?(:email)
-    %p{class: "text-danger"}
-      =@user.errors.full_messages_for(:email).first
-  -# - if devise_mapping.confirmable? && resource.pending_reconfirmation?
-  -#   %div
-  -#     Currently waiting confirmation for: #{resource.unconfirmed_email}
-  .field
-    = f.label :password
-    %i (変更する場合のみ入力)
-    %br
-    = f.password_field :password, autocomplete: "new-password"
-    - if @user.errors.include?(:password)
-      %p{class: "text-danger"}
-        =@user.errors.full_messages_for(:password).first
-    - if @minimum_password_length
-      %br
-      %em
-        = "#{@minimum_password_length}文字以上のパスワードを入力してください。"
-  .field
-    = f.label :password_confirmation
-    %br
-    = f.password_field :password_confirmation, autocomplete: "new-password"
-  .field
-    = f.label :current_password
-    %i (変更を適用するためには、現在のパスワードの入力が必要となります。)
-    %br
-    = f.password_field :current_password, autocomplete: "current-password"
-    - if @user.errors.include?(:current_password)
-      %p{class: "text-danger"}
-        =@user.errors.full_messages_for(:current_password).first
-  .actions
-    = f.submit "更新"
+.container
+  .center-block.col-md-6.mx-auto
+    = form_with model: @user, url: registration_path(@user), local: true do |f|
+      .field.mt-3
+        = f.label :name, class: "form-label mb-0"
+        = f.text_field :name, autofocus: true, autocomplete: "name", class: "form-control"
+      - if @user.errors.include?(:name)
+        %p.text-danger
+          = @user.errors.full_messages_for(:name).first
+      .field.mt-3
+        = f.label :email, class: "form-label mb-0"
+        = f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control"
+      - if @user.errors.include?(:email)
+        %p.text-danger
+          = @user.errors.full_messages_for(:email).first
+      -# - if devise_mapping.confirmable? && resource.pending_reconfirmation?
+      -#   %div
+      -#     Currently waiting confirmation for: #{resource.unconfirmed_email}
+      .field.mt-3
+        = f.label :password, class: "form-label mb-0"
+        %i (変更する場合のみ)
+        = f.password_field :password, autocomplete: "new-password", placeholder: "6文字以上のパスワードを設定してください", class: "form-control"
+        - if @user.errors.include?(:password)
+          %p.text-danger
+            = @user.errors.full_messages_for(:password).first
+        -# - if @minimum_password_length
+        -#   %br
+        -#   %em
+        -#     = "#{@minimum_password_length}文字以上のパスワードを入力してください。"
+      .field.mt-3
+        = f.label :password_confirmation, class: "form-label mb-0"
+        = f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control"
+        - if @user.errors.include?(:password_confirmation)
+          %p.text-danger
+            = @user.errors.full_messages_for(:password_confirmation).first
+      .field.mt-3
+        = f.label :current_password, class: "form-label mb-0"
+        = f.password_field :current_password, autocomplete: "current-password", placeholder: "変更適用には現在のパスワードが必要です", class: "form-control"
+        - if @user.errors.include?(:current_password)
+          %p.text-danger
+            = @user.errors.full_messages_for(:current_password).first
+      .actions.mt-4.text-center
+        = f.submit "更新", class: "btn btn-outline-success my-1 my-sm-0 col-5 me-4"
+        = link_to "キャンセル", :back, class: "btn btn-outline-secondary my-1 my-sm-0 col-5"
+    .mt-3.text-center
+      = link_to "退会についてはこちら", pages_withdraw_path
