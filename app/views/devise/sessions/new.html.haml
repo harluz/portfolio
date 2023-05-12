@@ -10,9 +10,9 @@
         = f.password_field :password, autocomplete: "current-password", class: "form-control"
       - if devise_mapping.rememberable?
         .field.mt-3.text-center
-          = f.check_box :remember_me, class: "form-check-input", id: "flexCheckChecked", style: "transform:scale(1.5)"
-          = f.label "ログイン状態を保持する", class: "form-check-label", for: "flexCheckChecked"
+          = f.check_box :remember_me, class: "form-check-input", id: "flexCheckDefault", style: "transform:scale(1.5)"
+          = f.label "ログイン状態を保持する", class: "form-check-label", for: "flexCheckDefault"
       .actions.mt-4.text-center
-        = f.submit "ログイン", class: "btn btn-outline-success my-1 my-sm-0 col-6"
+        = f.submit "ログイン", class: "btn btn-outline-success my-1 my-sm-0 col-6", id: "submit-log-in"
     .text-center.mt-4
       = link_to "新規登録はこちら", new_user_registration_path

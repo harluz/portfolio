@@ -9,11 +9,11 @@
         .col-3.p-0
           %p クエスト作成数
           .h4
-            = link_to "#{@user.quests.count.to_s(:delimited)}", my_quest_quests_path, class: "link-dark"
+            = link_to "#{@user.quests.count.to_s(:delimited)}", my_quest_quests_path, class: "link-dark", id: "my-quest-link"
         .col-3.p-0
           %p クエスト達成数
           .h4
-            = link_to "#{@user.challenge_achieved.to_s(:delimited)}", closed_challenges_path, class: "link-dark"
+            = link_to "#{@user.challenge_achieved.to_s(:delimited)}", closed_challenges_path, class: "link-dark", id: "closed-challenge-link"
         .col-3.p-0
           %p 獲得経験値
           .h4

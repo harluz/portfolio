@@ -25,8 +25,8 @@
                   %p.text-secondary.mb-0 クエストが非公開となりました
                 - else
                   = link_to "詳細", quest_path(challenge.quest), class: "btn btn-outline-success my-1 my-sm-0 col-3"
-                = form_with model: challenge, url: challenge_path(challenge), class: "p-0 mx-3 col-3" do |f|
-                  = f.hidden_field :quest_id, value: challenge.quest.id
-                  = f.hidden_field :close, value: false
-                  .actions
-                  = f.submit "再挑戦", class: "btn btn-outline-success my-1 my-sm-0 w-100", id: "retry_#{challenge.id}"
+                  = form_with model: challenge, url: challenge_path(challenge), class: "p-0 mx-3 col-3" do |f|
+                    = f.hidden_field :quest_id, value: challenge.quest.id
+                    = f.hidden_field :close, value: false
+                    .actions
+                    = f.submit "再挑戦", class: "btn btn-outline-success my-1 my-sm-0 w-100", id: "retry_#{challenge.id}"
