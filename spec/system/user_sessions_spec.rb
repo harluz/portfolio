@@ -35,7 +35,7 @@ RSpec.describe "UserSessions", type: :system do
       end
 
       it "メインページに遷移し、ログイン済みであることが分かるフラッシュメッセージが表示されること" do
-        expect(current_path).to eq challenges_path
+        expect(current_path).to eq quests_path
         expect(page).to have_content 'すでにログインしています。'
       end
 
@@ -85,7 +85,7 @@ RSpec.describe "UserSessions", type: :system do
         find('#submit-log-in').click
       end
 
-      it "〇〇ページに遷移していること" do
+      it "ログインページに遷移していること" do
         expect(current_path).to eq new_user_session_path
       end
 
@@ -109,8 +109,8 @@ RSpec.describe "UserSessions", type: :system do
       click_on "ゲストログイン"
     end
 
-    it "ログイン後に〇〇ページに遷移していること" do
-      expect(current_path).to eq root_path
+    it "ログイン後にクエスト一覧ページに遷移していること" do
+      expect(current_path).to eq quests_path
     end
 
     it "成功したフラッシュメッセージが表示されること" do
