@@ -22,7 +22,7 @@ ja:
         having_xp: 獲得経験値
         level: レベル
       quest:
-        title: タイトル
+        title: クエストタイトル
         describe: クエスト詳細
         difficulty: 難易度
         xp: 経験値
