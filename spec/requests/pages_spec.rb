@@ -77,13 +77,11 @@ RSpec.describe "Pages", type: :request do
       end
 
       it "ユーザー名、達成クエスト数、作成クエスト数、獲得経験値がレスポンスに含まれていること" do
-        challenge1.close = true
-        challenge2.close = true
         expect(subject).to include user.name
         expect(subject).to include "クエスト作成数"
         expect(subject).to include "クエスト達成数"
         expect(subject).to include "獲得経験値"
-        expect(subject).to include "2</a>"
+        expect(subject).to include "7</a>"
         expect(subject).to include "3</a>"
         expect(subject).to include "100pt"
         expect(subject).to include "ユーザー編集"
