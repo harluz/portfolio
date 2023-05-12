@@ -1,11 +1,14 @@
 class PagesController < ApplicationController
-  before_action :authenticate_user!, except: [:top]
+  before_action :authenticate_user!, except: [:top, :about]
 
   def top
   end
 
-  def main
+  def about
   end
+
+  # def main
+  # end
 
   def profile
     @user = current_user
