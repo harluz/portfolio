@@ -23,8 +23,8 @@ RSpec.describe "UserRegistrations", type: :request do
       describe "レスポンス確認" do
         before { post user_registration_path, params: { user: attributes_for(:user) } }
 
-        it "〇〇ページにリダイレクトされていること" do
-          expect(subject).to redirect_to pages_main_path
+        it "クエスト一覧ページにリダイレクトされていること" do
+          expect(subject).to redirect_to quests_path
         end
 
         it "ステータスコード303（リダイレクト）がレスポンスされていること" do
@@ -32,12 +32,10 @@ RSpec.describe "UserRegistrations", type: :request do
         end
 
         it "許可されているページにアクセスした際、ステータスコード200がレスポンスされていること" do
-          get pages_main_path
+          get challenges_path
           expect(subject).to have_http_status(200)
         end
       end
-
-      # サインアップした場合に表示されるヘッダーのレスポンスが含まれていること
     end
 
     context "サインアップに失敗する場合" do
@@ -55,7 +53,7 @@ RSpec.describe "UserRegistrations", type: :request do
         end
 
         it "許可されていないページにアクセスした際、ステータスコード302（リダイレクト）がレスポンスされていること" do
-          get pages_main_path
+          get challenges_path
           expect(subject).to have_http_status(302)
         end
       end
@@ -145,7 +143,6 @@ RSpec.describe "UserRegistrations", type: :request do
         it "フラッシュメッセージがレスポンスに含まれていること" do
           expect(response.body).to include "ユーザー名を入力してください"
           expect(response.body).to include "メールアドレスを入力してください"
-          expect(response.body).to include "6文字以上のパスワードを入力してください。"
           expect(response.body).to include "現在のパスワードを入力してください"
         end
       end

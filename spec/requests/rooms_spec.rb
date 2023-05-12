@@ -29,12 +29,12 @@ RSpec.describe "Rooms", type: :request do
         expect(subject).to include room.quest.title
         expect(subject).to include "クエストについて語ってみよう"
         expect(subject).to include "textarea"
-        expect(subject).to include "コメントを送信"
+        expect(subject).to include "送信"
         expect(subject).to include message.content
         expect(subject).to include "2023/04/01 12:00"
         expect(subject).to include other_message.content
         expect(subject).to include "2023/04/02 12:12"
-        expect(subject).to include "コメントを削除"
+        expect(subject).to include "コメント削除"
       end
 
       context "存在しないトークルームにアクセスしようとした場合" do

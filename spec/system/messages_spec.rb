@@ -17,7 +17,7 @@ RSpec.describe "Messages", type: :system do
         visit quest_room_path(public_quest, public_room)
         expect(page).to have_content message.content
         expect(page).to have_content "2023/04/01 12:00"
-        expect(page).to have_button "コメントを削除"
+        expect(page).to have_button "コメント削除"
       end
     end
 
@@ -27,7 +27,7 @@ RSpec.describe "Messages", type: :system do
         visit quest_room_path(public_quest, public_room)
         expect(page).to have_content other_message.content
         expect(page).to have_content "2023/04/01 12:00"
-        expect(page).not_to have_button "コメントを削除"
+        expect(page).not_to have_button "コメント削除"
       end
     end
   end
@@ -63,7 +63,7 @@ RSpec.describe "Messages", type: :system do
 
     it "クエストの削除と同時にメッセージも削除されていること" do
       visit my_quest_quests_path
-      click_on "削除する"
+      click_on "削除"
       expect(user.messages.blank?).to eq true
     end
   end

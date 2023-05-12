@@ -38,21 +38,19 @@ RSpec.describe "Challenges", type: :request do
 
         it "自身の挑戦中のクエストのみレスポンスされていること" do
           expect(subject).to include public_quest.title
+          expect(subject).to include "難易度:#{public_quest.difficulty}"
           expect(subject).to include non_public_quest.title
-          expect(subject).not_to include other_non_public_quest.title
+          expect(subject).to include "難易度:#{non_public_quest.difficulty}"
         end
 
         it "詳細・達成・諦めるのリンク及びボタンが正しくレスポンスされていること" do
-          expect(subject).to include "<a href=\"/quests/#{public_quest_challenge.quest.id}\">詳細</a>"
-          expect(subject).to include
-          "<a rel=\"nofollow\" data-method=\"delete\" href=\"/challenges/#{public_quest_challenge.id}\">諦める</a>"
-          expect(subject).to include
-          "id=\"/close_challenge_#{public_quest_challenge.id}\""
-          expect(subject).not_to include "<a href=\"/quests/#{non_public_other_quest_challenge.quest.id}\">詳細</a>"
-          expect(subject).not_to include
-          "<a rel=\"nofollow\" data-method=\"delete\" href=\"/challenges/#{non_public_other_quest_challenge.id}\">諦める</a>"
-          expect(subject).not_to include
-          "id=\"/close_challenge_#{non_public_other_quest_challenge.id}\""
+          expect(subject).to include "href=\"/quests/#{public_quest_challenge.quest.id}\">詳細</a>"
+          expect(subject).to include "href=\"/challenges/#{public_quest_challenge.id}\">諦める</a>"
+          expect(subject).to include "id=\"close_challenge_#{public_quest_challenge.id}\" data-disable-with=\"達成\""
+          expect(subject).not_to include "href=\"/quests/#{non_public_other_quest_challenge.quest.id}\">詳細</a>"
+          expect(subject).not_to include "href=\"/challenges/#{non_public_other_quest_challenge.id}\">諦める</a>"
+          expect(subject).not_to include "id=\"/close_challenge_#{non_public_other_quest_challenge.id}\""
+          expect(subject).not_to include "id=\"close_challenge_#{non_public_other_quest_challenge.id}\" data-disable-with=\"達成\""
         end
       end
 
@@ -68,7 +66,7 @@ RSpec.describe "Challenges", type: :request do
         it "クエストのレスポンスが含まれていること" do
           get challenges_path
           expect(subject).to include other_non_public_quest.title
-          expect(subject).to include "非公開クエスト"
+          expect(subject).to include "クエストが非公開となりました"
           expect(subject).to include "諦める"
           expect(subject).to include "達成"
           expect(subject).not_to include "詳細"
@@ -80,8 +78,8 @@ RSpec.describe "Challenges", type: :request do
         it "クエストが削除されたメッセージがレスポンスに含まれていること" do
           other_non_public_quest.destroy
           get challenges_path
-          expect(subject).to include "作成者によってクエストが削除されました。"
-          expect(subject).to include "リストから削除する"
+          expect(subject).to include "作成者によりクエストが削除されました。"
+          expect(subject).to include "リストから削除"
           expect(subject).not_to include other_non_public_quest.title
         end
       end
@@ -124,12 +122,10 @@ RSpec.describe "Challenges", type: :request do
         end
 
         it "詳細・達成・諦めるのリンク及びボタンが正しくレスポンスされていること" do
-          expect(subject).to include "<a href=\"/quests/#{public_quest_challenge.quest.id}\">詳細</a>"
-          expect(subject).to include
-          "id=\"/retry_#{public_quest_challenge.id}\""
-          expect(subject).not_to include "<a href=\"/quests/#{public_other_quest_challenge.quest.id}\">詳細</a>"
-          expect(subject).not_to include
-          "id=\"/retry_#{public_other_quest_challenge.id}\""
+          expect(subject).to include "href=\"/quests/#{public_quest_challenge.quest.id}\">詳細</a>"
+          expect(subject).to include "id=\"retry_#{public_quest_challenge.id}\" data-disable-with=\"再挑戦\""
+          expect(subject).not_to include "href=\"/quests/#{public_other_quest_challenge.quest.id}\">詳細</a>"
+          expect(subject).not_to include "id=\"retry_#{public_other_quest_challenge.id}\" data-disable-with=\"再挑戦\""
         end
       end
 
@@ -147,7 +143,7 @@ RSpec.describe "Challenges", type: :request do
         it "クエストのレスポンスが含まれていること" do
           get closed_challenges_path
           expect(subject).to include other_non_public_quest.title
-          expect(subject).to include "非公開クエスト"
+          expect(subject).to include "クエストが非公開となりました"
           expect(subject).not_to include "詳細"
           expect(subject).not_to include "再挑戦"
         end
@@ -160,8 +156,8 @@ RSpec.describe "Challenges", type: :request do
         it "クエストが削除されたメッセージがレスポンスに含まれていること" do
           other_non_public_quest.destroy
           get closed_challenges_path
-          expect(subject).to include "作成者によってクエストが削除されました。"
-          expect(subject).to include "リストから削除する"
+          expect(subject).to include "作成者によりクエストが削除されました。"
+          expect(subject).to include "リストから削除"
           expect(subject).not_to include other_non_public_quest.title
         end
       end

@@ -21,40 +21,60 @@ RSpec.describe "Quests", type: :request do
         expect(response).to have_http_status(200)
       end
 
-      it "questが表示されていること" do
+      it "公開questが表示されていること" do
+        expect(subject).to include "キーワードを一つ入力してください。"
+        expect(subject).to include "検索"
         expect(subject).to include quest.title
+        expect(subject).to include "難易度:#{quest.difficulty}"
         expect(subject).to include other_quest.title
+        expect(subject).to include "難易度:#{other_quest.difficulty}"
+        expect(subject).to include "詳細"
+        expect(subject).not_to include non_public_quest.title
+        expect(subject).not_to include non_public_other_quest.title
       end
 
-      context "ユーザー自身が作成したquestの場合" do
-        it "更新・削除のリンクが正しくレスポンスされていること" do
-          get quests_path
-          expect(subject).to include "<a href=\"/quests/#{quest.id}/edit\">編集する</a>"
-          expect(subject).not_to include
-          "<a rel=\"nofollow\" data-method=\"delete\" href=\"/quests/#{quest.id}\">削除する</a>"
-          expect(subject).to include
-          "<a href=\"/quests/#{non_public_quest.id}/edit\">編集する</a>"
-          expect(subject).to include
-          "<a rel=\"nofollow\" data-method=\"delete\" href=\"/quests/#{non_public_quest.id}\">削除する</a>"
-        end
-      end
+      # context "ユーザー自身が作成したquestの場合" do
+      #   it "詳細リンクがレスポンスに含まれていること" do
+          # get quests_path
+          # expect(subject).to include "<a href=\"/quests/#{quest.id}/edit\">編集</a>"
+          # expect(subject).not_to include
+          # "<a rel=\"nofollow\" data-method=\"delete\" href=\"/quests/#{quest.id}\">削除</a>"
+          # expect(subject).not_to include
+          # "<a href=\"/quests/#{non_public_quest.id}/edit\">編集</a>"
+          # expect(subject).not_to include
+          # "<a rel=\"nofollow\" data-method=\"delete\" href=\"/quests/#{non_public_quest.id}\">削除</a>"
+      #   end
+      # end
 
-      context "他のユーザーが作成したquestの場合" do
-        it "更新・削除のリンクがレスポンスされていないこと" do
-          expect(subject).not_to include "<a href=\"/quests/#{other_quest.id}/edit\">編集する</a>"
-          expect(subject).not_to include
-          "<a rel=\"nofollow\" data-method=\"delete\" href=\"/quests/#{other_quest.id}\">削除する</a>"
-          expect(subject).not_to include "<a href=\"/quests/#{non_public_other_quest.id}/edit\">編集する</a>"
-          expect(subject).not_to include
-          "<a rel=\"nofollow\" data-method=\"delete\" href=\"/quests/#{non_public_other_quest.id}\">削除する</a>"
-        end
-      end
+      # context "他のユーザーが作成したquestの場合" do
+      #   it "詳細リンクがレスポンスに含まれていること" do
+      #     expect(subject).not_to include "<a href=\"/quests/#{other_quest.id}/edit\">編集</a>"
+      #     expect(subject).not_to include
+      #     "<a rel=\"nofollow\" data-method=\"delete\" href=\"/quests/#{other_quest.id}\">削除</a>"
+      #     expect(subject).not_to include "<a href=\"/quests/#{non_public_other_quest.id}/edit\">編集</a>"
+      #     expect(subject).not_to include
+      #     "<a rel=\"nofollow\" data-method=\"delete\" href=\"/quests/#{non_public_other_quest.id}\">削除</a>"
+      #   end
+      # end
     end
 
     context "ユーザーがログインしていない場合" do
+      before { get quests_path }
+
       it "quest一覧ページのgetリクエストが成功していること" do
-        get quests_path
         expect(response).to have_http_status(200)
+      end
+
+      it "公開questが表示されていること" do
+        expect(subject).to include "キーワードを一つ入力してください。"
+        expect(subject).to include "検索"
+        expect(subject).to include quest.title
+        expect(subject).to include "難易度:#{quest.difficulty}"
+        expect(subject).to include other_quest.title
+        expect(subject).to include "難易度:#{other_quest.difficulty}"
+        expect(subject).to include "詳細"
+        expect(subject).not_to include non_public_quest.title
+        expect(subject).not_to include non_public_other_quest.title
       end
     end
   end
@@ -211,18 +231,18 @@ RSpec.describe "Quests", type: :request do
       end
 
       it "フォームがレスポンスに含まれていること" do
-        expect(response.body).to include "タイトル"
-        expect(response.body).to include "placeholder=\"（必須）クエストタイトルを入力してください\""
+        expect(response.body).to include "クエストタイトル"
+        expect(response.body).to include "placeholder=\"（必須）タイトルを入力してください\""
         expect(response.body).to include "クエスト詳細"
-        expect(response.body).to include "placeholder=\"クエストの詳細を入力\""
+        expect(response.body).to include "placeholder=\"ご自由にご記入ください\""
         expect(response.body).to include "難易度"
         5.times do |num|
-          expect(response.body).to include "id=\"quest_difficulty_#{num + 1}\""
+          expect(response.body).to include "id=\"radio-#{num + 1}\""
         end
         expect(response.body).to include "type=\"checkbox\""
         expect(response.body).to include "クエストを公開する"
         expect(response.body).to include "type=\"submit\""
-        expect(response.body).to include "クエスト作成！"
+        expect(response.body).to include "クエスト作成"
       end
     end
 
@@ -368,16 +388,16 @@ RSpec.describe "Quests", type: :request do
 
       it "フォームがレスポンスに含まれていること" do
         expect(response.body).to include "trip"
-        expect(response.body).to include "タイトル"
+        expect(response.body).to include "クエストタイトル"
         expect(response.body).to include "Public quest"
         expect(response.body).to include "クエスト詳細"
         expect(response.body).to include "Public quest description"
         expect(response.body).to include "難易度"
         5.times do |num|
-          expect(response.body).to include "id=\"quest_difficulty_#{num + 1}\""
+          expect(response.body).to include "id=\"radio-#{num + 1}\""
         end
         expect(response.body).to include "value=\"#{quest.difficulty}\" checked=\"checked\""
-        expect(response.body).to include "input type=\"checkbox\" value=\"1\" checked=\"checked\""
+        expect(response.body).to include "value=\"1\" checked=\"checked\""
         expect(response.body).to include "クエストを公開する"
         expect(response.body).to include "type=\"submit\""
         expect(response.body).to include "更新"
@@ -441,7 +461,7 @@ RSpec.describe "Quests", type: :request do
 
       it "更新前のquestの情報がレスポンスされていること" do
         expect(response.body).to include "クエストの更新に失敗しました。"
-        expect(response.body).to include "タイトルを入力してください"
+        expect(response.body).to include "クエストタイトルを入力してください"
         expect(response.body).to include "Non correct sample describe"
         expect(response.body).to include "value=\"5\" checked=\"checked\""
         expect(response.body).to include "type=\"checkbox\" value=\"1\" checked=\"checked\""

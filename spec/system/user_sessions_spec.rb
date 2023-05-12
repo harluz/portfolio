@@ -9,12 +9,12 @@ RSpec.describe "UserSessions", type: :system do
     it "ログインのフォームが表示されていること" do
       expect(page).to have_content "メールアドレス"
       expect(page).to have_content "パスワード"
-      expect(page).to have_content "Remember me"
-      expect(page).to have_content "Log in"
+      expect(page).to have_content "ログイン状態を保持する"
+      expect(page).to have_content "ログイン"
       expect(page).to have_field "メールアドレス"
       expect(page).to have_field "パスワード"
-      expect(page).to have_unchecked_field "Remember me"
-      expect(page).to have_button "Log in"
+      expect(page).to have_checked_field "ログイン状態を保持する"
+      expect(page).to have_button "ログイン"
     end
     # タイトルが〇〇となっていること
   end
@@ -30,12 +30,12 @@ RSpec.describe "UserSessions", type: :system do
       before do
         fill_in 'メールアドレス', with: 'sample@mail.com'
         fill_in 'パスワード', with: 'samplepassword'
-        click_on 'Log in'
+        find('#submit-log-in').click
         visit new_user_session_path
       end
 
       it "メインページに遷移し、ログイン済みであることが分かるフラッシュメッセージが表示されること" do
-        expect(current_path).to eq pages_main_path
+        expect(current_path).to eq challenges_path
         expect(page).to have_content 'すでにログインしています。'
       end
 
@@ -58,11 +58,11 @@ RSpec.describe "UserSessions", type: :system do
       before do
         fill_in 'メールアドレス', with: 'sample@mail.com'
         fill_in 'パスワード', with: 'samplepassword'
-        click_on 'Log in'
+        find('#submit-log-in').click
       end
 
-      it "ログイン後に〇〇ページに遷移していること" do
-        expect(current_path).to eq pages_main_path
+      it "ログイン後に挑戦一覧ページに遷移していること" do
+        expect(current_path).to eq challenges_path
       end
 
       it "成功したフラッシュメッセージが表示されること" do
@@ -82,7 +82,7 @@ RSpec.describe "UserSessions", type: :system do
       before do
         fill_in 'メールアドレス', with: 'sample'
         fill_in 'パスワード', with: 'sample'
-        click_on 'Log in'
+        find('#submit-log-in').click
       end
 
       it "〇〇ページに遷移していること" do

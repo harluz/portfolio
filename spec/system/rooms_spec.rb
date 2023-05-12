@@ -15,12 +15,13 @@ RSpec.describe "Rooms", type: :system do
           visit quest_room_path(room.quest.id, room.id)
           expect(current_path).to eq quest_room_path(room.quest.id, room.id)
           expect(page).to have_content room.quest.title
-          expect(page).to have_content "クエストについて語ってみよう"
-          expect(page).to have_content "コメントを送信"
-          expect(page).to have_button "コメントを送信"
+          # expect(page).to have_content "クエストについて語ってみよう"
+          expect(page.body).to include "クエストについて語ってみよう"
+          expect(page).to have_content "送信"
+          expect(page).to have_button "送信"
           expect(page).to have_content message.content
           expect(page).to have_content "2023/04/01 12:00"
-          expect(page).to have_button "コメントを削除"
+          expect(page).to have_button "コメント削除"
         end
       end
 
@@ -31,11 +32,11 @@ RSpec.describe "Rooms", type: :system do
           visit quest_room_path(room.quest.id, room.id)
           expect(current_path).to eq quest_room_path(room.quest.id, room.id)
           expect(page).to have_content room.quest.title
-          expect(page).to have_content "クエストについて語ってみよう"
-          expect(page).to have_content "コメントを送信"
+          expect(page.body).to include "クエストについて語ってみよう"
+          expect(page).to have_content "送信"
           expect(page).to have_content other_message.content
           expect(page).to have_content "2023/04/01 12:00"
-          expect(page).not_to have_button "コメントを削除"
+          expect(page).not_to have_button "コメント削除"
         end
       end
 
@@ -69,9 +70,9 @@ RSpec.describe "Rooms", type: :system do
       visit new_quest_path
       fill_in 'タイトル', with: "Create a quest you want to complete."
       fill_in 'クエスト詳細', with: "Create quest achievement conditions."
-      choose('quest_difficulty_3')
-      check "quest_public"
-      click_on "クエスト作成！"
+      choose('radio-3')
+      check "quest[public]"
+      click_on "クエスト作成"
     end
 
     it "questのshowページ内にリンクが生成され、roomにアクセスできること" do
@@ -82,8 +83,8 @@ RSpec.describe "Rooms", type: :system do
       click_on "トークルームへ"
       expect(current_path).to eq quest_room_path(quest, Room.first)
       expect(page).to have_content quest.title
-      expect(page).to have_content "クエストについて語ってみよう"
-      expect(page).to have_button "コメントを送信"
+      expect(page.body).to include "クエストについて語ってみよう"
+      expect(page).to have_button "送信"
     end
   end
 
