@@ -1,9 +1,11 @@
 .container
   .center-block
     .card.text-center.border-secondary.col-md-6.mx-auto
-      .card-header.p-3
-        %h5.mb-0
+      .card-header.px-3.pt-3.pb-0
+        %h5.mb-2
           = @quest.title
+        - @quest.tags.each do |tag|
+          = link_to "##{tag.name}", quests_path(search: "##{tag.name}"), class: "text-success link-dark mx-2"
       .card-body
         .card-title.mb-3
           - if !(@quest.describe.blank?)

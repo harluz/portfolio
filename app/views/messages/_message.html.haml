@@ -1,7 +1,7 @@
-%div{class: 'message', id: "#{message.id}"}
-  %p{class: "text-break"}
+%div{class: 'message border-bottom mt-3 mx-3 pb-0', id: "#{message.id}"}
+  %p{class: "text-break mb-0"}
     = safe_join(message.content.split("\n"),tag(:br))
-  %p{class: "text-secondary"}
-    = l message.created_at, format: :long
   - if message.user == current_user
-    %button{id: "#{message.id}", class: "delete-btn btn btn-danger mr-5"}コメントを削除
+    %button{id: "#{message.id}", class: "delete-btn btn btn-outline-secondary btn-sm my-1 my-sm-0 col-"}コメント削除
+  %p{class: "text-secondary mb-0"}
+    = l message.created_at, format: :long
