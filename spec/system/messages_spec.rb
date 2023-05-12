@@ -11,6 +11,15 @@ RSpec.describe "Messages", type: :system do
   before { sign_in user }
 
   describe "表示確認" do
+    it "クエストタイトル、送信・戻るボタンが表示されていること" do
+      visit quest_room_path(public_quest, public_room)
+      expect(page).to have_content public_quest.title
+      expect(page).to have_content "送信"
+      expect(page).to have_content "戻る"
+      expect(page).to have_button "送信"
+      expect(page).to have_link "戻る"
+    end
+
     context "自身のメッセージの場合" do
       let!(:message) { create(:message, user: user, room: public_room, created_at: "2023-04-1 12:00:00") }
       it "メッセージ。日時、削除ボタンが表示されること" do
