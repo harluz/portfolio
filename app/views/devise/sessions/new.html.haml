@@ -1,17 +1,19 @@
-%h2 Log in
-= form_with model: @user, url: session_path(@user), local: true do |f|
-  .field
-    = f.label :email
-    %br/
-    = f.email_field :email, autofocus: true, autocomplete: "email"
-  .field
-    = f.label :password
-    %br/
-    = f.password_field :password, autocomplete: "current-password"
-  - if devise_mapping.rememberable?
-    .field
-      = f.check_box :remember_me
-      = f.label :remember_me
-  .actions
-    = f.submit "Log in"
-= render "devise/shared/links"
+- content_for(:title, "ログイン")
+.container
+  .center-block.col-md-6.mx-auto
+    %h2.text-success.border-bottom.text-center ログイン
+    = form_with model: @user, url: session_path(@user), local: true do |f|
+      .field.mt-3
+        = f.label :email, class: "form-label mb-0"
+        = f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control"
+      .field.mt-3
+        = f.label :password, class: "form-label mb-0"
+        = f.password_field :password, autocomplete: "current-password", class: "form-control"
+      - if devise_mapping.rememberable?
+        .field.mt-3.text-center
+          = f.check_box :remember_me, class: "form-check-input", id: "flexCheckDefault", style: "transform:scale(1.5)"
+          = f.label "ログイン状態を保持する", class: "form-check-label", for: "flexCheckDefault"
+      .actions.mt-4.text-center
+        = f.submit "ログイン", class: "btn btn-outline-success my-1 my-sm-0 col-6", id: "submit-log-in"
+    .text-center.mt-4
+      = link_to "新規登録はこちら", new_user_registration_path

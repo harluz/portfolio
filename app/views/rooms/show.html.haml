@@ -1,9 +1,13 @@
+- content_for(:title, "トークルーム")
 .container
   .center-block
-    %h1 Chat room
-    %h2= "Quest  #{@room.quest.title}"
-    %p クエストについて語ってみよう
-    %textarea{type: "text", data: {behavior: "room_speaker"}, class: "from-control rounded-3 border border-info", id: "message-textarea"}
-    %button{class: "message_submit btn btn-info"}コメントを送信
-    %div{id: 'messages', data: {room_id: @room.id}}
-      = render @messages
+    .text-center.border-secondary.col-md-6.mx-auto
+      %h5= "#{@room.quest.title}"
+      .mb-2
+        %textarea{type: "text", data: {behavior: "room_speaker"}, class: "form-control mr-sm-2 border-secondary mb-1", id: "message-textarea", placeholder: "クエストについて語ってみよう"}
+        %button{class: "message_submit btn btn-outline-success my-2 my-sm-0 btn-block col-6"}送信
+      .overflow-auto.border.border-secondary.rounded.text-bg-light{style: "width: 100%; height: 300px"}
+        %div{id: 'messages', data: {room_id: @room.id}}
+          = render @messages
+      .mt-2
+      = link_to "戻る", :back, class: "btn btn-outline-secondary my-1 my-sm-0 col-10 active"

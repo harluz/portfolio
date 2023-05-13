@@ -6,17 +6,20 @@ RSpec.describe "UserSessions", type: :system do
       visit new_user_session_path
     end
 
+    it "タイトルが「ログイン  | BranChannel」になっていること" do
+      expect(page).to have_title "ログイン | BranChannel"
+    end
+
     it "ログインのフォームが表示されていること" do
       expect(page).to have_content "メールアドレス"
       expect(page).to have_content "パスワード"
-      expect(page).to have_content "Remember me"
-      expect(page).to have_content "Log in"
+      expect(page).to have_content "ログイン状態を保持する"
+      expect(page).to have_content "ログイン"
       expect(page).to have_field "メールアドレス"
       expect(page).to have_field "パスワード"
-      expect(page).to have_unchecked_field "Remember me"
-      expect(page).to have_button "Log in"
+      expect(page).to have_unchecked_field "ログイン状態を保持する"
+      expect(page).to have_button "ログイン"
     end
-    # タイトルが〇〇となっていること
   end
 
   describe "ページ遷移確認" do
@@ -30,12 +33,12 @@ RSpec.describe "UserSessions", type: :system do
       before do
         fill_in 'メールアドレス', with: 'sample@mail.com'
         fill_in 'パスワード', with: 'samplepassword'
-        click_on 'Log in'
+        find('#submit-log-in').click
         visit new_user_session_path
       end
 
       it "メインページに遷移し、ログイン済みであることが分かるフラッシュメッセージが表示されること" do
-        expect(current_path).to eq pages_main_path
+        expect(current_path).to eq quests_path
         expect(page).to have_content 'すでにログインしています。'
       end
 
@@ -44,7 +47,6 @@ RSpec.describe "UserSessions", type: :system do
         expect(page).not_to have_content 'すでにログインしています。'
       end
     end
-    # ロゴを押下することでホーム画面に遷移すること
   end
 
   describe "ログイン確認" do
@@ -58,11 +60,11 @@ RSpec.describe "UserSessions", type: :system do
       before do
         fill_in 'メールアドレス', with: 'sample@mail.com'
         fill_in 'パスワード', with: 'samplepassword'
-        click_on 'Log in'
+        find('#submit-log-in').click
       end
 
-      it "ログイン後に〇〇ページに遷移していること" do
-        expect(current_path).to eq pages_main_path
+      it "ログイン後に挑戦一覧ページに遷移していること" do
+        expect(current_path).to eq quests_path
       end
 
       it "成功したフラッシュメッセージが表示されること" do
@@ -73,19 +75,16 @@ RSpec.describe "UserSessions", type: :system do
         visit current_path
         expect(page).not_to have_content 'ログインしました。'
       end
-
-      # タイトルが〇〇となっていること
-      # ログイン後、アプリのヘッダーにユーザー名が表示されていること
     end
 
     context "ログインが失敗する場合" do
       before do
         fill_in 'メールアドレス', with: 'sample'
         fill_in 'パスワード', with: 'sample'
-        click_on 'Log in'
+        find('#submit-log-in').click
       end
 
-      it "〇〇ページに遷移していること" do
+      it "ログインページに遷移していること" do
         expect(current_path).to eq new_user_session_path
       end
 
@@ -97,9 +96,6 @@ RSpec.describe "UserSessions", type: :system do
         visit current_path
         expect(page).not_to have_content 'メールアドレス もしくはパスワードが不正です。'
       end
-
-      # タイトルが〇〇となっていること
-      # ログイン後、アプリのヘッダーにユーザー名が表示されていないこと
     end
   end
 
@@ -109,8 +105,8 @@ RSpec.describe "UserSessions", type: :system do
       click_on "ゲストログイン"
     end
 
-    it "ログイン後に〇〇ページに遷移していること" do
-      expect(current_path).to eq root_path
+    it "ログイン後にクエスト一覧ページに遷移していること" do
+      expect(current_path).to eq quests_path
     end
 
     it "成功したフラッシュメッセージが表示されること" do

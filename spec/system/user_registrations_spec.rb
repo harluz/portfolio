@@ -7,19 +7,23 @@ RSpec.describe "UserRegistrations", type: :system do
         visit new_user_registration_path
       end
 
-      it "サインアップのフォームが表示されていること" do
+      it "タイトルが「新規登録  | BranChannel」になっていること" do
+        expect(page).to have_title "新規登録 | BranChannel"
+      end
+
+      it "新規登録のフォームが表示されていること" do
         expect(page).to have_content "ユーザー名"
         expect(page).to have_content "メールアドレス"
         expect(page).to have_content "パスワード"
         expect(page).to have_content "確認用パスワード"
-        expect(page).to have_content "Sign up"
+        expect(page).to have_content "登録"
         expect(page).to have_field "ユーザー名"
         expect(page).to have_field "メールアドレス"
         expect(page).to have_field "パスワード"
         expect(page).to have_field "確認用パスワード"
-        expect(page).to have_button "Sign up"
+        expect(page).to have_button "登録"
+        expect(page).to have_link "キャンセル"
       end
-      # タイトルが〇〇となっていること
     end
 
     context "users/edit" do
@@ -29,19 +33,24 @@ RSpec.describe "UserRegistrations", type: :system do
         visit edit_user_registration_path
       end
 
+      it "タイトルが「ユーザー編集 | BranChannel」になっていること" do
+        expect(page).to have_title "ユーザー編集 | BranChannel"
+      end
+
       it "編集のフォームが表示されていること" do
         expect(page).to have_content "ユーザー名"
         expect(page).to have_content "メールアドレス"
-        expect(page).to have_content "パスワード (変更する場合のみ入力)"
-        expect(page).to have_content "6文字以上のパスワードを入力してください。"
+        expect(page).to have_content "パスワード (変更する場合のみ)"
         expect(page).to have_content "確認用パスワード"
-        expect(page).to have_content "現在のパスワード (変更を適用するためには、現在のパスワードの入力が必要となります。)"
+        expect(page).to have_content "現在のパスワード"
         expect(page).to have_field "ユーザー名"
         expect(page).to have_field "メールアドレス"
         expect(page).to have_field "パスワード"
         expect(page).to have_field "確認用パスワード"
         expect(page).to have_field "現在のパスワード"
         expect(page).to have_button "更新"
+        expect(page).to have_link "キャンセル"
+        expect(page).to have_link "退会についてはこちら"
       end
     end
   end
@@ -57,7 +66,7 @@ RSpec.describe "UserRegistrations", type: :system do
         fill_in 'メールアドレス', with: 'sample@mail.com'
         fill_in 'パスワード', with: 'password'
         fill_in '確認用パスワード', with: 'password'
-        click_on 'Sign up'
+        click_on '登録'
         visit new_user_registration_path
       end
 
@@ -71,7 +80,6 @@ RSpec.describe "UserRegistrations", type: :system do
         expect(page).not_to have_content 'すでにログインしています。'
       end
     end
-    # ロゴを押下することでホーム画面に遷移すること
   end
 
   describe "ユーザー新規登録" do
@@ -85,19 +93,16 @@ RSpec.describe "UserRegistrations", type: :system do
         fill_in 'メールアドレス', with: 'sample@mail.com'
         fill_in 'パスワード', with: 'password'
         fill_in '確認用パスワード', with: 'password'
-        click_on 'Sign up'
+        click_on '登録'
       end
 
-      # タイトルが〇〇となっていること
-      it "登録完了後に〇〇ページに遷移していること" do
-        expect(current_path).to eq pages_main_path
+      it "登録完了後にクエスト一覧ページに遷移していること" do
+        expect(current_path).to eq quests_path
       end
 
       it "成功したフラッシュメッセージが表示されること" do
         expect(page).to have_content 'アカウント登録が完了しました。'
       end
-
-      # サインアップ後、アプリのヘッダーにユーザー名が表示されていること
     end
 
     context "登録が失敗する場合" do
@@ -107,10 +112,8 @@ RSpec.describe "UserRegistrations", type: :system do
           fill_in 'メールアドレス', with: ''
           fill_in 'パスワード', with: ''
           fill_in '確認用パスワード', with: ''
-          click_on 'Sign up'
+          click_on '登録'
         end
-
-        # タイトルが〇〇となっていること
 
         it "登録失敗時に/usersがrenderされていること" do
           expect(current_path).to eq user_registration_path
@@ -128,8 +131,6 @@ RSpec.describe "UserRegistrations", type: :system do
           expect(page).not_to have_content 'パスワードは6文字以上で入力してください'
           expect(page).not_to have_content '確認用パスワードとパスワードの入力が一致しません'
         end
-
-        # アプリのヘッダーにユーザー名が表示されていないこと
       end
 
       context "登録情報が不正な値である場合" do
@@ -138,10 +139,8 @@ RSpec.describe "UserRegistrations", type: :system do
           fill_in 'メールアドレス', with: 'sample'
           fill_in 'パスワード', with: 'pass'
           fill_in '確認用パスワード', with: 'passs'
-          click_on 'Sign up'
+          click_on '登録'
         end
-
-        # タイトルが〇〇となっていること
 
         it "登録失敗時に/usersがrenderされていること" do
           expect(current_path).to eq user_registration_path
@@ -159,18 +158,14 @@ RSpec.describe "UserRegistrations", type: :system do
           expect(page).not_to have_content 'パスワードは6文字以上で入力してください'
           expect(page).not_to have_content '確認用パスワードとパスワードの入力が一致しません'
         end
-
-        # アプリのヘッダーにユーザー名が表示されていないこと
       end
 
       context "登録情報のemailが重複している場合" do
         let!(:duplicate_user) { create(:duplicate_user) }
         before do
           fill_in 'メールアドレス', with: 'duplicate@mail.com'
-          click_on 'Sign up'
+          click_on '登録'
         end
-
-        # タイトルが〇〇となっていること
 
         it "登録失敗時に/usersがrenderされていること" do
           expect(current_path).to eq user_registration_path
@@ -184,8 +179,6 @@ RSpec.describe "UserRegistrations", type: :system do
           visit current_path
           expect(page).not_to have_content 'メールアドレスはすでに存在します'
         end
-
-        # アプリのヘッダーにユーザー名が表示されていないこと
       end
     end
   end
@@ -213,9 +206,8 @@ RSpec.describe "UserRegistrations", type: :system do
         expect(page).to have_content "アカウント情報を変更しました。"
       end
 
-      it "変更後のユーザー名、メールアドレスが表示されていること" do
+      it "変更後のユーザー名が表示されていること" do
         expect(page).to have_content "サンプルユーザー"
-        expect(page).to have_content "samplemail@mail.com"
       end
 
       it "リロードした際にフラッシュメッセージが消えていること" do
@@ -239,11 +231,16 @@ RSpec.describe "UserRegistrations", type: :system do
       it "フラッシュメッセージが表示されていること" do
         expect(page).to have_content "ユーザー名を入力してください"
         expect(page).to have_content "メールアドレスを入力してください"
-        expect(page).to have_content "6文字以上のパスワードを入力してください。"
         expect(page).to have_content "現在のパスワードを入力してください"
         fill_in 'メールアドレス', with: "correct@mail.com"
+        fill_in 'パスワード', with: "pass"
+        fill_in '確認用パスワード', with: "path"
+        fill_in '現在のパスワード', with: "pathword"
         click_on '更新'
         expect(page).to have_content "メールアドレスはすでに存在します"
+        expect(page).to have_content "パスワードは6文字以上で入力してください"
+        expect(page).to have_content "確認用パスワードとパスワードの入力が一致しません"
+        expect(page).to have_content "現在のパスワードは不正な値です"
       end
 
       it "/users/editページに遷移していること" do
@@ -265,7 +262,8 @@ RSpec.describe "UserRegistrations", type: :system do
     before { sign_in user }
 
     it "退会に成功すること" do
-      visit pages_withdraw_path
+      visit edit_user_registration_path
+      click_on "退会についてはこちら"
       click_on "ユーザー退会"
       expect(current_path).to eq root_path
       expect(page).to have_content "アカウントを削除しました。またのご利用をお待ちしております。"

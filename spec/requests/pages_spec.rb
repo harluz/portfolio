@@ -1,10 +1,59 @@
 require 'rails_helper'
 
 RSpec.describe "Pages", type: :request do
-  describe "GET /top" do
-    it "returns http success" do
-      get "/pages/top"
-      expect(response).to have_http_status(:success)
+  describe "ヘッダー" do
+    let!(:user) { create(:user) }
+    subject { response.body }
+
+    context "ユーザーがログインしている場合" do
+      it "ログイン後に表示されるべきリンクがレスポンスに含まれていること" do
+        sign_in user
+        get root_path
+        expect(subject).to include "BranChannel</a>"
+        expect(subject).to include "Home</a>"
+        expect(subject).to include "BranChannelとは</a>"
+        expect(subject).to include "プロフィール</a>"
+        expect(subject).to include "ログアウト</a>"
+        expect(subject).to include "作成</a>"
+        expect(subject).to include "一覧</a>"
+        expect(subject).to include "挑戦中</a>"
+        expect(subject).not_to include "ゲストログイン</a>"
+        expect(subject).not_to include "ログイン</a>"
+        expect(subject).not_to include "新規登録</a>"
+      end
+    end
+
+    context "ユーザーがログインしていない場合" do
+      it "ログイン前に表示されるべきリンクがレスポンスに含まれていること" do
+        get root_path
+        expect(subject).to include "BranChannel</a>"
+        expect(subject).to include "Home</a>"
+        expect(subject).to include "BranChannelとは</a>"
+        expect(subject).to include "ゲストログイン</a>"
+        expect(subject).to include "ログイン</a>"
+        expect(subject).to include "新規登録</a>"
+        expect(subject).not_to include "プロフィール</a>"
+        expect(subject).not_to include "ログアウト</a>"
+        expect(subject).not_to include "作成<a>"
+        expect(subject).not_to include "一覧</a>"
+        expect(subject).not_to include "挑戦中</a>"
+      end
+    end
+  end
+
+  describe "フッター" do
+    it "フッターの情報がレスポンスに含まれていること" do
+      get root_path
+      expect(response.body).to include "Copyright © 2023 All Rights Reserved."
+    end
+  end
+
+  describe "GET #top" do
+    subject { response.body }
+
+    it "トップページに必要な情報がレスポンスに含まれていること" do
+      get root_path
+      expect(subject).to include "クエストを覗いてみる</a>"
     end
   end
 
@@ -28,13 +77,13 @@ RSpec.describe "Pages", type: :request do
       end
 
       it "ユーザー名、達成クエスト数、作成クエスト数、獲得経験値がレスポンスに含まれていること" do
-        challenge1.close = true
-        challenge2.close = true
         expect(subject).to include user.name
-        expect(subject).to include user.email
-        expect(subject).to include "2"
-        expect(subject).to include "3"
-        expect(subject).to include "100"
+        expect(subject).to include "クエスト作成数"
+        expect(subject).to include "クエスト達成数"
+        expect(subject).to include "獲得経験値"
+        expect(subject).to include "7</a>"
+        expect(subject).to include "3</a>"
+        expect(subject).to include "100pt"
         expect(subject).to include "ユーザー編集"
       end
     end
@@ -66,6 +115,7 @@ RSpec.describe "Pages", type: :request do
 
       it "経験値30ポイント未満はFirst Stepperがレスポンスに含まれること" do
         user.having_xp = 28
+        user.grade = "First Stepper"
         params_challenge = { quest_id: quest1.id, close: true }
         patch challenge_path(challenge1), params: { challenge: params_challenge }
         get pages_profile_path
@@ -141,6 +191,18 @@ RSpec.describe "Pages", type: :request do
         get pages_profile_path
         expect(subject).to include "Legend"
       end
+    end
+  end
+
+  context "GET #withdraw" do
+    let!(:user) { create(:user) }
+    subject { response.body }
+
+    it "ユーザー退会及びキャンセルボタンがレスポンスに含まれていること" do
+      sign_in user
+      get pages_withdraw_path
+      expect(subject).to include "ユーザー退会</a>"
+      expect(subject).to include "キャンセル</a>"
     end
   end
 end

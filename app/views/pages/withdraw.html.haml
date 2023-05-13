@@ -1,7 +1,11 @@
-%h3 ユーザー退会
-%div
-  退会した場合、あなたの挑戦とメッセージは削除されます。
-  作成したクエストについては、削除されないためご注意ください。
-%div
-  #{button_to "ユーザー退会", registration_path(@user), data: { confirm: "本当に削除してよろしいですか？", turbo_confirm: "本当に削除してよろしいですか？" }, method: :delete}
-= link_to "Back", :back
+- content_for(:title, "ユーザー退会")
+.container
+  .center-block.col-md-6.mx-auto.text-center
+    %h2.text-success.border-bottom ユーザー退会
+    %div
+      退会した場合、あなたの挑戦とメッセージは削除されます。
+      %br
+      作成したクエストについては、削除されないためご注意ください。
+    .mt-4.text-center
+      = link_to "ユーザー退会", registration_path(@user), data: { confirm: "本当に退会してよろしいですか？", turbo_confirm: "本当に退会してよろしいですか？" }, method: :delete, class: "btn btn-outline-success my-1 my-sm-0 col-5 me-3"
+      = link_to "キャンセル", :back, class: "btn btn-outline-secondary my-1 my-sm-0 col-5"

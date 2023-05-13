@@ -6,6 +6,11 @@ RSpec.describe "Quests", type: :system do
 
   describe "表示確認" do
     context "/quests/index" do
+      it "クエスト一覧 | BranChannel」になっていること" do
+        visit quests_path
+        expect(page).to have_title "クエスト一覧 | BranChannel"
+      end
+
       context "ユーザー自身が作成したクエストの場合" do
         let!(:public_quest) { create(:public_quest, user: user) }
         it "リンクが正しく表示・非表示となっていること" do
@@ -13,11 +18,9 @@ RSpec.describe "Quests", type: :system do
           expect(page).to have_field "search"
           expect(page).to have_button "検索"
           expect(page).to have_content "詳細"
-          expect(page).to have_content "編集する"
           public_quest.public = false
           public_quest.save
           visit quests_path
-          expect(page).not_to have_content "編集する"
         end
       end
 
@@ -29,11 +32,9 @@ RSpec.describe "Quests", type: :system do
           expect(page).to have_field "search"
           expect(page).to have_button "検索"
           expect(page).to have_content "詳細"
-          expect(page).not_to have_content "編集する"
           public_other_quest.public = false
           public_other_quest.save
           visit quests_path
-          expect(page).not_to have_content "編集する"
         end
       end
 
@@ -177,6 +178,11 @@ RSpec.describe "Quests", type: :system do
     end
 
     context "/quests/my_quest" do
+      it "タイトルが「作成一覧 | BranChannel」になっていること" do
+        visit my_quest_quests_path
+        expect(page).to have_title "作成一覧 | BranChannel"
+      end
+
       context "作成したクエストがある場合" do
         let(:other_user) { create(:correct_user) }
         let!(:quest) { create(:quest, user: user) }
@@ -191,12 +197,12 @@ RSpec.describe "Quests", type: :system do
         it "リンクが正しく表示・非表示となっていること" do
           visit my_quest_quests_path
           expect(page).to have_content "詳細"
-          expect(page).to have_content "編集する"
-          expect(page).to have_content "削除する"
+          expect(page).to have_content "編集"
+          expect(page).to have_content "削除"
           quest.public = true
           quest.save
           visit my_quest_quests_path
-          expect(page).not_to have_content "削除する"
+          expect(page).not_to have_content "削除"
         end
       end
 
@@ -213,6 +219,10 @@ RSpec.describe "Quests", type: :system do
         visit new_quest_path
       end
 
+      it "タイトルが「クエスト作成 | BranChannel」になっていること" do
+        expect(page).to have_title "クエスト作成 | BranChannel"
+      end
+
       it "クエスト作成のフォームが表示されていること" do
         expect(page).to have_content "タイトル"
         expect(page).to have_content "クエスト詳細"
@@ -221,30 +231,29 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_content "キャンセル"
         expect(page).to have_field "タイトル"
         expect(page).to have_field "クエスト詳細"
-        expect(page).to have_unchecked_field "quest_public"
+        expect(page).to have_unchecked_field "quest[public]"
         expect(page).to have_link "キャンセル"
-        expect(page).to have_button "クエスト作成！"
+        expect(page).to have_button "クエスト作成"
       end
 
       it "ラジオボタンのチェックが動作していること" do
         expect(page).to have_checked_field with: "1"
-        choose('quest_difficulty_2')
+        choose('radio-2')
         expect(page).to have_checked_field with: "2"
-        choose('quest_difficulty_3')
+        choose('radio-3')
         expect(page).to have_checked_field with: "3"
-        choose('quest_difficulty_4')
+        choose('radio-4')
         expect(page).to have_checked_field with: "4"
-        choose('quest_difficulty_5')
+        choose('radio-5')
         expect(page).to have_checked_field with: "5"
       end
 
       it "チェックボックスが動作していること" do
-        check "quest_public"
-        expect(page).to have_checked_field "quest_public"
-        uncheck "quest_public"
-        expect(page).to have_unchecked_field "quest_public"
+        check "quest[public]"
+        expect(page).to have_checked_field "quest[public]"
+        uncheck "quest[public]"
+        expect(page).to have_unchecked_field "quest[public]"
       end
-      # 　タイトルが〇〇となっていること
     end
 
     context "/quests/show" do
@@ -254,16 +263,18 @@ RSpec.describe "Quests", type: :system do
         visit quest_path(quest)
       end
 
+      it "タイトルが「クエスト詳細  | BranChannel」になっていること" do
+        expect(page).to have_title "クエスト詳細 | BranChannel"
+      end
+
       context "存在するデータを表示する場合" do
         it "作成したquestの情報が表示されていること" do
           expect(page).to have_content "Create a quest you want to complete."
           expect(page).to have_content "Create quest achievement conditions."
           expect(page).to have_content "3"
-          expect(page).to have_content "6ポイント"
-          expect(page).to have_content "このクエストは公開されていません。"
+          expect(page).to have_content "クエスト非公開"
           expect(page).to have_link "トークルームへ"
         end
-        # 　タイトルが〇〇となっていること
       end
 
       context "存在しないデータにアクセスする場合" do
@@ -282,6 +293,10 @@ RSpec.describe "Quests", type: :system do
         visit edit_quest_path(quest)
       end
 
+      it "タイトルが「クエスト編集  | BranChannel」になっていること" do
+        expect(page).to have_title "クエスト編集 | BranChannel"
+      end
+
       it "クエスト更新のフォームが表示されていること" do
         expect(page).to have_content "タイトル"
         expect(page).to have_content "クエスト詳細"
@@ -290,7 +305,7 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_content "キャンセル"
         expect(page).to have_field "タイトル"
         expect(page).to have_field "クエスト詳細"
-        expect(page).to have_unchecked_field "quest_public"
+        expect(page).to have_unchecked_field "quest[public]"
         expect(page).to have_link "キャンセル"
         expect(page).to have_button "更新"
       end
@@ -299,7 +314,7 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_xpath("//input[@value='Create a quest you want to complete.']")
         expect(page).to have_content "Create quest achievement conditions."
         expect(page).to have_checked_field with: "3"
-        expect(page).to have_unchecked_field "quest_public"
+        expect(page).to have_unchecked_field "quest[public]"
       end
 
       context "存在しないデータにアクセスする場合" do
@@ -310,9 +325,6 @@ RSpec.describe "Quests", type: :system do
         end
       end
     end
-  end
-
-  describe "ページ遷移確認" do
   end
 
   describe "クエスト新規作成" do
@@ -326,9 +338,9 @@ RSpec.describe "Quests", type: :system do
       before do
         fill_in 'タイトル', with: "Create a quest you want to complete."
         fill_in 'クエスト詳細', with: "Create quest achievement conditions."
-        choose('quest_difficulty_3')
-        check "quest_public"
-        click_on "クエスト作成！"
+        choose('radio-3')
+        check "quest[public]"
+        click_on "クエスト作成"
       end
 
       it "showページに遷移していること" do
@@ -343,8 +355,7 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_content "Create a quest you want to complete."
         expect(page).to have_content "Create quest achievement conditions."
         expect(page).to have_content "3"
-        expect(page).to have_content "6ポイント"
-        expect(page).to have_content "このクエストは公開されています。"
+        expect(page).to have_content "クエスト公開中"
         expect(page).to have_link "トークルームへ"
       end
 
@@ -358,9 +369,9 @@ RSpec.describe "Quests", type: :system do
       before do
         fill_in 'タイトル', with: ""
         fill_in 'クエスト詳細', with: "string being input"
-        choose('quest_difficulty_4')
-        check "quest_public"
-        click_on "クエスト作成！"
+        choose('radio-4')
+        check "quest[public]"
+        click_on "クエスト作成"
       end
 
       it "newページに遷移していること" do
@@ -373,7 +384,7 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_content "タイトルを入力してください"
         expect(page).to have_content "string being input"
         expect(page).to have_checked_field with: "4"
-        expect(page).to have_checked_field "quest_public"
+        expect(page).to have_checked_field "quest[public]"
       end
 
       it "リロードした際にエラー・フラッシュメッセージは消え、フォームの値は保持されていること" do
@@ -383,7 +394,7 @@ RSpec.describe "Quests", type: :system do
         expect(page).not_to have_content "タイトルを入力してください"
         expect(page).to have_content "string being input"
         expect(page).to have_checked_field with: "4"
-        expect(page).to have_checked_field "quest_public"
+        expect(page).to have_checked_field "quest[public]"
       end
     end
   end
@@ -399,8 +410,8 @@ RSpec.describe "Quests", type: :system do
       before do
         fill_in 'タイトル', with: "updated quest"
         fill_in 'クエスト詳細', with: "Update quest achievement conditions."
-        choose('quest_difficulty_2')
-        uncheck "quest_public"
+        choose('radio-2')
+        uncheck "quest[public]"
         click_on "更新"
       end
 
@@ -416,8 +427,7 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_content "updated quest"
         expect(page).to have_content "Update quest achievement conditions."
         expect(page).to have_content "2"
-        expect(page).to have_content "4ポイント"
-        expect(page).to have_content "このクエストは公開されていません。"
+        expect(page).to have_content "クエスト非公開"
         expect(page).to have_link "トークルームへ"
       end
     end
@@ -426,8 +436,8 @@ RSpec.describe "Quests", type: :system do
       before do
         fill_in 'タイトル', with: ""
         fill_in 'クエスト詳細', with: "Update quest achievement conditions."
-        choose('quest_difficulty_2')
-        uncheck "quest_public"
+        choose('radio-2')
+        uncheck "quest[public]"
         click_on "更新"
       end
 
@@ -443,7 +453,7 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_xpath("//input[@value='']")
         expect(page).to have_content "Update quest achievement conditions."
         expect(page).to have_checked_field with: "2"
-        expect(page).to have_unchecked_field "quest_public"
+        expect(page).to have_unchecked_field "quest[public]"
       end
 
       it "render後にリロードすることで更新前のquestが表示されていること" do
@@ -451,8 +461,7 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_content "Create a quest you want to complete."
         expect(page).to have_content "Create quest achievement conditions."
         expect(page).to have_content "3"
-        expect(page).to have_content "6ポイント"
-        expect(page).to have_content "このクエストは公開されていません。"
+        expect(page).to have_content "クエスト非公開"
         expect(page).to have_link "トークルームへ"
       end
     end
@@ -480,7 +489,7 @@ RSpec.describe "Quests", type: :system do
 
     context "削除に成功する場合" do
       before do
-        click_on "削除する"
+        click_on "削除"
       end
 
       it "indexページに遷移していること" do

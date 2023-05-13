@@ -1,15 +1,23 @@
-%div
-  %div ユーザー名
-  %p= @user.name
-  %div メールアドレス
-  %p= @user.email
-  %div 達成クエスト数(再挑戦を含む)
-  %p= @user.challenge_achieved.to_s(:delimited)
-  %div 作成クエスト数
-  %p= @user.quests.count.to_s(:delimited)
-  %div 獲得経験値
-  %p= "#{@user.having_xp.to_s(:delimited)}ポイント"
-  %div 称号
-  %p= @user.grade
-%div
-  = link_to "ユーザー編集", edit_user_registration_path
+- content_for(:title, "プロフィール")
+.container
+  .center-block.text-center.col-md-6.mx-auto
+    %div
+      %h3
+        = @user.name
+      %p.text-secondary
+        = "称号:  #{@user.grade}"
+      .row.justify-content-around.border-bottom.mt-4
+        .col-3.p-0
+          %p クエスト作成数
+          .h4
+            = link_to "#{@user.quests.count.to_s(:delimited)}", my_quest_quests_path, class: "link-dark", id: "my-quest-link"
+        .col-3.p-0
+          %p クエスト達成数
+          .h4
+            = link_to "#{@user.challenge_achieved.to_s(:delimited)}", closed_challenges_path, class: "link-dark", id: "closed-challenge-link"
+        .col-3.p-0
+          %p 獲得経験値
+          .h4
+            = "#{@user.having_xp.to_s(:delimited)}pt"
+    .mt-5
+      = link_to "ユーザー編集", edit_user_registration_path, class: "btn btn-outline-secondary my-1 my-sm-0 col-5"
