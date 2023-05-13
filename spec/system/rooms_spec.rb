@@ -9,7 +9,6 @@ RSpec.describe "Rooms", type: :system do
     let!(:room) { create(:room, quest: quest) }
 
     context "/rooms#show" do
-
       it "タイトルが「トークルーム  | BranChannel」になっていること" do
         visit quest_room_path(room.quest.id, room.id)
         expect(page).to have_title "トークルーム | BranChannel"
@@ -21,7 +20,6 @@ RSpec.describe "Rooms", type: :system do
           visit quest_room_path(room.quest.id, room.id)
           expect(current_path).to eq quest_room_path(room.quest.id, room.id)
           expect(page).to have_content room.quest.title
-          # expect(page).to have_content "クエストについて語ってみよう"
           expect(page.body).to include "クエストについて語ってみよう"
           expect(page).to have_content "送信"
           expect(page).to have_button "送信"

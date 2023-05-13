@@ -32,30 +32,6 @@ RSpec.describe "Quests", type: :request do
         expect(subject).not_to include non_public_quest.title
         expect(subject).not_to include non_public_other_quest.title
       end
-
-      # context "ユーザー自身が作成したquestの場合" do
-      #   it "詳細リンクがレスポンスに含まれていること" do
-          # get quests_path
-          # expect(subject).to include "<a href=\"/quests/#{quest.id}/edit\">編集</a>"
-          # expect(subject).not_to include
-          # "<a rel=\"nofollow\" data-method=\"delete\" href=\"/quests/#{quest.id}\">削除</a>"
-          # expect(subject).not_to include
-          # "<a href=\"/quests/#{non_public_quest.id}/edit\">編集</a>"
-          # expect(subject).not_to include
-          # "<a rel=\"nofollow\" data-method=\"delete\" href=\"/quests/#{non_public_quest.id}\">削除</a>"
-      #   end
-      # end
-
-      # context "他のユーザーが作成したquestの場合" do
-      #   it "詳細リンクがレスポンスに含まれていること" do
-      #     expect(subject).not_to include "<a href=\"/quests/#{other_quest.id}/edit\">編集</a>"
-      #     expect(subject).not_to include
-      #     "<a rel=\"nofollow\" data-method=\"delete\" href=\"/quests/#{other_quest.id}\">削除</a>"
-      #     expect(subject).not_to include "<a href=\"/quests/#{non_public_other_quest.id}/edit\">編集</a>"
-      #     expect(subject).not_to include
-      #     "<a rel=\"nofollow\" data-method=\"delete\" href=\"/quests/#{non_public_other_quest.id}\">削除</a>"
-      #   end
-      # end
     end
 
     context "ユーザーがログインしていない場合" do

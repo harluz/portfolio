@@ -178,7 +178,6 @@ RSpec.describe "Quests", type: :system do
     end
 
     context "/quests/my_quest" do
-
       it "タイトルが「作成一覧 | BranChannel」になっていること" do
         visit my_quest_quests_path
         expect(page).to have_title "作成一覧 | BranChannel"
@@ -255,7 +254,6 @@ RSpec.describe "Quests", type: :system do
         uncheck "quest[public]"
         expect(page).to have_unchecked_field "quest[public]"
       end
-      # 　タイトルが〇〇となっていること
     end
 
     context "/quests/show" do
@@ -274,11 +272,9 @@ RSpec.describe "Quests", type: :system do
           expect(page).to have_content "Create a quest you want to complete."
           expect(page).to have_content "Create quest achievement conditions."
           expect(page).to have_content "3"
-          # expect(page).to have_content "6ポイント"
           expect(page).to have_content "クエスト非公開"
           expect(page).to have_link "トークルームへ"
         end
-        # 　タイトルが〇〇となっていること
       end
 
       context "存在しないデータにアクセスする場合" do
@@ -331,9 +327,6 @@ RSpec.describe "Quests", type: :system do
     end
   end
 
-  # describe "ページ遷移確認" do
-  # end
-
   describe "クエスト新規作成" do
     let(:quest) { create(:quest, user: user) }
     let!(:room) { create(:room, quest: quest) }
@@ -362,7 +355,6 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_content "Create a quest you want to complete."
         expect(page).to have_content "Create quest achievement conditions."
         expect(page).to have_content "3"
-        # expect(page).to have_content "6ポイント"
         expect(page).to have_content "クエスト公開中"
         expect(page).to have_link "トークルームへ"
       end
@@ -435,7 +427,6 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_content "updated quest"
         expect(page).to have_content "Update quest achievement conditions."
         expect(page).to have_content "2"
-        # expect(page).to have_content "4ポイント"
         expect(page).to have_content "クエスト非公開"
         expect(page).to have_link "トークルームへ"
       end
@@ -470,7 +461,6 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_content "Create a quest you want to complete."
         expect(page).to have_content "Create quest achievement conditions."
         expect(page).to have_content "3"
-        # expect(page).to have_content "6ポイント"
         expect(page).to have_content "クエスト非公開"
         expect(page).to have_link "トークルームへ"
       end

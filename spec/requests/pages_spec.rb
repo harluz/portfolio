@@ -196,7 +196,7 @@ RSpec.describe "Pages", type: :request do
 
   context "GET #withdraw" do
     let!(:user) { create(:user) }
-    subject{ response.body }
+    subject { response.body }
 
     it "ユーザー退会及びキャンセルボタンがレスポンスに含まれていること" do
       sign_in user

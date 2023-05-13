@@ -25,7 +25,6 @@ RSpec.describe "Challenges", type: :system do
     let(:give_up_quest) { create(:quest, title: "This is a quest to give up", user: user) }
 
     context "/challenge#index" do
-
       it "タイトルが「挑戦一覧  | BranChannel」になっていること" do
         visit challenges_path
         expect(page).to have_title "挑戦一覧 | BranChannel"
@@ -97,7 +96,6 @@ RSpec.describe "Challenges", type: :system do
     end
 
     context "/challenge#closed" do
-
       it "タイトルが「達成一覧  | BranChannel」になっていること" do
         visit closed_challenges_path
         expect(page).to have_title "達成一覧 | BranChannel"
@@ -163,9 +161,6 @@ RSpec.describe "Challenges", type: :system do
       end
     end
   end
-
-  # describe "ページ遷移確認" do
-  # end
 
   describe "challenge新規作成" do
     context "自身のクエストの場合" do

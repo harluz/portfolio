@@ -4,7 +4,7 @@ RSpec.describe "Pages", type: :system do
   let!(:user) { create(:user) }
   describe "表示確認" do
     context "ヘッダー" do
-      context "ユーザーがログインしている場合" do 
+      context "ユーザーがログインしている場合" do
         it "ログイン後に表示されるリンク等が表示されていること" do
           sign_in user
           visit root_path
@@ -88,7 +88,7 @@ RSpec.describe "Pages", type: :system do
 
     context "/pages/about" do
       before { visit pages_about_path }
-      
+
       it "ユーザー登録・ログイン前であってもアクセスできること" do
         expect(current_path).to eq pages_about_path
       end
