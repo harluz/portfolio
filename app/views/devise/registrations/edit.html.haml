@@ -1,3 +1,4 @@
+- content_for(:title, "ユーザー編集")
 .container
   .center-block.col-md-6.mx-auto
     = form_with model: @user, url: registration_path(@user), local: true do |f|
