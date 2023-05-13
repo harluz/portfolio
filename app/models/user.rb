@@ -22,8 +22,4 @@ class User < ApplicationRecord
       user.name = 'ゲストユーザー'
     end
   end
-
-  def remember_me
-    true
-  end
 end
