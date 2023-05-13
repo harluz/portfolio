@@ -15,9 +15,3 @@
               %p.card-text.text-secondary.mb-0
                 = "難易度:#{quest.difficulty}"
               = link_to "詳細", quest_path(quest), class: "btn btn-outline-success my-1 my-sm-0 col-6"
-      -# = quest.title
-      -# = link_to "詳細", quest_path(quest)
-      -# - if quest && current_user_owned?(quest)
-      -#   = link_to "編集する", edit_quest_path(quest)
-      -#   - if !public_quest?(quest)
-      -#     = link_to "削除する", quest_path(quest), method: :delete

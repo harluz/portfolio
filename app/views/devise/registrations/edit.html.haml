@@ -14,9 +14,6 @@
       - if @user.errors.include?(:email)
         %p.text-danger
           = @user.errors.full_messages_for(:email).first
-      -# - if devise_mapping.confirmable? && resource.pending_reconfirmation?
-      -#   %div
-      -#     Currently waiting confirmation for: #{resource.unconfirmed_email}
       .field.mt-3
         = f.label :password, class: "form-label mb-0"
         %i (変更する場合のみ)
@@ -24,10 +21,6 @@
         - if @user.errors.include?(:password)
           %p.text-danger
             = @user.errors.full_messages_for(:password).first
-        -# - if @minimum_password_length
-        -#   %br
-        -#   %em
-        -#     = "#{@minimum_password_length}文字以上のパスワードを入力してください。"
       .field.mt-3
         = f.label :password_confirmation, class: "form-label mb-0"
         = f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control"
