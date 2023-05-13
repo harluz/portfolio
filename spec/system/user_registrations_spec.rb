@@ -7,6 +7,10 @@ RSpec.describe "UserRegistrations", type: :system do
         visit new_user_registration_path
       end
 
+      it "タイトルが「新規登録  | BranChannel」になっていること" do
+        expect(page).to have_title "新規登録 | BranChannel"
+      end
+
       it "新規登録のフォームが表示されていること" do
         expect(page).to have_content "ユーザー名"
         expect(page).to have_content "メールアドレス"
@@ -20,7 +24,6 @@ RSpec.describe "UserRegistrations", type: :system do
         expect(page).to have_button "登録"
         expect(page).to have_link "キャンセル"
       end
-      # タイトルが〇〇となっていること
     end
 
     context "users/edit" do
@@ -28,6 +31,10 @@ RSpec.describe "UserRegistrations", type: :system do
       before do
         sign_in user
         visit edit_user_registration_path
+      end
+
+      it "タイトルが「ユーザー編集 | BranChannel」になっていること" do
+        expect(page).to have_title "ユーザー編集 | BranChannel"
       end
 
       it "編集のフォームが表示されていること" do
@@ -89,7 +96,6 @@ RSpec.describe "UserRegistrations", type: :system do
         click_on '登録'
       end
 
-      # タイトルが〇〇となっていること
       it "登録完了後にクエスト一覧ページに遷移していること" do
         expect(current_path).to eq quests_path
       end
@@ -108,8 +114,6 @@ RSpec.describe "UserRegistrations", type: :system do
           fill_in '確認用パスワード', with: ''
           click_on '登録'
         end
-
-        # タイトルが〇〇となっていること
 
         it "登録失敗時に/usersがrenderされていること" do
           expect(current_path).to eq user_registration_path
@@ -138,8 +142,6 @@ RSpec.describe "UserRegistrations", type: :system do
           click_on '登録'
         end
 
-        # タイトルが〇〇となっていること
-
         it "登録失敗時に/usersがrenderされていること" do
           expect(current_path).to eq user_registration_path
         end
@@ -164,8 +166,6 @@ RSpec.describe "UserRegistrations", type: :system do
           fill_in 'メールアドレス', with: 'duplicate@mail.com'
           click_on '登録'
         end
-
-        # タイトルが〇〇となっていること
 
         it "登録失敗時に/usersがrenderされていること" do
           expect(current_path).to eq user_registration_path

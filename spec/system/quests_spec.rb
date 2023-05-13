@@ -6,6 +6,11 @@ RSpec.describe "Quests", type: :system do
 
   describe "表示確認" do
     context "/quests/index" do
+      it "クエスト一覧 | BranChannel」になっていること" do
+        visit quests_path
+        expect(page).to have_title "クエスト一覧 | BranChannel"
+      end
+
       context "ユーザー自身が作成したクエストの場合" do
         let!(:public_quest) { create(:public_quest, user: user) }
         it "リンクが正しく表示・非表示となっていること" do
@@ -173,6 +178,12 @@ RSpec.describe "Quests", type: :system do
     end
 
     context "/quests/my_quest" do
+
+      it "タイトルが「作成一覧 | BranChannel」になっていること" do
+        visit my_quest_quests_path
+        expect(page).to have_title "作成一覧 | BranChannel"
+      end
+
       context "作成したクエストがある場合" do
         let(:other_user) { create(:correct_user) }
         let!(:quest) { create(:quest, user: user) }
@@ -207,6 +218,10 @@ RSpec.describe "Quests", type: :system do
     context "/quests/new" do
       before do
         visit new_quest_path
+      end
+
+      it "タイトルが「クエスト作成 | BranChannel」になっていること" do
+        expect(page).to have_title "クエスト作成 | BranChannel"
       end
 
       it "クエスト作成のフォームが表示されていること" do
@@ -250,6 +265,10 @@ RSpec.describe "Quests", type: :system do
         visit quest_path(quest)
       end
 
+      it "タイトルが「クエスト詳細  | BranChannel」になっていること" do
+        expect(page).to have_title "クエスト詳細 | BranChannel"
+      end
+
       context "存在するデータを表示する場合" do
         it "作成したquestの情報が表示されていること" do
           expect(page).to have_content "Create a quest you want to complete."
@@ -276,6 +295,10 @@ RSpec.describe "Quests", type: :system do
       let!(:quest) { create(:quest, user: user) }
       before do
         visit edit_quest_path(quest)
+      end
+
+      it "タイトルが「クエスト編集  | BranChannel」になっていること" do
+        expect(page).to have_title "クエスト編集 | BranChannel"
       end
 
       it "クエスト更新のフォームが表示されていること" do
@@ -308,8 +331,8 @@ RSpec.describe "Quests", type: :system do
     end
   end
 
-  describe "ページ遷移確認" do
-  end
+  # describe "ページ遷移確認" do
+  # end
 
   describe "クエスト新規作成" do
     let(:quest) { create(:quest, user: user) }

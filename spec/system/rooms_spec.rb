@@ -9,6 +9,12 @@ RSpec.describe "Rooms", type: :system do
     let!(:room) { create(:room, quest: quest) }
 
     context "/rooms#show" do
+
+      it "タイトルが「トークルーム  | BranChannel」になっていること" do
+        visit quest_room_path(room.quest.id, room.id)
+        expect(page).to have_title "トークルーム | BranChannel"
+      end
+
       context "メッセージがある場合" do
         let!(:message) { create(:message, user: user, room: room, created_at: "2023-04-1 12:00:00") }
         it "メッセージが表示されていること" do

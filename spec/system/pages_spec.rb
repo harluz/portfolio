@@ -69,8 +69,9 @@ RSpec.describe "Pages", type: :system do
     end
 
     context "/pages/top" do
+      before { visit root_path }
+
       it "トップページに必要な情報が表示されていること" do
-        visit root_path
         expect(page).to have_content "ようこそBranChannelへ"
         expect(page).to have_content "日々の生活に刺激を感じていますか？"
         expect(page).to have_content "ここでは日々の生活に刺激を与えるため、あなたにはクエストに挑戦していただきます。"
@@ -78,6 +79,10 @@ RSpec.describe "Pages", type: :system do
         expect(page).to have_content "経験値を稼いで、最上級の称号を目指してユニークなクエストに挑戦してみましょう"
         expect(page).to have_content "クエストを覗いてみる"
         expect(page).to have_link "クエストを覗いてみる"
+      end
+
+      it "タイトルが「BranChannel」になっていること" do
+        expect(page).to have_title "BranChannel"
       end
     end
 
@@ -94,6 +99,10 @@ RSpec.describe "Pages", type: :system do
         expect(page).to have_content "作成"
         expect(page).to have_content "一覧"
         expect(page).to have_content "挑戦中"
+      end
+
+      it "タイトルが「BranChannelとは | BranChannel」になっていること" do
+        expect(page).to have_title "BranChannelとは | BranChannel"
       end
     end
 
@@ -130,6 +139,11 @@ RSpec.describe "Pages", type: :system do
         expect(page).to have_link "3"
         expect(page).to have_content "102pt"
         expect(page).to have_link "ユーザー編集"
+      end
+
+      it "タイトルが「プロフィール | BranChannel」になっていること" do
+        visit pages_profile_path
+        expect(page).to have_title "プロフィール | BranChannel"
       end
 
       it "数値が３桁区切りとなっていること" do
@@ -237,6 +251,12 @@ RSpec.describe "Pages", type: :system do
         expect(page).to have_content "作成したクエストについては、削除されないためご注意ください。"
         expect(page).to have_link "ユーザー退会"
         expect(page).to have_link "キャンセル"
+      end
+
+      it "タイトルが「ユーザー退会 | BranChannel」になっていること" do
+        sign_in user
+        visit pages_withdraw_path
+        expect(page).to have_title "ユーザー退会 | BranChannel"
       end
     end
   end

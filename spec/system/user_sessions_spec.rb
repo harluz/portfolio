@@ -6,6 +6,10 @@ RSpec.describe "UserSessions", type: :system do
       visit new_user_session_path
     end
 
+    it "タイトルが「ログイン  | BranChannel」になっていること" do
+      expect(page).to have_title "ログイン | BranChannel"
+    end
+
     it "ログインのフォームが表示されていること" do
       expect(page).to have_content "メールアドレス"
       expect(page).to have_content "パスワード"
@@ -13,10 +17,9 @@ RSpec.describe "UserSessions", type: :system do
       expect(page).to have_content "ログイン"
       expect(page).to have_field "メールアドレス"
       expect(page).to have_field "パスワード"
-      expect(page).to have_checked_field "ログイン状態を保持する"
+      expect(page).to have_unchecked_field "ログイン状態を保持する"
       expect(page).to have_button "ログイン"
     end
-    # タイトルが〇〇となっていること
   end
 
   describe "ページ遷移確認" do
@@ -44,7 +47,6 @@ RSpec.describe "UserSessions", type: :system do
         expect(page).not_to have_content 'すでにログインしています。'
       end
     end
-    # ロゴを押下することでホーム画面に遷移すること
   end
 
   describe "ログイン確認" do
@@ -62,7 +64,7 @@ RSpec.describe "UserSessions", type: :system do
       end
 
       it "ログイン後に挑戦一覧ページに遷移していること" do
-        expect(current_path).to eq challenges_path
+        expect(current_path).to eq quests_path
       end
 
       it "成功したフラッシュメッセージが表示されること" do
@@ -73,9 +75,6 @@ RSpec.describe "UserSessions", type: :system do
         visit current_path
         expect(page).not_to have_content 'ログインしました。'
       end
-
-      # タイトルが〇〇となっていること
-      # ログイン後、アプリのヘッダーにユーザー名が表示されていること
     end
 
     context "ログインが失敗する場合" do
@@ -97,9 +96,6 @@ RSpec.describe "UserSessions", type: :system do
         visit current_path
         expect(page).not_to have_content 'メールアドレス もしくはパスワードが不正です。'
       end
-
-      # タイトルが〇〇となっていること
-      # ログイン後、アプリのヘッダーにユーザー名が表示されていないこと
     end
   end
 
