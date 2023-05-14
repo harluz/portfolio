@@ -23,8 +23,8 @@
               = f.radio_button :difficulty, num + 1, id: "radio-#{num +1}", style: "transform:scale(1.5)"
               = f.label "#{num +1}", class: "w-50 lead text-center", for: "radio-#{num +1}"
       .field.mt-4
-        = f.label "クエストを公開する", class: "form-check-label", for: "flexCheckChecked"
         = f.check_box :public, class: "form-check-input", id: "flexCheckChecked", style: "transform:scale(1.5)"
+        = f.label "クエストを公開する", class: "form-check-label", for: "flexCheckChecked"
       .actions.mt-4.text-center
         = f.submit "更新", class: "btn btn-outline-success my-1 my-sm-0 col-5 me-4"
         = link_to "キャンセル", :back, class: "btn btn-outline-secondary my-1 my-sm-0 col-5"
