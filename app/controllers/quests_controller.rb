@@ -1,5 +1,6 @@
 class QuestsController < ApplicationController
   before_action :authenticate_user!, except: [:index]
+  skip_before_action :quest_session_destroy, only: [:new, :create, :edit, :update]
   before_action :find_quest, only: [:show, :destroy]
   before_action :find_quest_form, only: [:edit, :update]
   before_action :ensure_user, only: [:edit, :update, :destroy]
