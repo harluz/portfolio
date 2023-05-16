@@ -388,13 +388,23 @@ RSpec.describe "Quests", type: :system do
       end
 
       it "リロードした際にエラー・フラッシュメッセージは消え、フォームの値は保持されていること" do
-        visit new_quest_path
+        visit current_path
         expect(page).not_to have_content "クエストの作成に失敗しました。"
         expect(page).to have_xpath("//input[@value='']")
         expect(page).not_to have_content "タイトルを入力してください"
         expect(page).to have_content "string being input"
         expect(page).to have_checked_field with: "4"
         expect(page).to have_checked_field "quest_form[public]"
+      end
+
+      it "別ページに移動後、再度newページにアクセスした場合、フォームの中身は空となっていること" do
+        visit quests_path
+        visit new_quest_path
+        expect(page).not_to have_xpath("//input[@value='']")
+        expect(page).not_to have_content "タイトルを入力してください"
+        expect(page).not_to have_content "string being input"
+        expect(page).not_to have_checked_field with: "4"
+        expect(page).not_to have_checked_field "quest_form[public]"
       end
     end
   end
@@ -411,7 +421,7 @@ RSpec.describe "Quests", type: :system do
         fill_in 'タイトル', with: "updated quest"
         fill_in 'クエスト詳細', with: "Update quest achievement conditions."
         choose('radio-2')
-        uncheck "quest_form[public]"
+        check "quest_form[public]"
         click_on "更新"
       end
 
@@ -427,7 +437,7 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_content "updated quest"
         expect(page).to have_content "Update quest achievement conditions."
         expect(page).to have_content "2"
-        expect(page).to have_content "クエスト非公開"
+        expect(page).to have_content "クエスト公開中"
         expect(page).to have_link "トークルームへ"
       end
     end
@@ -437,12 +447,12 @@ RSpec.describe "Quests", type: :system do
         fill_in 'タイトル', with: ""
         fill_in 'クエスト詳細', with: "Update quest achievement conditions."
         choose('radio-2')
-        uncheck "quest_form[public]"
+        check "quest_form[public]"
         click_on "更新"
       end
 
       it "クエスト編集ページに遷移していること" do
-        expect(current_path).to eq edit_quest_path(user.quests.last)
+        expect(current_path).to eq edit_quest_path(quest)
       end
 
       it "失敗したフラッシュメッセージが表示されていること" do
@@ -454,17 +464,30 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_xpath("//input[@value='']")
         expect(page).to have_content "Update quest achievement conditions."
         expect(page).to have_checked_field with: "2"
-        expect(page).to have_unchecked_field "quest_form[public]"
+        expect(page).to have_checked_field "quest_form[public]"
       end
 
-      it "render後にリロードすることで更新前のquestが表示されていること" do
-        visit edit_quest_path(user.quests.last)
+      it "リダイレクト後にリロードすることで更新前のquestが表示されていること" do
+        visit current_path
         expect(page).not_to have_content 'クエストの更新に失敗しました。'
         expect(page).not_to have_content 'クエストタイトルを入力してください'
         expect(page).to have_xpath("//input[@value='']")
         expect(page).to have_content "Update quest achievement conditions."
         expect(page).to have_checked_field with: "2"
+        expect(page).to have_checked_field "quest_form[public]"
+      end
+
+      it "別ページに移動後、再度editページにアクセスした場合、フォームに元のクエストの値が保持されていること" do
+        visit quests_path
+        visit edit_quest_path(quest)
+        expect(page).to have_xpath("//input[@value='Create a quest you want to complete.']")
+        expect(page).to have_content "Create quest achievement conditions."
+        expect(page).to have_checked_field with: "3"
         expect(page).to have_unchecked_field "quest_form[public]"
+        expect(page).not_to have_xpath("//input[@value='']")
+        expect(page).not_to have_content "Update quest achievement conditions."
+        expect(page).not_to have_checked_field with: "2"
+        expect(page).not_to have_checked_field "quest_form[public]"
       end
     end
 
