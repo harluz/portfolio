@@ -4,15 +4,12 @@
 - if flash[:error_title].present?
   %p.text-danger
     = flash[:error_title].first
-- elsif @quest.errors.include?(:title)
-  %p.text-danger
-    = @quest.errors.full_messages_for(:title).first
 .field.mt-3
   = obj.label :describe, class: "form-label mb-0"
   = obj.text_area :describe, autofocus: true, autocomplete: "describe", placeholder: "ご自由にご記入ください", class: "form-control"
 .field.mt-3
-  = obj.label "タグ", class: "form-label mb-0"
-  = obj.text_field :tag_name, value: @tag_list, autofocus: true, autocomplete: "タグ", placeholder: "例:趣味 健康 スポーツ", class: "form-control"
+  = obj.label :name, class: "form-label mb-0"
+  = obj.text_field :name, autofocus: true, autocomplete: "name", placeholder: "例:趣味 健康 スポーツ", class: "form-control"
   %p.text-secondary スペース入力で複数のタグ設定が可能です
 .field.mt-3
   = obj.label :difficulty, class: "form-label"
@@ -22,10 +19,10 @@
         = obj.radio_button :difficulty, num + 1, id: "radio-#{num +1}", style: "transform:scale(1.5)"
         = obj.label "#{num +1}", class: "w-50 lead text-center", for: "radio-#{num +1}"
 .field.mt-4
-  = obj.label "クエストを公開する", class: "form-check-label", for: "flexCheckChecked"
   = obj.check_box :public, class: "form-check-input", id: "flexCheckChecked", style: "transform:scale(1.5)"
+  = obj.label "クエストを公開する", class: "form-check-label", for: "flexCheckChecked"
 .actions.mt-4.text-center
-  - if obj.object.id.nil?
+  - if is_new_quest_path
     = obj.submit "クエスト作成", class: "btn btn-outline-success my-1 my-sm-0 col-5 me-4"
   - else
     = obj.submit "更新", class: "btn btn-outline-success my-1 my-sm-0 col-5 me-4"
