@@ -6,6 +6,7 @@ RSpec.describe "Challenges", type: :system do
   let(:public_quest) { create(:public_quest, user: user) }
   let(:non_public_quest) { create(:non_public_quest, user: user) }
   let(:other_public_quest) { create(:public_other_quest, user: other_user) }
+  let(:other_non_public_quest) { create(:other_quest, user: other_user) }
   let!(:room) { create(:room, quest: public_quest) }
   let!(:non_public_room) { create(:room, quest: non_public_quest) }
   let!(:other_room) { create(:room, quest: other_public_quest) }
@@ -172,21 +173,21 @@ RSpec.describe "Challenges", type: :system do
       end
 
       it "公開クエスト作成と同時にchallengeも作成されていること" do
-        check "quest[public]"
+        check "quest_form[public]"
         click_on "クエスト作成"
         visit challenges_path
         expect(page).to have_content "Create a quest you want to complete."
       end
 
       it "非公開クエスト作成と同時にchallengeも作成されていること" do
-        uncheck "quest[public]"
+        uncheck "quest_form[public]"
         click_on "クエスト作成"
         visit challenges_path
         expect(page).to have_content "Create a quest you want to complete."
       end
 
       it "自身のクエストを諦めても再挑戦することができること" do
-        check "quest[public]"
+        check "quest_form[public]"
         click_on "クエスト作成"
         visit challenges_path
         click_on "諦める"
@@ -198,7 +199,7 @@ RSpec.describe "Challenges", type: :system do
       end
 
       it "自身の一度達成したクエストにclosed_challenges_pathから再挑戦することができる" do
-        uncheck "quest[public]"
+        uncheck "quest_form[public]"
         click_on "クエスト作成"
         visit challenges_path
         click_on "達成"
@@ -319,6 +320,7 @@ RSpec.describe "Challenges", type: :system do
       let!(:public_quest_challenge) { create(:challenge, user: user, quest: public_quest) }
       let!(:non_public_quest_challenge) { create(:challenge, user: user, quest: non_public_quest) }
       let!(:other_public_quest_challenge) { create(:challenge, user: user, quest: other_public_quest) }
+      let!(:other_non_public_quest_challenge) { create(:challenge, user: user, quest: other_non_public_quest) }
 
       before { visit challenges_path }
 
@@ -347,6 +349,15 @@ RSpec.describe "Challenges", type: :system do
         expect(current_path).to eq challenges_path
         expect(page).to have_content "挑戦リストから削除しました。"
         expect(page).not_to have_content other_public_quest_challenge.quest.title
+      end
+
+      it "他ユーザーの公開クエストが非公開になったクエストを諦めることができる" do
+        within(".challenge_#{other_non_public_quest_challenge.id}") do
+          click_on "諦める"
+        end
+        expect(current_path).to eq challenges_path
+        expect(page).to have_content "挑戦リストから削除しました。"
+        expect(page).not_to have_content other_non_public_quest_challenge.quest.title
       end
     end
 

@@ -129,7 +129,7 @@ RSpec.describe "Quests", type: :system do
 
         it "検索フォームで入力されたタグに関連した公開クエストが表示されること" do
           visit edit_quest_path(public_quest2)
-          fill_in "quest[tag_name]", with: "sports trip"
+          fill_in "quest_form_name", with: "sports trip"
           click_on "更新"
           visit quests_path
           fill_in "search", with: "#trip"
@@ -231,7 +231,7 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_content "キャンセル"
         expect(page).to have_field "タイトル"
         expect(page).to have_field "クエスト詳細"
-        expect(page).to have_unchecked_field "quest[public]"
+        expect(page).to have_unchecked_field "quest_form[public]"
         expect(page).to have_link "キャンセル"
         expect(page).to have_button "クエスト作成"
       end
@@ -249,10 +249,10 @@ RSpec.describe "Quests", type: :system do
       end
 
       it "チェックボックスが動作していること" do
-        check "quest[public]"
-        expect(page).to have_checked_field "quest[public]"
-        uncheck "quest[public]"
-        expect(page).to have_unchecked_field "quest[public]"
+        check "quest_form[public]"
+        expect(page).to have_checked_field "quest_form[public]"
+        uncheck "quest_form[public]"
+        expect(page).to have_unchecked_field "quest_form[public]"
       end
     end
 
@@ -305,7 +305,7 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_content "キャンセル"
         expect(page).to have_field "タイトル"
         expect(page).to have_field "クエスト詳細"
-        expect(page).to have_unchecked_field "quest[public]"
+        expect(page).to have_unchecked_field "quest_form[public]"
         expect(page).to have_link "キャンセル"
         expect(page).to have_button "更新"
       end
@@ -314,7 +314,7 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_xpath("//input[@value='Create a quest you want to complete.']")
         expect(page).to have_content "Create quest achievement conditions."
         expect(page).to have_checked_field with: "3"
-        expect(page).to have_unchecked_field "quest[public]"
+        expect(page).to have_unchecked_field "quest_form[public]"
       end
 
       context "存在しないデータにアクセスする場合" do
@@ -339,7 +339,7 @@ RSpec.describe "Quests", type: :system do
         fill_in 'タイトル', with: "Create a quest you want to complete."
         fill_in 'クエスト詳細', with: "Create quest achievement conditions."
         choose('radio-3')
-        check "quest[public]"
+        check "quest_form[public]"
         click_on "クエスト作成"
       end
 
@@ -370,7 +370,7 @@ RSpec.describe "Quests", type: :system do
         fill_in 'タイトル', with: ""
         fill_in 'クエスト詳細', with: "string being input"
         choose('radio-4')
-        check "quest[public]"
+        check "quest_form[public]"
         click_on "クエスト作成"
       end
 
@@ -384,7 +384,7 @@ RSpec.describe "Quests", type: :system do
         expect(page).to have_content "タイトルを入力してください"
         expect(page).to have_content "string being input"
         expect(page).to have_checked_field with: "4"
-        expect(page).to have_checked_field "quest[public]"
+        expect(page).to have_checked_field "quest_form[public]"
       end
 
       it "リロードした際にエラー・フラッシュメッセージは消え、フォームの値は保持されていること" do
@@ -394,7 +394,7 @@ RSpec.describe "Quests", type: :system do
         expect(page).not_to have_content "タイトルを入力してください"
         expect(page).to have_content "string being input"
         expect(page).to have_checked_field with: "4"
-        expect(page).to have_checked_field "quest[public]"
+        expect(page).to have_checked_field "quest_form[public]"
       end
     end
   end
@@ -411,7 +411,7 @@ RSpec.describe "Quests", type: :system do
         fill_in 'タイトル', with: "updated quest"
         fill_in 'クエスト詳細', with: "Update quest achievement conditions."
         choose('radio-2')
-        uncheck "quest[public]"
+        uncheck "quest_form[public]"
         click_on "更新"
       end
 
@@ -437,32 +437,34 @@ RSpec.describe "Quests", type: :system do
         fill_in 'タイトル', with: ""
         fill_in 'クエスト詳細', with: "Update quest achievement conditions."
         choose('radio-2')
-        uncheck "quest[public]"
+        uncheck "quest_form[public]"
         click_on "更新"
       end
 
-      it "showページに遷移していること" do
-        expect(current_path).to eq quest_path(quest)
+      it "クエスト編集ページに遷移していること" do
+        expect(current_path).to eq edit_quest_path(user.quests.last)
       end
 
       it "失敗したフラッシュメッセージが表示されていること" do
         expect(page).to have_content 'クエストの更新に失敗しました。'
+        expect(page).to have_content 'クエストタイトルを入力してください'
       end
 
-      it "showページでquestの情報が表示されていること" do
+      it "クエスト編集ページでquestの情報が表示されていること" do
         expect(page).to have_xpath("//input[@value='']")
         expect(page).to have_content "Update quest achievement conditions."
         expect(page).to have_checked_field with: "2"
-        expect(page).to have_unchecked_field "quest[public]"
+        expect(page).to have_unchecked_field "quest_form[public]"
       end
 
       it "render後にリロードすることで更新前のquestが表示されていること" do
-        visit quest_path(quest)
-        expect(page).to have_content "Create a quest you want to complete."
-        expect(page).to have_content "Create quest achievement conditions."
-        expect(page).to have_content "3"
-        expect(page).to have_content "クエスト非公開"
-        expect(page).to have_link "トークルームへ"
+        visit edit_quest_path(user.quests.last)
+        expect(page).not_to have_content 'クエストの更新に失敗しました。'
+        expect(page).not_to have_content 'クエストタイトルを入力してください'
+        expect(page).to have_xpath("//input[@value='']")
+        expect(page).to have_content "Update quest achievement conditions."
+        expect(page).to have_checked_field with: "2"
+        expect(page).to have_unchecked_field "quest_form[public]"
       end
     end
 
