@@ -1,6 +1,7 @@
 class QuestsController < ApplicationController
   before_action :authenticate_user!, except: [:index]
-  before_action :find_quest, only: [:show, :edit, :update, :destroy]
+  before_action :find_quest, only: [:show, :destroy]
+  before_action :find_quest_form, only: [:edit, :update]
   before_action :ensure_user, only: [:edit, :update, :destroy]
 
   def index
@@ -16,24 +17,25 @@ class QuestsController < ApplicationController
   end
 
   def new
-    @quest = Quest.new(session[:quest] || {})
+    # @quest = Quest.new(session[:quest] || {})
+    @quest_form = QuestForm.new(session[:quest] || {})
   end
 
   def create
-    @quest = Quest.new(quest_params)
-    @quest.user_id = current_user.id
-    @quest.xp = @quest.set_xp
-    if @quest.save
-      add_or_change_tag
-      @challenge = Challenge.create(user_id: current_user.id, quest_id: @quest.id)
-      @room = Room.create(quest_id: @quest.id)
+    @quest_form = QuestForm.new(quest_params)
+    @quest_form.user_id = current_user.id
+    @quest_form.xp = (@quest_form.difficulty.to_i * 2)
+    # 三項演算子
+    @quest_form.public = (@quest_form.public == "1" )
+
+    if @quest_form.save
       session[:quest] = nil
       flash[:notice] = "BranChannelに新たなクエストが作成されました。"
-      redirect_to quest_path(@quest)
+      redirect_to quest_path(@quest_form.id)
     else
-      session[:quest] = @quest.attributes.slice(*quest_params.keys)
+      session[:quest] = @quest_form.attributes.slice(*quest_params.keys)
       flash[:alert] = "クエストの作成に失敗しました。"
-      redirect_to new_quest_path, flash: { error_title: @quest.errors.full_messages_for(:title) }
+      redirect_to new_quest_path, flash: { error_title: @quest_form.errors.full_messages_for(:title) }
     end
   end
 
@@ -55,19 +57,30 @@ class QuestsController < ApplicationController
   end
 
   def edit
-    @tag_list = @quest.tags.pluck(:name).join(' ')
+    # @tag_list = @quest_form.tags.pluck(:name).join(' ')
+    @quest_form = QuestForm.new(session[:edit_quest] || {}) unless session[:edit_quest].nil?
   end
 
   def update
-    params[:quest][:xp] = params[:quest][:difficulty].to_i * 2
+    # params[:quest][:xp] = params[:quest][:difficulty].to_i * 2
+    # @quest_form.xp = (@quest_form.difficulty.to_i * 2)
+    # if @quest_form.public == "1"
+    #   @quest_form.public = true
+    # else
+    #   @quest_form.public = false
+    # end
 
-    if @quest.update(quest_params)
-      add_or_change_tag
+    # if @quest.update(quest_params)
+    if @quest_form.update(quest_params, @quest)
+      # add_or_change_tag
+      session[:edit_quest] = nil
       flash[:notice] = "クエストを更新しました。"
-      redirect_to quest_path(@quest)
+      redirect_to quest_path(@quest_form.id)
     else
+      session[:edit_quest] = quest_params.to_h.slice(*quest_params.keys)
       flash[:alert] = "クエストの更新に失敗しました。"
-      render :edit
+      # render :edit
+      redirect_to edit_quest_path, flash: { error_title: @quest.errors.full_messages_for(:title) }
     end
   end
 
@@ -83,12 +96,27 @@ class QuestsController < ApplicationController
 
   private
 
+  # def quest_params
+  #   params.require(:quest).permit(:title, :describe, :difficulty, :xp, :public)
+  # end
+
   def quest_params
-    params.require(:quest).permit(:title, :describe, :difficulty, :xp, :public)
+    params.require(:quest_form).permit(:title, :describe, :difficulty, :xp, :public, :name)
   end
 
   def find_quest
     @quest = Quest.find(params[:id])
+  rescue
+    flash[:alert] = "クエストが存在していません。"
+    redirect_to quests_path
+  end
+
+  def find_quest_form
+    @quest = Quest.find(params[:id])
+    tag_names = @quest.tags.pluck(:name).join(' ')
+    tag_hash = { "name" => tag_names }
+    form_attributes = @quest.attributes.except("challenge_id", "created_at", "updated_at").merge(tag_hash)
+    @quest_form = QuestForm.new(form_attributes)
   rescue
     flash[:alert] = "クエストが存在していません。"
     redirect_to quests_path
@@ -101,12 +129,12 @@ class QuestsController < ApplicationController
     end
   end
 
-  def add_or_change_tag
-    if params[:quest][:tag_name] && params[:quest][:tag_name].present?
-      tag_list = params[:quest][:tag_name].gsub(/(^[[:space:]]+)|([[:space:]]+$)/, '').split(/[[:space:]]+/)
-      @quest.save_tag(tag_list.uniq)
-    elsif @quest.tags.present? && params[:quest][:tag_name].blank?
-      @quest.tags.clear
-    end
-  end
+  # def add_or_change_tag
+  #   if params[:quest][:tag_name] && params[:quest][:tag_name].present?
+  #     tag_list = params[:quest][:tag_name].gsub(/(^[[:space:]]+)|([[:space:]]+$)/, '').split(/[[:space:]]+/)
+  #     @quest.save_tag(tag_list.uniq)
+  #   elsif @quest.tags.present? && params[:quest][:tag_name].blank?
+  #     @quest.tags.clear
+  #   end
+  # end
 end
