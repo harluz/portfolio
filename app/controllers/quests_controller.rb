@@ -17,7 +17,6 @@ class QuestsController < ApplicationController
   end
 
   def new
-    # @quest = Quest.new(session[:quest] || {})
     @quest_form = QuestForm.new(session[:quest] || {})
   end
 
@@ -25,7 +24,6 @@ class QuestsController < ApplicationController
     @quest_form = QuestForm.new(quest_params)
     @quest_form.user_id = current_user.id
     @quest_form.xp = (@quest_form.difficulty.to_i * 2)
-    # 三項演算子
     @quest_form.public = (@quest_form.public == "1" )
 
     if @quest_form.save
@@ -47,39 +45,20 @@ class QuestsController < ApplicationController
     elsif !current_user_owned?(@quest) || (current_user_owned?(@quest) && is_not_own_challenge?(@quest))
       @challenge = Challenge.new
     end
-
-    # 他人のクエストを挑戦中にクエストが非公開になった場合、詳細は見れないがchallenge一覧から「達成」or「諦める」を選択できるようにする
-    # challengeを特定して、challenge.idを取得した上で↓
-    # if @quest.user != current_user && Challenge.exist?(user_id: current_user.id, quest_id: @quest.id)
-    # && @quest.public == flase && @challenge.close == false
-
-    # 自分のクエストでなければ、空のchallengeを生成する
   end
 
   def edit
-    # @tag_list = @quest_form.tags.pluck(:name).join(' ')
     @quest_form = QuestForm.new(session[:edit_quest] || {}) unless session[:edit_quest].nil?
   end
 
   def update
-    # params[:quest][:xp] = params[:quest][:difficulty].to_i * 2
-    # @quest_form.xp = (@quest_form.difficulty.to_i * 2)
-    # if @quest_form.public == "1"
-    #   @quest_form.public = true
-    # else
-    #   @quest_form.public = false
-    # end
-
-    # if @quest.update(quest_params)
     if @quest_form.update(quest_params, @quest)
-      # add_or_change_tag
       session[:edit_quest] = nil
       flash[:notice] = "クエストを更新しました。"
       redirect_to quest_path(@quest_form.id)
     else
       session[:edit_quest] = quest_params.to_h.slice(*quest_params.keys)
       flash[:alert] = "クエストの更新に失敗しました。"
-      # render :edit
       redirect_to edit_quest_path, flash: { error_title: @quest.errors.full_messages_for(:title) }
     end
   end
@@ -95,10 +74,6 @@ class QuestsController < ApplicationController
   end
 
   private
-
-  # def quest_params
-  #   params.require(:quest).permit(:title, :describe, :difficulty, :xp, :public)
-  # end
 
   def quest_params
     params.require(:quest_form).permit(:title, :describe, :difficulty, :xp, :public, :name)
@@ -128,13 +103,4 @@ class QuestsController < ApplicationController
       redirect_to quests_path
     end
   end
-
-  # def add_or_change_tag
-  #   if params[:quest][:tag_name] && params[:quest][:tag_name].present?
-  #     tag_list = params[:quest][:tag_name].gsub(/(^[[:space:]]+)|([[:space:]]+$)/, '').split(/[[:space:]]+/)
-  #     @quest.save_tag(tag_list.uniq)
-  #   elsif @quest.tags.present? && params[:quest][:tag_name].blank?
-  #     @quest.tags.clear
-  #   end
-  # end
 end
