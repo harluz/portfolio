@@ -2,7 +2,8 @@ class Tag < ApplicationRecord
   has_many :quest_tags, dependent: :destroy
   has_many :quests, through: :quest_tags
 
-  validates :name, presence: true, uniqueness: true
+  # validates :name, presence: true, uniqueness: true
+  validates :name, uniqueness: true
 
   def self.search(search)
     search_word = search.sub(/#/, '').split(/[[:space:]]+/)
