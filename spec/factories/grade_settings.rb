@@ -32,18 +32,18 @@ FactoryBot.define do
   factory :challenger, :class => "GradeSetting" do
     tag { 6 }
     grade { "Challenger" }
-    judgement_xp { 320 }
+    judgement_xp { 330 }
   end
 
   factory :accomplisher, :class => "GradeSetting" do
     tag { 7 }
     grade { "Accomplisher" }
-    judgement_xp { 400 }
+    judgement_xp { 420 }
   end
 
   factory :legend, :class => "GradeSetting" do
     tag { 8 }
     grade { "Legend" }
-    judgement_xp { 500 }
+    judgement_xp { 520 }
   end
 end
