@@ -8,7 +8,6 @@ class User < ApplicationRecord
   validates :name, presence: true
   validates :password, presence: true, length: { minimum: 6 }, on: :create
   validates :having_xp, presence: true, numericality: { only_integer: true }
-  validates :level, presence: true, numericality: { only_integer: true }
   validates :challenge_achieved, presence: true, numericality: { only_integer: true }
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
