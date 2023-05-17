@@ -164,6 +164,7 @@ RSpec.describe "Pages", type: :system do
           visit pages_profile_path
           expect(page).not_to have_content "First Stepper"
           expect(page).to have_content "Second Stepper"
+          expect(page).to have_content "次の称号まで40ポイント"
         end
 
         it "経験値70ポイント未満はSecond Stepperが表示されていること" do
@@ -174,6 +175,7 @@ RSpec.describe "Pages", type: :system do
           visit pages_profile_path
           expect(page).not_to have_content "Second Stepper"
           expect(page).to have_content "Noticer"
+          expect(page).to have_content "次の称号まで50ポイント"
         end
 
         it "経験値120ポイント未満はNoticerが表示されていること" do
@@ -184,6 +186,7 @@ RSpec.describe "Pages", type: :system do
           visit pages_profile_path
           expect(page).not_to have_content "Noticer"
           expect(page).to have_content "Discoverer"
+          expect(page).to have_content "次の称号まで60ポイント"
         end
 
         it "経験値180ポイント未満はDiscovererが表示されていること" do
@@ -194,6 +197,7 @@ RSpec.describe "Pages", type: :system do
           visit pages_profile_path
           expect(page).not_to have_content "Discoverer"
           expect(page).to have_content "Changer"
+          expect(page).to have_content "次の称号まで70ポイント"
         end
 
         it "経験値250ポイント未満はChangerが表示されていること" do
@@ -204,35 +208,39 @@ RSpec.describe "Pages", type: :system do
           visit pages_profile_path
           expect(page).not_to have_content "Changer"
           expect(page).to have_content "Challenger"
+          expect(page).to have_content "次の称号まで80ポイント"
         end
 
-        it "経験値320ポイント未満はChallengerが表示されていること" do
-          user.having_xp = 318
+        it "経験値330ポイント未満はChallengerが表示されていること" do
+          user.having_xp = 328
           user.grade = "Challenger"
           user.save
           click_on "達成"
           visit pages_profile_path
           expect(page).not_to have_content "Challenger"
           expect(page).to have_content "Accomplisher"
+          expect(page).to have_content "次の称号まで90ポイント"
         end
 
-        it "経験値400ポイント未満はAccomplisherが表示されていること" do
-          user.having_xp = 398
+        it "経験値420ポイント未満はAccomplisherが表示されていること" do
+          user.having_xp = 418
           user.grade = "Accomplisher"
           user.save
           click_on "達成"
           visit pages_profile_path
           expect(page).not_to have_content "Accomplisher"
           expect(page).to have_content "Legend"
+          expect(page).to have_content "次の称号まで0ポイント"
         end
 
-        it "経験値400ポイント以上はLegendが表示されていること" do
-          user.having_xp = 498
+        it "経験値420ポイント以上はLegendが表示されていること" do
+          user.having_xp = 518
           user.grade = "Legend"
           user.save
           click_on "達成"
           visit pages_profile_path
           expect(page).to have_content "Legend"
+          expect(page).to have_content "次の称号まで0ポイント"
         end
       end
     end
@@ -262,6 +270,7 @@ RSpec.describe "Pages", type: :system do
   end
 
   describe "ページ遷移確認" do
+    let!(:first_stepper) { create(:first_stepper) }
     context "ヘッダー" do
       it "ヘッダーのリンクが正しくリダイレクトされていること" do
         visit root_path
@@ -289,6 +298,7 @@ RSpec.describe "Pages", type: :system do
     end
 
     context "/pages/profile" do
+      let!(:noticer) { create(:noticer) }
       before do
         sign_in user
         visit pages_profile_path

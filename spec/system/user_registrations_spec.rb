@@ -185,6 +185,7 @@ RSpec.describe "UserRegistrations", type: :system do
 
   describe "ユーザー編集" do
     let(:user) { create(:user) }
+    let!(:noticer) { create(:noticer) }
     before { sign_in user }
 
     context "更新に成功する場合" do
