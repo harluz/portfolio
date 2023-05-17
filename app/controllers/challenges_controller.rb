@@ -4,11 +4,11 @@ class ChallengesController < ApplicationController
   before_action :ensure_user, only: [:update, :destroy]
 
   def index
-    @challenges = Challenge.eager_load(quest: :user).where(user_id: current_user.id, close: false)
+    @challenges = load_challenges(false)
   end
 
   def closed
-    @challenges = Challenge.eager_load(quest: :user).where(user_id: current_user.id, close: true)
+    @challenges = load_challenges(true)
   end
 
   def create
@@ -79,9 +79,15 @@ class ChallengesController < ApplicationController
     end
   end
 
+  def load_challenges(closed)
+    Challenge.eager_load(quest: :user)
+            .where(user_id: current_user.id, close: closed)
+            .order(created_at: :desc)
+  end
+
   def user_upgrade
     current_grade = GradeSetting.find_by(grade: current_user.grade)
-    next_grade = GradeSetting.find_by(tag: current_grade.tag + 1)
+    next_grade = GradeSetting.find_by(tag: current_grade.tag.succ)
     if next_grade && current_grade.judgement_xp <= current_user.having_xp
       current_user.grade = next_grade.grade
     end
