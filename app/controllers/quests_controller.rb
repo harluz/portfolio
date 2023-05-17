@@ -14,7 +14,7 @@ class QuestsController < ApplicationController
   end
 
   def my_quest
-    @quests = current_user.quests
+    @quests = current_user.quests.order(created_at: :desc)
   end
 
   def new
@@ -49,7 +49,7 @@ class QuestsController < ApplicationController
   end
 
   def edit
-    @quest_form = QuestForm.new(session[:edit_quest] || {}) unless session[:edit_quest].nil?
+    @quest_form = QuestForm.new(session[:edit_quest]) unless session[:edit_quest].nil?
   end
 
   def update
