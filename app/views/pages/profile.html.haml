@@ -4,8 +4,10 @@
     %div
       %h3
         = @user.name
-      %p.text-secondary
+      %p.text-secondary.mb-0
         = "称号:  #{@user.grade}"
+      %p.text-secondary
+        = "次の称号まで#{@user.experience_needed_for_next_grade}ポイント"
       .row.justify-content-around.border-bottom.mt-4
         .col-3.p-0
           %p クエスト作成数
