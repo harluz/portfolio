@@ -6,7 +6,7 @@ class QuestsController < ApplicationController
   before_action :ensure_user, only: [:edit, :update, :destroy]
 
   def index
-    if params[:search] && params[:search][0] == '#'
+    if params[:search] && params[:search].start_with?('#')
       @quests = Tag.eager_load(quest_tags: [quest: :user]).search(params[:search]).order(created_at: :desc)
     else
       @quests = Quest.eager_load(:user).search(params[:search]).order(created_at: :desc)
