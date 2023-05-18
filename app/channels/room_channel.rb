@@ -13,7 +13,7 @@ class RoomChannel < ApplicationCable::Channel
 
   def destroy(data)
     @message = Message.find_by(id: data['id'])
-    if @message.user == current_user
+    if @message.present? && @message.user == current_user
       @message.destroy
       ActionCable.server.broadcast "room_channel_#{params['room']}", { id: data['id'] }
     end
