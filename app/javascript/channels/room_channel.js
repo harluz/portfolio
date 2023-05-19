@@ -17,7 +17,12 @@ $(function () {
 					let id = "#" + data["id"];
 					$(id).remove();
 				} else {
-					$("#messages").append(data["message"]);
+					var show_user = $("#show_user").data("show-user");
+					if (data["message_user"] == show_user) {
+						$("#messages").append(data["messagecurrent"]);
+					} else {
+						$("#messages").append(data["messageother"]);
+					}
 				}
 			},
 
