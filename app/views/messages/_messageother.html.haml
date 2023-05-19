@@ -1,0 +1,5 @@
+%div{class: 'message border-bottom mt-3 mx-3 pb-0', id: "#{message.id}"}
+  %p{class: "text-break mb-0"}
+    = safe_join(message.content.split("\n"),tag(:br))
+  %p{class: "text-secondary mb-0"}
+    = l message.created_at, format: :long
