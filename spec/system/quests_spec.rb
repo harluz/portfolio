@@ -257,8 +257,14 @@ RSpec.describe "Quests", type: :system do
     end
 
     context "/quests/show" do
+      let(:other_user) { create(:correct_user) }
       let(:quest) { create(:quest, user: user) }
+      let(:other_quest) { create(:public_other_quest, user: other_user) }
       let!(:room) { create(:room, quest: quest) }
+      let!(:other_room) { create(:room, quest: other_quest) }
+      let!(:noticer) { create(:noticer) }
+      let!(:discoverer) { create(:discoverer) }
+      
       before do
         visit quest_path(quest)
       end
@@ -274,17 +280,61 @@ RSpec.describe "Quests", type: :system do
           expect(page).to have_content "3"
           expect(page).to have_content "クエスト非公開"
           expect(page).to have_link "トークルームへ"
+          expect(page).to have_link "編集"
         end
       end
 
       context "存在しないデータにアクセスする場合" do
         it "indexページにリダイレクトし、エラーメッセージが表示されていること" do
-          visit quest_path(10000)
+          visit quest_path(0)
           expect(current_path).to eq quests_path
           expect(page).to have_content "クエストが存在していません。"
         end
       end
-      # questのshowページにクエストが公開されている、かつ自分のクエストでなく、かつ既に挑戦中でないクエストに「挑戦する」リンクが表示されていること
+
+      context "他のユーザーの公開クエストにアクセスした場合" do
+        it "挑戦するリンクが表示されること" do
+          visit quest_path(other_quest)
+          expect(page).to have_content "Public other quest"
+          expect(page).to have_content "Public other quest description"
+          expect(page).to have_content "4"
+          expect(page).to have_content "クエスト公開中"
+          expect(page).to have_link "トークルームへ"
+          expect(page).to have_selector('a', text: '挑戦')
+          expect(page).not_to have_link "編集"
+        end
+
+        it "挑戦中である場合は、挑戦するリンクが表示されないこと" do
+          visit quest_path(other_quest)
+          click_on "挑戦"
+          visit quest_path(other_quest)
+          expect(page).to have_content "Public other quest"
+          expect(page).to have_content "Public other quest description"
+          expect(page).to have_content "4"
+          expect(page).to have_content "クエスト公開中"
+          expect(page).to have_link "トークルームへ"
+          expect(page).not_to have_link("挑戦", href: '挑戦')
+          expect(page).not_to have_link "編集"
+        end
+
+        it "挑戦後に諦めたクエストに挑戦するリンクが表示されること" do
+          visit quest_path(other_quest)
+          click_on "挑戦"
+          visit challenges_path
+          click_on "諦める"
+          visit quest_path(other_quest)
+          expect(page).to have_selector('a', text: '挑戦')
+        end
+
+        it "挑戦後に達成したクエストは挑戦するリンクがふくまれていないこと" do
+          visit quest_path(other_quest)
+          click_on "挑戦"
+          visit challenges_path
+          click_on "達成"
+          visit quest_path(other_quest)
+          expect(page).not_to have_link("挑戦", href: '挑戦')
+        end
+      end
     end
 
     context "/quests/edit" do
@@ -518,7 +568,7 @@ RSpec.describe "Quests", type: :system do
       end
 
       it "indexページに遷移していること" do
-        expect(current_path).to eq quests_path
+        expect(current_path).to eq my_quest_quests_path
       end
 
       it "成功したフラッシュメッセージが表示されていること" do
@@ -529,6 +579,5 @@ RSpec.describe "Quests", type: :system do
         expect(page).not_to have_content "Create a quest you want to complete."
       end
     end
-    # 削除に失敗する場合
   end
 end

@@ -402,7 +402,6 @@ RSpec.describe "Quests", type: :request do
         expect(subject).to redirect_to new_user_session_path
       end
     end
-    # 公開中のクエストを編集できること？
   end
 
   describe "PATCH #update" do
@@ -474,7 +473,7 @@ RSpec.describe "Quests", type: :request do
         before { delete quest_path(quest) }
 
         it "quest一覧ページにリダイレクトしていること" do
-          expect(subject).to redirect_to quests_path
+          expect(subject).to redirect_to my_quest_quests_path
         end
         it "ステータスコード302（リダイレクト）がレスポンスされていること" do
           expect(subject).to have_http_status(302)
