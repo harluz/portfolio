@@ -264,7 +264,7 @@ RSpec.describe "Quests", type: :system do
       let!(:other_room) { create(:room, quest: other_quest) }
       let!(:noticer) { create(:noticer) }
       let!(:discoverer) { create(:discoverer) }
-      
+
       before do
         visit quest_path(quest)
       end

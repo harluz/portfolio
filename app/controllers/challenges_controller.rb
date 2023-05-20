@@ -80,9 +80,9 @@ class ChallengesController < ApplicationController
   end
 
   def load_challenges(closed)
-    Challenge.eager_load(quest: :user)
-            .where(user_id: current_user.id, close: closed)
-            .order(created_at: :desc)
+    Challenge.eager_load(quest: :user).
+      where(user_id: current_user.id, close: closed).
+      order(created_at: :desc)
   end
 
   def user_upgrade

@@ -23,11 +23,11 @@ class User < ApplicationRecord
   end
 
   def experience_needed_for_next_grade
-    current_grade = GradeSetting.find_by(grade: self.grade)
+    current_grade = GradeSetting.find_by(grade: grade)
     if current_grade.grade == "Legend"
       0
     else
-      current_grade.judgement_xp - self.having_xp
+      current_grade.judgement_xp - having_xp
     end
   end
 end

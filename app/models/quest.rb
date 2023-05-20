@@ -14,7 +14,6 @@ class Quest < ApplicationRecord
   validates :user_id, presence: true
   validate :challenge_id
 
-
   def self.search(search)
     if !search.nil?
       search_word = search.gsub(/(^[[:space:]]+)|([[:space:]]+$)/, '').split(/[[:space:]]+/)

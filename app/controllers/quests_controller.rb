@@ -25,7 +25,7 @@ class QuestsController < ApplicationController
     @quest_form = QuestForm.new(quest_params)
     @quest_form.user_id = current_user.id
     @quest_form.xp = (@quest_form.difficulty.to_i * 2)
-    @quest_form.public = (@quest_form.public == "1" )
+    @quest_form.public = (@quest_form.public == "1")
 
     if @quest_form.save
       session[:quest] = nil

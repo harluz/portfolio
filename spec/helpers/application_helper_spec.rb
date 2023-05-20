@@ -3,12 +3,12 @@ require 'rails_helper'
 RSpec.describe ApplicationHelper, type: :helper do
   let(:user) { create(:user) }
   let(:other_user) { create(:correct_user) }
-  let!(:quest) { create(:quest, user: user)}
-  let!(:public_quest) { create(:public_quest, user: user)}
-  let!(:non_public_quest) { create(:other_quest, user: user)}
-  let!(:other_quest) { create(:quest, user: other_user)}
-  let!(:challenge) { create(:challenge, user: user, quest: quest)}
-  let!(:other_challenge) { create(:challenge, user: other_user, quest: quest)}
+  let!(:quest) { create(:quest, user: user) }
+  let!(:public_quest) { create(:public_quest, user: user) }
+  let!(:non_public_quest) { create(:other_quest, user: user) }
+  let!(:other_quest) { create(:quest, user: other_user) }
+  let!(:challenge) { create(:challenge, user: user, quest: quest) }
+  let!(:other_challenge) { create(:challenge, user: other_user, quest: quest) }
 
   before { sign_in user }
 
