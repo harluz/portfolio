@@ -209,7 +209,6 @@ RSpec.describe "Challenges", type: :system do
         expect(page).to have_content "挑戦リストに追加されました。"
         expect(page).to have_content "Create a quest you want to complete."
       end
-      # 自身の一度達成したクエストにquests_pathから再挑戦することができる
     end
 
     context "他ユーザーの公開クエストの場合" do
@@ -244,7 +243,6 @@ RSpec.describe "Challenges", type: :system do
         expect(page).to have_content "挑戦リストに追加されました。"
         expect(page).to have_content other_quest.title
       end
-      # 他ユーザーの一度達成した公開クエストにquests_pathから再挑戦することができる
     end
 
     context "他ユーザーの公開クエストが非公開となった場合" do
