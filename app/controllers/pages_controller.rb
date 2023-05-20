@@ -7,9 +7,6 @@ class PagesController < ApplicationController
   def about
   end
 
-  # def main
-  # end
-
   def profile
     @user = current_user
   end

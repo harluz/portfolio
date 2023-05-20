@@ -1,1 +1,0 @@
-// alert("javascriptは動いています");

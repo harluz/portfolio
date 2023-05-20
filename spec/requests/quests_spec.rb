@@ -242,12 +242,12 @@ RSpec.describe "Quests", type: :request do
     context "questの作成に成功する場合" do
       it "questの数が増加していること" do
         expect do
-          post quests_path, params: { quest: attributes_for(:quest) }
+          post quests_path, params: { quest_form: attributes_for(:quest_form) }
         end.to change(Quest, :count).by(1)
       end
 
       describe "レスポンス確認" do
-        before { post quests_path, params: { quest: attributes_for(:quest) } }
+        before { post quests_path, params: { quest_form: attributes_for(:quest_form) } }
 
         it "showページにリダイレクトされていること" do
           expect(subject).to redirect_to quest_path(user.quests.last)
@@ -262,12 +262,12 @@ RSpec.describe "Quests", type: :request do
     context "questの作成に失敗する場合" do
       it "questの数が増加していないこと" do
         expect do
-          post quests_path, params: { quest: attributes_for(:non_correct_quest) }
+          post quests_path, params: { quest_form: attributes_for(:non_correct_quest_form) }
         end.to change(Quest, :count).by(0)
       end
 
       describe "レスポンス確認" do
-        before { post quests_path, params: { quest: attributes_for(:non_correct_quest) } }
+        before { post quests_path, params: { quest_form: attributes_for(:non_correct_quest_form) } }
 
         it "newページにリダイレクトされていること" do
           expect(subject).to redirect_to new_quest_path
@@ -402,7 +402,6 @@ RSpec.describe "Quests", type: :request do
         expect(subject).to redirect_to new_user_session_path
       end
     end
-    # 公開中のクエストを編集できること？
   end
 
   describe "PATCH #update" do
@@ -413,7 +412,7 @@ RSpec.describe "Quests", type: :request do
     context "questの更新に成功する場合" do
       describe "レスポンス確認" do
         before do
-          patch quest_path(quest), params: { quest: attributes_for(:other_quest) }
+          patch quest_path(quest), params: { quest_form: attributes_for(:other_quest_form) }
         end
 
         it "showページにリダイレクトされていること" do
@@ -428,25 +427,21 @@ RSpec.describe "Quests", type: :request do
 
     context "questの更新に失敗する場合" do
       before do
-        patch quest_path(quest), params: { quest: attributes_for(:non_correct_quest) }
+        patch quest_path(quest), params: { quest_form: attributes_for(:non_correct_quest_form) }
       end
 
-      it "/quest/idがレンダーされていること" do
-        expect(subject).to have_http_status(200)
+      it "ステータスコード302（リダイレクト）がレスポンスさていること" do
+        expect(subject).to have_http_status(302)
       end
 
-      it "更新前のquestの情報がレスポンスされていること" do
-        expect(response.body).to include "クエストの更新に失敗しました。"
-        expect(response.body).to include "クエストタイトルを入力してください"
-        expect(response.body).to include "Non correct sample describe"
-        expect(response.body).to include "value=\"5\" checked=\"checked\""
-        expect(response.body).to include "type=\"checkbox\" value=\"1\" checked=\"checked\""
+      it "quest編集ページにリダイレクトするレスポンスが含まれていること" do
+        expect(subject).to redirect_to edit_quest_path(user.quests.last)
       end
     end
 
     context "存在しないquestを更新しようとした場合" do
       before do
-        patch quest_path(0), params: { quest: attributes_for(:quest) }
+        patch quest_path(0), params: { quest_form: attributes_for(:quest_form) }
       end
 
       it "ステータスコード302（リダイレクト）がレスポンスされていること" do
@@ -478,7 +473,7 @@ RSpec.describe "Quests", type: :request do
         before { delete quest_path(quest) }
 
         it "quest一覧ページにリダイレクトしていること" do
-          expect(subject).to redirect_to quests_path
+          expect(subject).to redirect_to my_quest_quests_path
         end
         it "ステータスコード302（リダイレクト）がレスポンスされていること" do
           expect(subject).to have_http_status(302)

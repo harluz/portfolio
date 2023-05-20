@@ -1,0 +1,39 @@
+.field.mt-3
+  = obj.label :name, class: "form-label mb-0"
+  = obj.text_field :name, autofocus: true, autocomplete: "name", class: "form-control"
+- if user.errors.include?(:name)
+  %p.text-danger
+    = user.errors.full_messages_for(:name).first
+.field.mt-3
+  = obj.label :email, class: "form-label mb-0"
+  = obj.email_field :email, autofocus: true, autocomplete: "email", class: "form-control"
+- if user.errors.include?(:email)
+  %p.text-danger
+    = user.errors.full_messages_for(:email).first
+.field.mt-3
+  = obj.label :password, class: "form-label mb-0"
+  - if is_new_user_registration_path == false
+    %i (変更する場合のみ)
+  = obj.password_field :password, autocomplete: "new-password", placeholder: "6文字以上のパスワードを設定してください", class: "form-control"
+  - if user.errors.include?(:password)
+    %p.text-danger
+      = user.errors.full_messages_for(:password).first
+.field.mt-3
+  = obj.label :password_confirmation, class: "form-label mb-0"
+  = obj.password_field :password_confirmation, autocomplete: "new-password", class: "form-control"
+  - if user.errors.include?(:password_confirmation)
+    %p.text-danger
+      = user.errors.full_messages_for(:password_confirmation).first
+- if is_new_user_registration_path == false
+  .field.mt-3
+    = obj.label :current_password, class: "form-label mb-0"
+    = obj.password_field :current_password, autocomplete: "current-password", placeholder: "変更適用には現在のパスワードが必要です", class: "form-control"
+    - if user.errors.include?(:current_password)
+      %p.text-danger
+        = user.errors.full_messages_for(:current_password).first
+.actions.mt-4.text-center
+  - if is_new_user_registration_path
+    = obj.submit "登録", class: "btn btn-outline-success my-1 my-sm-0 col-5 me-4"
+  - else
+    = obj.submit "更新", class: "btn btn-outline-success my-1 my-sm-0 col-5 me-4"
+  = link_to "キャンセル", :back, class: "btn btn-outline-secondary my-1 my-sm-0 col-5"

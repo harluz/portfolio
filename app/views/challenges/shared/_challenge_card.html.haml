@@ -1,0 +1,30 @@
+%div{class: "challenge_#{challenge.id}"}
+  .card.border-secondary.m-2.text-center.text-bg-light.col-md-6.mx-auto
+    .crad-body.p-3
+      - if challenge.quest == nil
+        %p.card-title.mb-0.text-secondary
+          作成者によりクエストが削除されました。
+        = link_to "リストから削除", challenge_path(challenge), method: :delete, class: "btn btn-outline-secondary my-1 my-sm-0 col-6"
+      - else
+        %p.card-title.mb-0
+          = challenge.quest.title
+          %p.card-text.text-secondary.mb-0
+            = "難易度:#{challenge.quest.difficulty}"
+        .row.justify-content-center
+          - if !current_user_owned?(challenge.quest) && !public_quest?(challenge.quest)
+            %p.text-secondary.mb-0 クエストが非公開となりました
+          - else
+            = link_to "詳細", quest_path(challenge.quest), class: "btn btn-outline-success my-1 my-sm-0 col-3"
+            - if is_challenges_path == false
+              = form_with model: challenge, url: challenge_path(challenge), class: "p-0 mx-3 col-3" do |f|
+                = f.hidden_field :quest_id, value: challenge.quest.id
+                = f.hidden_field :close, value: false
+                .actions
+                = f.submit "再挑戦", class: "btn btn-outline-success my-1 my-sm-0 w-100", id: "retry_#{challenge.id}"
+          - if is_challenges_path
+            = form_with model: challenge, url: challenge_path(challenge), class: "p-0 mx-3 col-3" do |f|
+              = f.hidden_field :quest_id, value: challenge.quest.id
+              = f.hidden_field :close, value: true
+              .actions
+              = f.submit "達成", class: "btn btn-outline-success my-1 my-sm-0 w-100", id: "close_challenge_#{challenge.id}"
+            = link_to "諦める", challenge_path(challenge), method: :delete, class: "btn btn-outline-secondary my-1 my-sm-0 col-3"

@@ -8,7 +8,6 @@ class User < ApplicationRecord
   validates :name, presence: true
   validates :password, presence: true, length: { minimum: 6 }, on: :create
   validates :having_xp, presence: true, numericality: { only_integer: true }
-  validates :level, presence: true, numericality: { only_integer: true }
   validates :challenge_achieved, presence: true, numericality: { only_integer: true }
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
@@ -20,6 +19,15 @@ class User < ApplicationRecord
       user.password = SecureRandom.urlsafe_base64
       user.password_confirmation = user.password
       user.name = 'ゲストユーザー'
+    end
+  end
+
+  def experience_needed_for_next_grade
+    current_grade = GradeSetting.find_by(grade: grade)
+    if current_grade.grade == "Legend"
+      0
+    else
+      current_grade.judgement_xp - having_xp
     end
   end
 end

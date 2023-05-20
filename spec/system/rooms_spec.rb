@@ -75,7 +75,7 @@ RSpec.describe "Rooms", type: :system do
       fill_in 'タイトル', with: "Create a quest you want to complete."
       fill_in 'クエスト詳細', with: "Create quest achievement conditions."
       choose('radio-3')
-      check "quest[public]"
+      check "quest_form[public]"
       click_on "クエスト作成"
     end
 

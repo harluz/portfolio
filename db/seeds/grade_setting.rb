@@ -31,17 +31,17 @@ GradeSetting.create!(
 GradeSetting.create!(
   tag: 6,
   grade: "Challenger",
-  judgement_xp: 320,
+  judgement_xp: 330,
 )
 
 GradeSetting.create!(
   tag: 7,
   grade: "Accomplisher",
-  judgement_xp: 400,
+  judgement_xp: 420,
 )
 
 GradeSetting.create!(
   tag: 8,
   grade: "Legend",
-  judgement_xp: 500,
+  judgement_xp: 520,
 )

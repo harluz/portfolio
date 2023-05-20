@@ -1,30 +1,5 @@
 - content_for(:title, "クエスト作成")
 .container
   .center-block.col-md-6.mx-auto
-    = form_with model: @quest, url: quests_path, local: true do |f|
-      .field.mt-3
-        = f.label :title, class: "form-label mb-0"
-        = f.text_field :title, autofocus: true, autocomplete: "title", placeholder: "（必須）タイトルを入力してください", class: "form-control"
-      - if flash[:error_title].present?
-        %p.text-danger
-          = flash[:error_title].first
-      .field.mt-3
-        = f.label :describe, class: "form-label mb-0"
-        = f.text_area :describe, autofocus: true, autocomplete: "describe", placeholder: "ご自由にご記入ください", class: "form-control"
-      .field.mt-3
-        = f.label "タグ", class: "form-label mb-0"
-        = f.text_field :tag_name, autofocus: true, autocomplete: "タグ", placeholder: "例:趣味 健康 スポーツ", class: "form-control"
-        %p.text-secondary スペース入力で複数のタグ設定が可能です
-      .field.mt-3
-        = f.label :difficulty, class: "form-label"
-        .d-flex.justify-content-around
-          - 5.times do |num|
-            .d-inline.col-2.p-2.border.rounded
-              = f.radio_button :difficulty, num + 1, id: "radio-#{num +1}", style: "transform:scale(1.5)"
-              = f.label "#{num +1}", class: "w-50 lead text-center", for: "radio-#{num +1}"
-      .field.mt-4
-        = f.check_box :public, class: "form-check-input", id: "flexCheckChecked", style: "transform:scale(1.5)"
-        = f.label "クエストを公開する", class: "form-check-label", for: "flexCheckChecked"
-      .actions.mt-4.text-center
-        = f.submit "クエスト作成", class: "btn btn-outline-success my-1 my-sm-0 col-5 me-4"
-        = link_to "キャンセル", :back, class: "btn btn-outline-secondary my-1 my-sm-0 col-5"
+    = form_with model: @quest_form, url: quests_path, local: true do |f|
+      = render partial: "quests/shared/quest_form", locals: {obj: f, is_new_quest_path: true}

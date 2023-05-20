@@ -3,30 +3,4 @@
   .center-block.col-md-6.mx-auto
     %h2.text-success.border-bottom.text-center 新規登録
     = form_with model: @user, url: user_registration_path, local: true do |f|
-      .field.mt-3
-        = f.label :name, class: "form-label mb-0"
-        = f.text_field :name, autofocus: true, autocomplete: "name", class: "form-control"
-      - if @user.errors.include?(:name)
-        %p.text-danger
-          = @user.errors.full_messages_for(:name).first
-      .field.mt-3
-        = f.label :email, class: "form-label mb-0"
-        = f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control"
-      - if @user.errors.include?(:email)
-        %p.text-danger
-          = @user.errors.full_messages_for(:email).first
-      .field.mt-3
-        = f.label :password, class: "form-label mb-0"
-        = f.password_field :password, autocomplete: "new-password", placeholder: "6文字以上のパスワードを設定してください", class: "form-control"
-        - if @user.errors.include?(:password)
-          %p.text-danger
-            = @user.errors.full_messages_for(:password).first
-      .field.mt-3
-        = f.label :password_confirmation, class: "form-label mb-0"
-        = f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control"
-        - if @user.errors.include?(:password_confirmation)
-          %p.text-danger
-            = @user.errors.full_messages_for(:password_confirmation).first
-      .actions.mt-4.text-center
-        = f.submit "登録", class: "btn btn-outline-success my-1 my-sm-0 col-5 me-4"
-        = link_to "キャンセル", :back, class: "btn btn-outline-secondary my-1 my-sm-0 col-5"
+      = render partial: "devise/registrations/registrations_form", locals: {obj: f, user: @user, is_new_user_registration_path: true}

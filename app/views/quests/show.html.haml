@@ -23,7 +23,7 @@
           .row.justify-content-center
             - if @quest && current_user_owned?(@quest)
               = link_to "編集", edit_quest_path(@quest), class: "btn btn-outline-success my-1 my-sm-0 col-5"
-            - if (public_quest?(@quest) && !current_user_owned?(@quest) && is_not_own_challenge?(@quest)) || (current_user_owned?(@quest) && is_not_own_challenge?(@quest))
+            - if ((public_quest?(@quest) && !current_user_owned?(@quest) && is_not_own_challenge?(@quest))) || ((current_user_owned?(@quest) && is_not_own_challenge?(@quest)))
               = form_with model: @challenge, url: challenges_path(@challenge), class: "p-0 mx-3 col-5" do |f|
                 = f.hidden_field :quest_id, value: @quest.id
                 .actions

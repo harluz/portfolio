@@ -33,6 +33,15 @@ ja:
         close: 完了
       message:
         content: メッセージ内容
+  activemodel:
+    attributes:
+      quest_form:
+        title: クエストタイトル
+        describe: クエスト詳細
+        difficulty: 難易度
+        xp: 経験値
+        public: 共有
+        name: タグ
   date:
     abbr_day_names:
       - 日

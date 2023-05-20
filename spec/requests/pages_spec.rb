@@ -67,6 +67,7 @@ RSpec.describe "Pages", type: :request do
     subject { response.body }
 
     context "ユーザーがログインしている場合" do
+      let!(:noticer) { create(:noticer) }
       before do
         sign_in user
         get pages_profile_path
@@ -121,6 +122,7 @@ RSpec.describe "Pages", type: :request do
         get pages_profile_path
         expect(subject).not_to include "First Stepper"
         expect(subject).to include "Second Stepper"
+        expect(subject).to include "次の称号まで40ポイント"
       end
 
       it "経験値70ポイント未満はSecond Stepperがレスポンスに含まれること" do
@@ -131,6 +133,7 @@ RSpec.describe "Pages", type: :request do
         get pages_profile_path
         expect(subject).not_to include "Second Stepper"
         expect(subject).to include "Noticer"
+        expect(subject).to include "次の称号まで50ポイント"
       end
 
       it "経験値120ポイント未満はNoticerがレスポンスに含まれること" do
@@ -141,6 +144,7 @@ RSpec.describe "Pages", type: :request do
         get pages_profile_path
         expect(subject).not_to include "Noticer"
         expect(subject).to include "Discoverer"
+        expect(subject).to include "次の称号まで60ポイント"
       end
 
       it "経験値180ポイント未満はDiscovererがレスポンスに含まれること" do
@@ -151,6 +155,7 @@ RSpec.describe "Pages", type: :request do
         get pages_profile_path
         expect(subject).not_to include "Discoverer"
         expect(subject).to include "Changer"
+        expect(subject).to include "次の称号まで70ポイント"
       end
 
       it "経験値250ポイント未満はChangerがレスポンスに含まれること" do
@@ -161,35 +166,39 @@ RSpec.describe "Pages", type: :request do
         get pages_profile_path
         expect(subject).not_to include "Changer"
         expect(subject).to include "Challenger"
+        expect(subject).to include "次の称号まで80ポイント"
       end
 
-      it "経験値320ポイント未満はChallengerがレスポンスに含まれること" do
-        user.having_xp = 318
+      it "経験値330ポイント未満はChallengerがレスポンスに含まれること" do
+        user.having_xp = 328
         user.grade = "Challenger"
         params_challenge = { quest_id: quest1.id, close: true }
         patch challenge_path(challenge1), params: { challenge: params_challenge }
         get pages_profile_path
         expect(subject).not_to include "Challenger"
         expect(subject).to include "Accomplisher"
+        expect(subject).to include "次の称号まで90ポイント"
       end
 
-      it "経験値400ポイント未満はAccomplisherがレスポンスに含まれること" do
-        user.having_xp = 398
+      it "経験値420ポイント未満はAccomplisherがレスポンスに含まれること" do
+        user.having_xp = 418
         user.grade = "Accomplisher"
         params_challenge = { quest_id: quest1.id, close: true }
         patch challenge_path(challenge1), params: { challenge: params_challenge }
         get pages_profile_path
         expect(subject).not_to include "Accomplisher"
         expect(subject).to include "Legend"
+        expect(subject).to include "次の称号まで0ポイント"
       end
 
-      it "経験値400ポイント以上はLegendがレスポンスに含まれること" do
-        user.having_xp = 498
+      it "経験値420ポイント以上はLegendがレスポンスに含まれること" do
+        user.having_xp = 518
         user.grade = "Legend"
         params_challenge = { quest_id: quest1.id, close: true }
         patch challenge_path(challenge1), params: { challenge: params_challenge }
         get pages_profile_path
         expect(subject).to include "Legend"
+        expect(subject).to include "次の称号まで0ポイント"
       end
     end
   end
