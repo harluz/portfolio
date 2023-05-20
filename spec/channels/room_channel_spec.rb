@@ -17,19 +17,9 @@ RSpec.describe RoomChannel, type: :channel do
       expect(subscription).to be_confirmed
     end
 
-    it 'speakアクションでmessageが作成されていること' do
-      expect do
-        perform(:speak, message: 'Hello, world!')
-      end.to change(Message, :count).by(1)
-
-      expect(Message.last.content).to eq('Hello, world!')
-      expect(Message.last.user_id).to eq(user.id)
-      expect(Message.last.room_id).to eq(room.id)
-    end
-
     it 'メッセージを作成し、正しいチャネルにブロードキャストされていること' do
       expect do
-        perform(:speak, message: 'Hello, world!', room_id: room.id)
+        perform(:speak, message: 'Hello, world!')
         sleep 3
       end.to have_broadcasted_to("room_channel_#{room.id}").
         with { |data| expect(data["messagecurrent"]).to match(/Hello, world!/) }
@@ -41,6 +31,16 @@ RSpec.describe RoomChannel, type: :channel do
         sleep 3
       end.to have_broadcasted_to("room_channel_#{room.id}").
         with { |data| expect(data['messageother']).to include(message.content) }
+    end
+
+    it 'speakアクションでmessageが作成されていること' do
+      expect do
+        perform(:speak, message: 'Hello, world!')
+      end.to change(Message, :count).by(1)
+
+      expect(Message.last.content).to eq('Hello, world!')
+      expect(Message.last.user_id).to eq(user.id)
+      expect(Message.last.room_id).to eq(room.id)
     end
   end
 
