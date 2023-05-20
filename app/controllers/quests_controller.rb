@@ -67,7 +67,7 @@ class QuestsController < ApplicationController
   def destroy
     if !public_quest?(@quest) && @quest.destroy
       flash[:notice] = "クエストが削除されました。"
-      redirect_to quests_path
+      redirect_to my_quest_quests_path
     else
       flash[:alert] = "公開中のクエストは削除することができません。"
       redirect_to edit_quest_path(@quest)
