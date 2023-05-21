@@ -6,7 +6,7 @@
       .mb-2
         %textarea{type: "text", data: {behavior: "room_speaker"}, class: "form-control mr-sm-2 border-secondary mb-1", id: "message-textarea", placeholder: "クエストについて語ってみよう"}
         %button{class: "message_submit btn btn-outline-success my-2 my-sm-0 btn-block col-6"}送信
-      .overflow-auto.border.border-secondary.rounded.text-bg-light{style: "width: 100%; height: 300px"}
+      #message-container.overflow-auto.border.border-secondary.rounded.text-bg-light{style: "width: 100%; height: 300px"}
         %div{id: 'messages', data: {room_id: @room.id}}
           %div{id: 'show_user', data: {show_user: current_user.id}}
             = render @messages
