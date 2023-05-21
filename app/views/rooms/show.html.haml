@@ -11,4 +11,4 @@
           %div{id: 'show_user', data: {show_user: current_user.id}}
             = render @messages
       .mt-2
-      = link_to "戻る", :back, class: "btn btn-outline-secondary my-1 my-sm-0 col-10 active"
+      = link_to "戻る", 'javascript:history.back()', class: "btn btn-outline-secondary my-1 my-sm-0 col-10 active"
