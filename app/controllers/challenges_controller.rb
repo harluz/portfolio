@@ -39,7 +39,7 @@ class ChallengesController < ApplicationController
       when "true"
         current_user.having_xp += @challenge.quest.xp
         current_user.challenge_achieved += 1
-        user_upgrade
+        current_user.check_grade
         current_user.save(validate: false)
         flash[:notice] = "クエスト達成おめでとうございます。経験値#{@challenge.quest.xp}ポイントを獲得しました。"
         redirect_to challenges_path
@@ -83,13 +83,5 @@ class ChallengesController < ApplicationController
     Challenge.eager_load(quest: :user).
       where(user_id: current_user.id, close: closed).
       order(created_at: :desc)
-  end
-
-  def user_upgrade
-    current_grade = GradeSetting.find_by(grade: current_user.grade)
-    next_grade = GradeSetting.find_by(tag: current_grade.tag.succ)
-    if next_grade && current_grade.judgement_xp <= current_user.having_xp
-      current_user.grade = next_grade.grade
-    end
   end
 end

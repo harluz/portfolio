@@ -30,4 +30,12 @@ class User < ApplicationRecord
       current_grade.judgement_xp - having_xp
     end
   end
+
+  def check_grade
+    current_grade = GradeSetting.find_by(grade: grade)
+    next_grade = GradeSetting.find_by(tag: current_grade.tag.succ)
+    if next_grade && current_grade.judgement_xp <= having_xp
+      self.grade = next_grade.grade
+    end
+  end
 end
