@@ -1,5 +1,4 @@
-<img src="https://img.shields.io/badge/-HTML5-333.svg?logo=html5&style=flat">
-<img src="https://img.shields.io/badge/-CSS3-1572B6.svg?logo=css3&style=flat">
+<img src="https://img.shields.io/badge/-HTML5-333.svg?logo=html5&style=flat"><img src="https://img.shields.io/badge/-CSS3-1572B6.svg?logo=css3&style=flat">
 <img src="https://img.shields.io/badge/Javascript-276DC3.svg?logo=javascript&style=flat">
 <img src="https://img.shields.io/badge/-Ruby-CC342D.svg?logo=ruby&style=flat">
 <img src="https://img.shields.io/badge/-MySQL-4479A1.svg?logo=mysql&style=flat">
@@ -23,6 +22,7 @@
 
 # URL
 https://branchannel.herokuapp.com/
+<br />
 <br />
 ゲストログインを実装しています。ヘッダーのゲストログインボタンからログイン可能です。
 ![ゲストログイン](/README_images/guestlogin.png)
@@ -72,6 +72,10 @@ https://branchannel.herokuapp.com/
 <br />
 自分もしくは他のユーザーのメッセージかによって削除ボタンの有無をリアルタイムに反映させる処理は苦戦しましたが、実装できました。
 <br />
+
+https://github.com/harluz/portfolio/assets/58869301/8c4ae52a-06ac-4dc3-836e-fa1a1a062c4b
+
+
 <br />
 
 ## 5.Dockerによる環境構築及びCircleCIの活用
